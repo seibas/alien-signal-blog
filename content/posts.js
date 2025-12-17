@@ -79,7 +79,7 @@ The summit of mastery is yours to keep.`
   },
 
   {
-    slug: "Log 004",
+    slug: "log-004-test",
     title: "LOG 004",
     date: "2025-12-17",
     readTime: "3 min",
