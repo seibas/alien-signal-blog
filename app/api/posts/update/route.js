@@ -4,6 +4,16 @@ import path from 'path';
 
 export async function POST(request) {
   try {
+    // Check if running on Vercel (production)
+    if (process.env.VERCEL) {
+      return NextResponse.json(
+        { 
+          error: 'Posts can only be edited locally. Please edit posts on your local machine and push to GitHub to deploy.' 
+        },
+        { status: 403 }
+      );
+    }
+
     const { slug, title, date, readTime, tags, content } = await request.json();
 
     // Read the current posts file
