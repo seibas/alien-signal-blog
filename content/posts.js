@@ -90,6 +90,45 @@ The summit of mastery is yours to keep.`
       "test"
     ],
   },
+
+  {
+    slug: "log-005-test 05",
+    title: "LOG 002: The Labyrinth of Code",
+    date: "2025-12-17",
+    readTime: "3 min",
+    excerpt:
+      "dsdfsvdf",
+    tags: ["learning"],
+    content: [
+      "dfsvr"
+    ],
+  },
+
+  {
+    slug: "log-003-my-journey",
+    title: "log-003-my-journey tes6",
+    date: "2025-12-17",
+    readTime: "3 min",
+    excerpt:
+      "dsad",
+    tags: ["dd"],
+    content: [
+      "sdad"
+    ],
+  },
+
+  {
+    slug: "log-007-my-journey",
+    title: "aS",
+    date: "2025-12-17",
+    readTime: "3 min",
+    excerpt:
+      "cAS",
+    tags: ["Cas"],
+    content: [
+      "cas"
+    ],
+  },
 ];
 
 export function getAllPosts() {
