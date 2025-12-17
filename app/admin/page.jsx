@@ -8,7 +8,7 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'alien-signal-2025';
+  const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '0904';
 
   useEffect(() => {
     // Check if already authenticated
@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
           </form>
 
           <div className="auth-hint">
-            <small>Hint: alien-signal-2025</small>
+            <small>Hint: 0904</small>
           </div>
         </div>
       </div>

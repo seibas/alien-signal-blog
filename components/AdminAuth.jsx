@@ -9,7 +9,7 @@ export default function AdminAuth({ children }) {
   const [isLoading, setIsLoading] = useState(true);
 
   // Admin password from environment variable
-  const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'alien-signal-2025';
+  const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '0904';
 
   useEffect(() => {
     // Check if already authenticated in session
