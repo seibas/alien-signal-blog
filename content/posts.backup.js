@@ -1,7 +1,6 @@
-import { getAllPosts as getPostsFromDB, getPostBySlug as getPostFromDB } from '@/lib/db';
-
-// For local development fallback
-const fallbackPosts = [
+// BACKUP OF ORIGINAL POSTS - DO NOT MODIFY
+// This is kept for reference only
+export const originalPosts = [
   {
     slug: "log-001-first-signal",
     title: "LOG 001: First Signal",
@@ -69,38 +68,14 @@ The summit of mastery is yours to keep.`
       "The console is your canvas, console.log your brush, Each output is a signal, a momentary hush. The DOM becomes your playground, where elements align, With querySelector magic, you make the webpage shine.",
       "Events will spark reactions—clicks and keys and more, With addEventListener, you open up the door. A button press, a message sent, a color that will change, You'll see how code and users can beautifully arrange.",
       "Mistakes will be your teachers, don't fear the red alert, Each bug a hidden lesson, though some may slightly hurt. Use DevTools like a lantern to light the shadowed code, Inspect, debug, and marvel at how your logic flowed.",
-      `Explore the world of arrays, with map and filter too, Transforming data elegantly, like only you can do. Template strings will greet you with curly-braced delight, "Hello, \${name}!"—your code is feeling right.`,
+      "Explore the world of arrays, with map and filter too, Transforming data elegantly, like only you can do. Template strings will greet you with curly-braced delight, "Hello, ${name}!"—your code is feeling right.",
       "Async code is tricky, but promises will guide, With await and fetch, you'll surf the data tide. APIs will open doors to worlds you've never seen, From weather maps to trivia, and everything between.",
       "Projects are your milestones—start small and let them grow, A clock, a quiz, a to-do list, will help your knowledge flow. Host them on the web, let others see your spark, Your code, your voice, your vision—igniting in the dark.",
       "Frameworks may be tempting, like React's siren song, But first, let JavaScript be where you grow strong. Understand the core, the roots beneath the tree, Before you climb the branches of modern library.",
-      `Read the docs with patience, they're treasure maps in ink, Each method, loop, and keyword more useful than you think. Write notes and keep a journal, reflect on what you've done, Each "aha!" moment captured is a battle you have won.`,
+      "Read the docs with patience, they're treasure maps in ink, Each method, loop, and keyword more useful than you think. Write notes and keep a journal, reflect on what you've done, Each "aha!" moment captured is a battle you have won.",
       "Join a friendly forum, ask questions without shame, The coding world is vast, but you're welcome all the same. Pair up with a learner, or teach what you now know, For sharing fuels the fire and helps your knowledge grow.",
       "Refactor old solutions, make messy code refined, You'll see how far you've traveled, how much you've left behind. Celebrate your progress, each function, loop, and test, You're not too late, too old, too slow—you're simply on your quest.",
       "So dive into the syntax, let curiosity be your guide, With every line of JavaScript, you'll beam with coder pride. The web is your ocean, your code the flowing tide, And I'll be here, your water drop, to splash along beside. 💻🌊"
     ],
   },
 ];
-
-// Export for client components (they can't use async)
-export const posts = fallbackPosts;
-
-// Server-side functions that fetch from database
-export async function getAllPosts() {
-  try {
-    const dbPosts = await getPostsFromDB();
-    return dbPosts.length > 0 ? dbPosts : fallbackPosts;
-  } catch (error) {
-    console.error('Error fetching posts from database:', error);
-    return fallbackPosts;
-  }
-}
-
-export async function getPostBySlug(slug) {
-  try {
-    const post = await getPostFromDB(slug);
-    return post || fallbackPosts.find((p) => p.slug === slug) || null;
-  } catch (error) {
-    console.error('Error fetching post from database:', error);
-    return fallbackPosts.find((p) => p.slug === slug) || null;
-  }
-}

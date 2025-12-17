@@ -7,7 +7,6 @@ import TypingAnimation from './TypingAnimation';
 export default function EditableBlogPost({ post }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isProduction, setIsProduction] = useState(false);
   const [editedPost, setEditedPost] = useState({
     title: post.title,
     date: post.date,
@@ -20,9 +19,6 @@ export default function EditableBlogPost({ post }) {
     // Check if user is authenticated
     const auth = sessionStorage.getItem('admin_authenticated');
     setIsAdmin(auth === 'true');
-
-    // Check if we're on production
-    setIsProduction(window.location.hostname !== 'localhost');
 
     // Initialize with current post data
     setEditedPost({
@@ -133,21 +129,8 @@ export default function EditableBlogPost({ post }) {
     return (
       <article className="article">
         <div className="card cardPad">
-          {isProduction && (
-            <div style={{ 
-              background: 'rgba(255, 140, 0, 0.1)', 
-              border: '1px solid rgba(255, 140, 0, 0.3)', 
-              padding: '15px', 
-              borderRadius: '8px', 
-              marginBottom: '20px',
-              color: '#ff8c00'
-            }}>
-              ⚠️ <strong>Production Mode:</strong> Posts can only be edited locally. Run <code style={{ background: 'rgba(0,0,0,0.3)', padding: '2px 6px', borderRadius: '4px' }}>npm run dev</code> on your local machine to edit posts, then push to GitHub.
-            </div>
-          )}
-
           <div className="edit-controls">
-            <button className="btn btnPrimary" onClick={handleSave} disabled={isProduction}>
+            <button className="btn btnPrimary" onClick={handleSave}>
               💾 Save Changes
             </button>
             <button className="btn btnGhost" onClick={handleCancel}>

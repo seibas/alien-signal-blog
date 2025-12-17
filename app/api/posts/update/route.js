@@ -1,66 +1,27 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { updatePost } from '@/lib/db';
 
 export async function POST(request) {
   try {
-    // Check if running on Vercel (production)
-    if (process.env.VERCEL) {
-      return NextResponse.json(
-        { 
-          error: 'Posts can only be edited locally. Please edit posts on your local machine and push to GitHub to deploy.' 
-        },
-        { status: 403 }
-      );
-    }
-
     const { slug, title, date, readTime, tags, content } = await request.json();
-
-    // Read the current posts file
-    const postsPath = path.join(process.cwd(), 'content', 'posts.js');
-    let postsContent = fs.readFileSync(postsPath, 'utf-8');
 
     // Parse tags and content
     const tagsArray = tags.split(',').map(t => t.trim()).filter(Boolean);
     const contentArray = content.split('\n\n').filter(Boolean);
 
-    // Create the updated post object as a string
-    const updatedPostString = `  {
-    slug: "${slug}",
-    title: "${title}",
-    date: "${date}",
-    readTime: "${readTime}",
-    excerpt:
-      "${contentArray[0] || ''}",
-    tags: [${tagsArray.map(t => `"${t}"`).join(', ')}],
-    content: [
-${contentArray.map(para => `      "${para.replace(/"/g, '\\"')}"`).join(',\n')}
-    ],
-  }`;
+    // Create updated post object
+    const updatedPost = {
+      slug,
+      title,
+      date,
+      readTime,
+      excerpt: contentArray[0] || '',
+      tags: tagsArray,
+      content: contentArray
+    };
 
-    // Find and replace the specific post using regex
-    const postRegex = new RegExp(
-      `\\{[^}]*slug:\\s*"${slug}"[^}]*\\}(?:[^{]*\\{[^}]*\\})*`,
-      's'
-    );
-
-    // More robust regex to match the entire post object
-    const fullPostRegex = new RegExp(
-      `\\{\\s*slug:\\s*"${slug}",[\\s\\S]*?\\},(?=\\s*(?:\\{|\\];))`,
-      ''
-    );
-
-    if (fullPostRegex.test(postsContent)) {
-      postsContent = postsContent.replace(fullPostRegex, updatedPostString + ',');
-    } else {
-      return NextResponse.json(
-        { error: 'Post not found' },
-        { status: 404 }
-      );
-    }
-
-    // Write back to the file
-    fs.writeFileSync(postsPath, postsContent, 'utf-8');
+    // Update in database
+    await updatePost(slug, updatedPost);
 
     return NextResponse.json({ 
       success: true, 

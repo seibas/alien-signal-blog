@@ -13,12 +13,7 @@ export default function NewPostForm({ onCancel }) {
     tags: '',
     content: ''
   });
-  const [isProduction, setIsProduction] = useState(false);
 
-  useState(() => {
-    // Check if we're on production (Vercel)
-    setIsProduction(window.location.hostname !== 'localhost');
-  }, []);
 
   const playAlienSound = () => {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -98,21 +93,8 @@ export default function NewPostForm({ onCancel }) {
   return (
     <article className="article">
       <div className="card cardPad">
-        {isProduction && (
-          <div style={{ 
-            background: 'rgba(255, 140, 0, 0.1)', 
-            border: '1px solid rgba(255, 140, 0, 0.3)', 
-            padding: '15px', 
-            borderRadius: '8px', 
-            marginBottom: '20px',
-            color: '#ff8c00'
-          }}>
-            ⚠️ <strong>Production Mode:</strong> Posts can only be created locally. Run <code style={{ background: 'rgba(0,0,0,0.3)', padding: '2px 6px', borderRadius: '4px' }}>npm run dev</code> on your local machine to create posts, then push to GitHub.
-          </div>
-        )}
-
         <div className="edit-controls">
-          <button className="btn btnPrimary" onClick={handleCreate} disabled={isProduction}>
+          <button className="btn btnPrimary" onClick={handleCreate}>
             🚀 Create Post
           </button>
           <button className="btn btnGhost" onClick={onCancel}>

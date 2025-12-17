@@ -1,19 +1,8 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { createPost } from '@/lib/db';
 
 export async function POST(request) {
   try {
-    // Check if running on Vercel (production)
-    if (process.env.VERCEL) {
-      return NextResponse.json(
-        { 
-          error: 'Posts can only be created locally. Please create posts on your local machine and push to GitHub to deploy.' 
-        },
-        { status: 403 }
-      );
-    }
-
     const { slug, title, date, readTime, tags, excerpt, content } = await request.json();
 
     // Validate required fields
@@ -24,68 +13,23 @@ export async function POST(request) {
       );
     }
 
-    // Read the current posts file
-    const postsPath = path.join(process.cwd(), 'content', 'posts.js');
-    let postsContent = fs.readFileSync(postsPath, 'utf-8');
-
-    // Check if slug already exists
-    if (postsContent.includes(`slug: "${slug}"`)) {
-      return NextResponse.json(
-        { error: 'A post with this slug already exists' },
-        { status: 409 }
-      );
-    }
-
     // Parse tags and content
     const tagsArray = tags.split(',').map(t => t.trim()).filter(Boolean);
     const contentArray = content.split('\n\n').filter(Boolean);
 
-    // Escape special characters in strings
-    const escapeString = (str) => {
-      // Use template literals if the string contains quotes or newlines
-      if (str.includes('"') || str.includes('\n')) {
-        return `\`${str.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\``;
-      }
-      return `"${str.replace(/"/g, '\\"')}"`;
+    // Create post object
+    const newPost = {
+      slug,
+      title,
+      date,
+      readTime,
+      excerpt,
+      tags: tagsArray,
+      content: contentArray
     };
 
-    // Create the new post object as a string
-    const newPostString = `  {
-    slug: "${slug}",
-    title: "${title}",
-    date: "${date}",
-    readTime: "${readTime}",
-    excerpt:
-      ${escapeString(excerpt)},
-    tags: [${tagsArray.map(t => `"${t}"`).join(', ')}],
-    content: [
-${contentArray.map(para => `      ${escapeString(para)}`).join(',\n')}
-    ],
-  }`;
-
-    // Find the closing bracket of the posts array and insert before it
-    const arrayEndIndex = postsContent.lastIndexOf('];');
-    
-    if (arrayEndIndex === -1) {
-      return NextResponse.json(
-        { error: 'Invalid posts.js format' },
-        { status: 500 }
-      );
-    }
-
-    // Check if there are existing posts and add comma if needed
-    const beforeArrayEnd = postsContent.substring(0, arrayEndIndex).trim();
-    const needsComma = beforeArrayEnd.endsWith('}') || beforeArrayEnd.endsWith('},');
-    
-    // Insert the new post
-    const updatedContent = 
-      postsContent.substring(0, arrayEndIndex) +
-      (needsComma && !beforeArrayEnd.endsWith(',') ? ',' : '') +
-      '\n' + newPostString + ',\n' +
-      postsContent.substring(arrayEndIndex);
-
-    // Write back to the file
-    fs.writeFileSync(postsPath, updatedContent, 'utf-8');
+    // Save to database
+    await createPost(newPost);
 
     return NextResponse.json({ 
       success: true, 
