@@ -1,19 +1,28 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getAllPosts } from "@/content/posts";
+import { posts } from "@/content/posts";
 import PostCard from "@/components/PostCard";
 import NewPostForm from "@/components/NewPostForm";
 
 export default function BlogIndex() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showNewPostForm, setShowNewPostForm] = useState(false);
-  const all = getAllPosts();
+  const [allPosts, setAllPosts] = useState(posts);
 
   useEffect(() => {
-    const auth = sessionStorage.getItem('admin_authenticated');
-    setIsAdmin(auth === 'true');
+    // Fetch fresh posts from API when component mounts
+    fetch('/api/posts/list')
+      .then(res => res.json())
+      .then(data => {
+        if (data.posts && data.posts.length > 0) {
+          setAllPosts(data.posts);
+        }
+      })
+      .catch(err => console.error('Error fetching posts:', err));
   }, []);
+
+  const all = allPosts.sort((a, b) => (a.date < b.date ? 1 : -1));
 
   if (showNewPostForm) {
     return <NewPostForm onCancel={() => setShowNewPostForm(false)} />;

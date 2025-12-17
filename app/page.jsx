@@ -1,10 +1,10 @@
 import HeroText from "@/components/HeroText";
 import Link from "next/link";
-import { getAllPosts } from "@/content/posts";
+import { posts } from "@/content/posts";
 import PostCard from "@/components/PostCard";
 
 export default function Home() {
-  const latest = getAllPosts().slice(0, 2);
+  const latest = posts.slice(0, 2);
 
   return (
     <>

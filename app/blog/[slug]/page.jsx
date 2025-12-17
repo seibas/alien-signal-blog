@@ -1,13 +1,13 @@
 import Link from "next/link";
-import { getAllPosts, getPostBySlug } from "@/content/posts";
+import { posts, getPostBySlug } from "@/content/posts";
 import EditableBlogPost from "@/components/EditableBlogPost";
 
 export function generateStaticParams() {
-  return getAllPosts().map((p) => ({ slug: p.slug }));
+  return posts.map((p) => ({ slug: p.slug }));
 }
 
 export default function BlogPostPage({ params }) {
-  const post = getPostBySlug(params.slug);
+  const post = posts.find(p => p.slug === params.slug);
 
   if (!post) {
     return (
