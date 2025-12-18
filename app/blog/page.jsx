@@ -12,7 +12,7 @@ export default function BlogIndex() {
 
   useEffect(() => {
     // Check admin status
-    const adminStatus = sessionStorage.getItem('isAdmin') === 'true';
+    const adminStatus = sessionStorage.getItem('admin_authenticated') === 'true';
     setIsAdmin(adminStatus);
     
     // Fetch fresh posts from API when component mounts
