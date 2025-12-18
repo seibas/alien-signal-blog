@@ -1,10 +1,29 @@
+'use client';
+
+import { useState, useEffect } from "react";
 import HeroText from "@/components/HeroText";
 import Link from "next/link";
 import { posts } from "@/content/posts";
 import PostCard from "@/components/PostCard";
 
 export default function Home() {
-  const latest = posts.slice(0, 2);
+  const [latestPosts, setLatestPosts] = useState(posts.slice(0, 2));
+
+  useEffect(() => {
+    // Fetch fresh posts from database
+    fetch('/api/posts/list')
+      .then(res => res.json())
+      .then(data => {
+        if (data.posts && data.posts.length > 0) {
+          // Sort by date (newest first) and take the first 2
+          const sorted = data.posts.sort((a, b) => (a.date < b.date ? 1 : -1));
+          setLatestPosts(sorted.slice(0, 2));
+        }
+      })
+      .catch(err => console.error('Error fetching posts:', err));
+  }, []);
+
+  const latest = latestPosts;
 
   return (
     <>
