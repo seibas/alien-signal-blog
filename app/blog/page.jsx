@@ -11,6 +11,10 @@ export default function BlogIndex() {
   const [allPosts, setAllPosts] = useState(posts);
 
   useEffect(() => {
+    // Check admin status
+    const adminStatus = sessionStorage.getItem('isAdmin') === 'true';
+    setIsAdmin(adminStatus);
+    
     // Fetch fresh posts from API when component mounts
     fetch('/api/posts/list')
       .then(res => res.json())
