@@ -1,13 +1,39 @@
+'use client';
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { posts, getPostBySlug } from "@/content/posts";
 import EditableBlogPost from "@/components/EditableBlogPost";
 
-export function generateStaticParams() {
-  return posts.map((p) => ({ slug: p.slug }));
-}
-
 export default function BlogPostPage({ params }) {
-  const post = posts.find(p => p.slug === params.slug);
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch the post from the database
+    fetch('/api/posts/list')
+      .then(res => res.json())
+      .then(data => {
+        if (data.posts) {
+          const foundPost = data.posts.find(p => p.slug === params.slug);
+          setPost(foundPost || null);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching post:', err);
+        setLoading(false);
+      });
+  }, [params.slug]);
+
+  if (loading) {
+    return (
+      <section className="container">
+        <div className="card cardPad">
+          <p className="p">Loading...</p>
+        </div>
+      </section>
+    );
+  }
 
   if (!post) {
     return (
