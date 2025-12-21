@@ -53,18 +53,22 @@ export default function ImageUpload({ onImageInsert }) {
         const data = await response.json();
 
         if (response.ok) {
-          // Insert markdown image syntax into content
-          const imageMarkdown = `![${data.filename}](/images/${data.filename})`;
+          // Use the URL from the response (could be Blob URL or local path)
+          const imageUrl = data.url || `/images/${data.filename}`;
+          const imageMarkdown = `![${data.filename}](${imageUrl})`;
           onImageInsert(imageMarkdown);
           
           // Show success message
           showSuccess(`✅ ${file.name} uploaded!`);
         } else {
-          alert(`❌ Failed to upload ${file.name}: ${data.error}`);
+          // Show detailed error message
+          const errorMsg = data.details || data.error || 'Upload failed';
+          const helpText = data.helpText ? `\n\n${data.helpText}` : '';
+          alert(`❌ Failed to upload ${file.name}\n\n${errorMsg}${helpText}`);
         }
       } catch (error) {
         console.error('Upload error:', error);
-        alert(`❌ Failed to upload ${file.name}`);
+        alert(`❌ Failed to upload ${file.name}: ${error.message}`);
       }
     }
 
