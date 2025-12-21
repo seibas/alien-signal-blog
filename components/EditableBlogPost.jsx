@@ -245,7 +245,11 @@ export default function EditableBlogPost({ post }) {
   }
 
   const displayTags = editedPost.tags.split(',').map(t => t.trim()).filter(Boolean);
-  const displayContent = editedPost.content.split('\n\n').filter(Boolean);
+  
+  // Handle content whether it's stored as an array or string
+  const displayContent = Array.isArray(post.content) 
+    ? post.content 
+    : (editedPost.content ? editedPost.content.split('\n\n').filter(Boolean) : []);
 
   return (
     <article className="article">
