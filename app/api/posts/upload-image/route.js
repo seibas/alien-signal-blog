@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
+import { put } from '@vercel/blob';
 
 export async function POST(request) {
   try {
@@ -56,7 +57,28 @@ export async function POST(request) {
       filename = `${timestamp}-${baseName}.${ext}`;
     }
 
-    // Define upload directory
+    // Check if we're in production (Vercel)
+    const isProduction = process.env.VERCEL === '1';
+    
+    if (isProduction) {
+      // Use Vercel Blob storage in production
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      
+      const blob = await put(filename, buffer, {
+        access: 'public',
+        contentType: file.type,
+      });
+
+      return NextResponse.json({
+        success: true,
+        filename: filename,
+        url: blob.url,
+        message: 'Image uploaded successfully'
+      });
+    }
+
+    // Local development: save to public/images
     const uploadDir = join(process.cwd(), 'public', 'images');
 
     // Create directory if it doesn't exist
