@@ -168,12 +168,17 @@ export default function NewPostForm({ onCancel }) {
 
         <div className="edit-section">
           <label>Content (paragraphs separated by blank lines)</label>
+          <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px' }}>
+            💡 To add images, use: ![description](/images/filename.jpg)
+          </div>
           <textarea
             value={newPost.content}
             onChange={(e) => setNewPost({...newPost, content: e.target.value})}
             placeholder="First paragraph goes here.
 
 Second paragraph goes here.
+
+To add an image: ![My cool image](/images/my-image.jpg)
 
 Third paragraph goes here."
             className="edit-textarea"

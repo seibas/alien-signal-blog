@@ -15,6 +15,32 @@ export default function EditableBlogPost({ post }) {
     content: post.content.join('\n\n')
   });
 
+  // Function to render content with image support
+  const renderContent = (text) => {
+    // Match markdown image syntax: ![alt text](image-url)
+    const imageRegex = /!\[([^\]]*)\]\(([^\)]+)\)/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = imageRegex.exec(text)) !== null) {
+      // Add text before the image
+      if (match.index > lastIndex) {
+        parts.push({ type: 'text', content: text.substring(lastIndex, match.index) });
+      }
+      // Add the image
+      parts.push({ type: 'image', alt: match[1], src: match[2] });
+      lastIndex = match.index + match[0].length;
+    }
+
+    // Add remaining text
+    if (lastIndex < text.length) {
+      parts.push({ type: 'text', content: text.substring(lastIndex) });
+    }
+
+    return parts.length > 0 ? parts : [{ type: 'text', content: text }];
+  };
+
   useEffect(() => {
     // Check if user is authenticated
     const auth = sessionStorage.getItem('admin_authenticated');
@@ -180,6 +206,9 @@ export default function EditableBlogPost({ post }) {
 
           <div className="edit-section">
             <label>Content (paragraphs separated by blank lines)</label>
+            <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px' }}>
+              💡 To add images, use: ![description](/images/filename.jpg)
+            </div>
             <textarea
               value={editedPost.content}
               onChange={(e) => setEditedPost({...editedPost, content: e.target.value})}
@@ -225,13 +254,36 @@ export default function EditableBlogPost({ post }) {
         </p>
 
         <div className="articleContent">
-          {displayContent.map((para, idx) => (
-            <p key={idx}>
-              <TypingAnimation speed={8}>
-                {para}
-              </TypingAnimation>
-            </p>
-          ))}
+          {displayContent.map((para, idx) => {
+            const contentParts = renderContent(para);
+            return (
+              <div key={idx} style={{ marginBottom: '1.5em' }}>
+                {contentParts.map((part, partIdx) => {
+                  if (part.type === 'image') {
+                    return (
+                      <img
+                        key={partIdx}
+                        src={part.src}
+                        alt={part.alt}
+                        style={{
+                          maxWidth: '100%',
+                          height: 'auto',
+                          borderRadius: '8px',
+                          margin: '1em 0',
+                          display: 'block'
+                        }}
+                      />
+                    );
+                  }
+                  return part.content ? (
+                    <TypingAnimation key={partIdx} speed={8}>
+                      {part.content}
+                    </TypingAnimation>
+                  ) : null;
+                })}
+              </div>
+            );
+          })}
         </div>
 
         <div style={{ height: 10 }} />
