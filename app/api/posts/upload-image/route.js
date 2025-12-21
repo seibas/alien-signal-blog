@@ -36,13 +36,15 @@ export async function POST(request) {
 
     // Create filename - use 'avatar.jpg' if it's an avatar, otherwise timestamp
     let filename;
+    const ext = file.name.split('.').pop().toLowerCase();
+    
     if (isAvatar) {
-      const ext = file.name.split('.').pop();
       filename = `avatar.${ext}`;
     } else {
       const timestamp = Date.now();
-      const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-      filename = `${timestamp}-${originalName}`;
+      // Remove extension from original name to avoid double extensions
+      const nameWithoutExt = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9-]/g, '_');
+      filename = `${timestamp}-${nameWithoutExt}.${ext}`;
     }
 
     // Define upload directory
