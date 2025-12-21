@@ -57,16 +57,13 @@ export async function POST(request) {
       filename = `${timestamp}-${baseName}.${ext}`;
     }
 
-    // Check if we're in production (Vercel) and Blob is configured
-    const isProduction = process.env.VERCEL === '1';
-    const hasBlobToken = !!process.env.BLOB_READ_WRITE_TOKEN;
-    
-    if (isProduction && hasBlobToken) {
+    // Convert file to buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Try Vercel Blob first (production)
+    if (process.env.VERCEL === '1' || process.env.BLOB_READ_WRITE_TOKEN) {
       try {
-        // Use Vercel Blob storage in production
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-        
         const blob = await put(filename, buffer, {
           access: 'public',
           contentType: file.type,
@@ -80,20 +77,15 @@ export async function POST(request) {
         });
       } catch (blobError) {
         console.error('Blob storage error:', blobError);
-        return NextResponse.json({
-          error: 'Blob storage not configured',
-          details: 'Please set up Vercel Blob storage or use image hosting services like Imgur/Cloudinary and paste the URL directly',
-          helpText: 'Format: ![description](https://your-image-url.com/image.jpg)'
-        }, { status: 503 });
+        // Fall through to local storage or return error
+        if (process.env.VERCEL === '1') {
+          return NextResponse.json({
+            error: 'Blob storage failed',
+            details: blobError.message || 'Please check Blob storage configuration',
+            helpText: 'Alternative: Use Imgur/Cloudinary and paste URL as ![description](url)'
+          }, { status: 503 });
+        }
       }
-    }
-    
-    if (isProduction && !hasBlobToken) {
-      return NextResponse.json({
-        error: 'Image uploads not available in production',
-        details: 'Please use an image hosting service like Imgur or Cloudinary and paste the URL',
-        helpText: 'Format: ![description](https://your-image-url.com/image.jpg)'
-      }, { status: 503 });
     }
 
     // Local development: save to public/images
@@ -103,10 +95,6 @@ export async function POST(request) {
     if (!existsSync(uploadDir)) {
       await mkdir(uploadDir, { recursive: true });
     }
-
-    // Convert file to buffer
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
 
     // Write file to disk
     const filepath = join(uploadDir, filename);
