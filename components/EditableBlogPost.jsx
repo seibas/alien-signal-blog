@@ -153,7 +153,7 @@ export default function EditableBlogPost({ post }) {
 
   const handleCancel = () => {
     setIsEditing(false);
-    // Reset to original post data
+    // Reset to original values
     setEditedPost({
       title: post.title,
       date: post.date,
@@ -161,6 +161,33 @@ export default function EditableBlogPost({ post }) {
       tags: post.tags.join(', '),
       content: post.content.join('\n\n')
     });
+  };
+
+  const handleDelete = async () => {
+    if (!confirm('⚠️ Are you sure you want to delete this post? This cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/posts/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ slug: post.slug }),
+      });
+
+      if (response.ok) {
+        alert('✅ Post deleted successfully!');
+        window.location.href = '/blog';
+      } else {
+        const data = await response.json();
+        alert(`❌ Failed to delete: ${data.error}`);
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('❌ Failed to delete post');
+    }
   };
 
   if (isEditing) {
@@ -261,6 +288,16 @@ export default function EditableBlogPost({ post }) {
             title="Edit post"
           >
             ✏️ Edit
+          </button>
+        )}
+        {isAdmin && (
+          <button 
+            className="edit-toggle-btn"
+            onClick={handleDelete}
+            title="Delete post"
+            style={{ right: '60px', background: '#ff4444' }}
+          >
+            🗑️ Delete
           </button>
         )}
 
