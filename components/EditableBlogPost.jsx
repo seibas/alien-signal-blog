@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import TypingAnimation from './TypingAnimation';
+import ImageUpload from './ImageUpload';
+import AuthorBio from './AuthorBio';
+import AvatarUploadWidget from './AvatarUploadWidget';
 
 export default function EditableBlogPost({ post }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -11,8 +14,8 @@ export default function EditableBlogPost({ post }) {
     title: post.title,
     date: post.date,
     readTime: post.readTime,
-    tags: post.tags.join(', '),
-    content: post.content.join('\n\n')
+    tags: Array.isArray(post.tags) ? post.tags.join(', ') : post.tags || '',
+    content: Array.isArray(post.content) ? post.content.join('\n\n') : post.content || ''
   });
 
   // Function to render content with image support
@@ -51,10 +54,19 @@ export default function EditableBlogPost({ post }) {
       title: post.title,
       date: post.date,
       readTime: post.readTime,
-      tags: post.tags.join(', '),
-      content: post.content.join('\n\n')
+      tags: Array.isArray(post.tags) ? post.tags.join(', ') : post.tags || '',
+      content: Array.isArray(post.content) ? post.content.join('\n\n') : post.content || ''
     });
   }, [post]);
+
+  const handleImageInsert = (imageMarkdown) => {
+    // Insert image markdown at the end of content with proper spacing
+    const currentContent = editedPost.content;
+    const newContent = currentContent 
+      ? `${currentContent}\n\n${imageMarkdown}\n\n`
+      : `${imageMarkdown}\n\n`;
+    setEditedPost({...editedPost, content: newContent});
+  };
 
   const playAlienSound = () => {
     // Create an alien "beep-boop" sound effect using Web Audio API
@@ -156,12 +168,15 @@ export default function EditableBlogPost({ post }) {
       <article className="article">
         <div className="card cardPad">
           <div className="edit-controls">
-            <button className="btn btnPrimary" onClick={handleSave}>
-              💾 Save Changes
-            </button>
-            <button className="btn btnGhost" onClick={handleCancel}>
-              ✕ Cancel
-            </button>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button className="btn btnPrimary" onClick={handleSave}>
+                💾 Save Changes
+              </button>
+              <button className="btn btnGhost" onClick={handleCancel}>
+                ✕ Cancel
+              </button>
+            </div>
+            <AvatarUploadWidget />
           </div>
 
           <div className="edit-section">
@@ -207,7 +222,7 @@ export default function EditableBlogPost({ post }) {
           <div className="edit-section">
             <label>Content (paragraphs separated by blank lines)</label>
             <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px' }}>
-              💡 To add images, use: ![description](/images/filename.jpg)
+              💡 To add images, use the drag & drop area below or manually type: ![description](/images/filename.jpg)
             </div>
             <textarea
               value={editedPost.content}
@@ -215,6 +230,8 @@ export default function EditableBlogPost({ post }) {
               className="edit-textarea"
               rows={15}
             />
+            
+            <ImageUpload onImageInsert={handleImageInsert} />
           </div>
 
           <div style={{ height: 10 }} />
@@ -266,11 +283,13 @@ export default function EditableBlogPost({ post }) {
                         src={part.src}
                         alt={part.alt}
                         style={{
-                          maxWidth: '100%',
+                          maxWidth: '85%',
                           height: 'auto',
-                          borderRadius: '8px',
-                          margin: '1em 0',
-                          display: 'block'
+                          borderRadius: '12px',
+                          margin: '2em auto',
+                          display: 'block',
+                          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                          border: '1px solid rgba(234,255,247,.1)'
                         }}
                       />
                     );
@@ -285,6 +304,8 @@ export default function EditableBlogPost({ post }) {
             );
           })}
         </div>
+
+        <AuthorBio />
 
         <div style={{ height: 10 }} />
         <div className="btnRow">

@@ -51,10 +51,15 @@ export default function SiteHeader() {
       </header>
       {isAdmin && (
         <div className="admin-bar">
-          <span className="admin-badge">👤 Admin Mode Active</span>
-          <button onClick={handleLogout} className="admin-logout">
-            🚪 Logout
-          </button>
+          <div className="admin-bar-content">
+            <span className="admin-badge">👤 Admin Mode Active</span>
+            <div className="admin-bar-actions">
+              <Link href="/settings" className="admin-settings">⚙️ Settings</Link>
+              <button onClick={handleLogout} className="admin-logout">
+                🚪 Logout
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>

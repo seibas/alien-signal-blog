@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import ImageUpload from './ImageUpload';
 
 export default function NewPostForm({ onCancel }) {
   const [newPost, setNewPost] = useState({
@@ -14,6 +15,14 @@ export default function NewPostForm({ onCancel }) {
     content: ''
   });
 
+  const handleImageInsert = (imageMarkdown) => {
+    // Insert image markdown at the end of content with proper spacing
+    const currentContent = newPost.content;
+    const newContent = currentContent 
+      ? `${currentContent}\n\n${imageMarkdown}\n\n`
+      : `${imageMarkdown}\n\n`;
+    setNewPost({...newPost, content: newContent});
+  };
 
   const playAlienSound = () => {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -103,6 +112,11 @@ export default function NewPostForm({ onCancel }) {
         </div>
 
         <div className="edit-section">
+          <label>📸 Add Images</label>
+          <ImageUpload onImageInsert={handleImageInsert} />
+        </div>
+
+        <div className="edit-section">
           <label>Slug (URL identifier, e.g., "log-003-my-journey")</label>
           <input
             type="text"
@@ -169,7 +183,7 @@ export default function NewPostForm({ onCancel }) {
         <div className="edit-section">
           <label>Content (paragraphs separated by blank lines)</label>
           <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px' }}>
-            💡 To add images, use: ![description](/images/filename.jpg)
+            💡 To add images, use the drag & drop area below or manually type: ![description](/images/filename.jpg)
           </div>
           <textarea
             value={newPost.content}
@@ -184,6 +198,8 @@ Third paragraph goes here."
             className="edit-textarea"
             rows={15}
           />
+          
+          <ImageUpload onImageInsert={handleImageInsert} />
         </div>
 
         <div style={{ height: 10 }} />
