@@ -38,7 +38,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Libe
   box-shadow: 0 14px 44px rgba(0,0,0,.35);
 }
 
-.cardPad { padding: 18px; }
+.cardPad { padding: 8px; }
 
 /* ===== Section titles ===== */
 .h2 {
@@ -168,11 +168,38 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Libe
 /* ===== Blog list ===== */
 .postGrid {
   display: grid;
-  gap: 14px;
-  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  margin-top: 24px;
 }
-.postCard { grid-column: span 6; }
-@media (max-width: 900px){ .postCard { grid-column: span 12; } }
+
+.postCard { 
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.postCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 54px rgba(0,0,0,.45);
+}
+
+@media (max-width: 768px) { 
+  .postGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .postGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1201px) {
+  .postGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
 
 .postMeta {
   display: flex;

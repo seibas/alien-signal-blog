@@ -79,81 +79,120 @@ export default function BlogIndex() {
   return (
     <section className="container">
       <div className="card cardPad">
-        <div style={{ position: 'relative' }}>
-          <h1 className="h2" style={{ fontSize: 28 }}>Logbook</h1>
-          {isAdmin && (
-            <div style={{ position: 'absolute', top: '0', right: '0', display: 'flex', gap: '8px' }}>
-              {deleteMode ? (
-                <>
-                  <button 
-                    className="new-post-btn"
-                    onClick={handleDeleteSelected}
-                    disabled={selectedPosts.length === 0}
-                    style={{ 
-                      background: selectedPosts.length > 0 ? '#ff4444' : '#666',
-                      cursor: selectedPosts.length > 0 ? 'pointer' : 'not-allowed'
-                    }}
-                  >
-                    🗑️ Delete ({selectedPosts.length})
-                  </button>
-                  <button 
-                    className="new-post-btn"
-                    onClick={() => {
-                      setDeleteMode(false);
-                      setSelectedPosts([]);
-                    }}
-                    style={{ background: '#666' }}
-                  >
-                    Cancel
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button 
-                    className="new-post-btn"
-                    onClick={() => setDeleteMode(true)}
-                    title="Delete posts"
-                  >
-                    🗑️ Delete
-                  </button>
-                  <button 
-                    className="new-post-btn"
-                    onClick={() => setShowNewPostForm(true)}
-                    title="Create new post"
-                  >
-                    ➕ New Post
-                  </button>
-                </>
-              )}
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <h1 className="h2" style={{ fontSize: 28, margin: 0 }}>Logbook</h1>
+            {isAdmin && (
+              <div style={{ display: 'flex', gap: '10px' }}>
+                {deleteMode ? (
+                  <>
+                    <button 
+                      className="btn btnPrimary"
+                      onClick={handleDeleteSelected}
+                      disabled={selectedPosts.length === 0}
+                      style={{ 
+                        background: selectedPosts.length > 0 ? '#ff4444' : '#444',
+                        cursor: selectedPosts.length > 0 ? 'pointer' : 'not-allowed',
+                        opacity: selectedPosts.length > 0 ? 1 : 0.5,
+                        padding: '8px 16px',
+                        fontSize: '14px'
+                      }}
+                    >
+                      🗑️ Delete {selectedPosts.length > 0 ? `(${selectedPosts.length})` : ''}
+                    </button>
+                    <button 
+                      className="btn btnGhost"
+                      onClick={() => {
+                        setDeleteMode(false);
+                        setSelectedPosts([]);
+                      }}
+                      style={{ padding: '8px 16px', fontSize: '14px' }}
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button 
+                      className="btn btnGhost"
+                      onClick={() => setDeleteMode(true)}
+                      title="Delete posts"
+                      style={{ padding: '8px 16px', fontSize: '14px' }}
+                    >
+                      🗑️ Delete
+                    </button>
+                    <button 
+                      className="btn btnPrimary"
+                      onClick={() => setShowNewPostForm(true)}
+                      title="Create new post"
+                      style={{ padding: '8px 16px', fontSize: '14px' }}
+                    >
+                      ➕ New Post
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+          
+          {deleteMode && (
+            <div style={{
+              padding: '12px 16px',
+              background: 'rgba(255, 68, 68, 0.1)',
+              border: '1px solid rgba(255, 68, 68, 0.3)',
+              borderRadius: '8px',
+              fontSize: '14px',
+              color: '#ff6666'
+            }}>
+              ⚠️ Delete mode active - Click on posts to select them for deletion
             </div>
           )}
+          
+          <p className="p" style={{ marginTop: deleteMode ? '16px' : '10px', marginBottom: 0 }}>
+            Entries from my coding journey—what I learn, what I build, and what I discover along the way.
+          </p>
         </div>
-        <p className="p" style={{ marginTop: 10 }}>
-          Entries from my coding journey—what I learn, what I build, and what I discover along the way.
-        </p>
-
-        <div style={{ height: 16 }} />
 
         <div className="postGrid">
           {all.map((p) => (
-            <div key={p.slug} style={{ position: 'relative' }}>
-              {deleteMode && isAdmin && (
-                <input
-                  type="checkbox"
-                  checked={selectedPosts.includes(p.slug)}
-                  onChange={() => handleSelectPost(p.slug)}
-                  style={{
-                    position: 'absolute',
-                    top: '12px',
-                    right: '12px',
-                    width: '20px',
-                    height: '20px',
-                    cursor: 'pointer',
-                    zIndex: 10
-                  }}
-                />
+            <div 
+              key={p.slug} 
+              style={{ 
+                position: 'relative',
+                cursor: deleteMode ? 'pointer' : 'default'
+              }}
+              onClick={() => deleteMode && handleSelectPost(p.slug)}
+            >
+              {deleteMode && (
+                <div style={{
+                  position: 'absolute',
+                  top: '16px',
+                  right: '16px',
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '8px',
+                  background: selectedPosts.includes(p.slug) ? '#00ff88' : 'rgba(0,0,0,0.6)',
+                  border: `2px solid ${selectedPosts.includes(p.slug) ? '#00ff88' : '#666'}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  zIndex: 10,
+                  pointerEvents: 'none',
+                  transition: 'all 0.2s ease',
+                  boxShadow: selectedPosts.includes(p.slug) ? '0 0 12px rgba(0,255,136,0.5)' : 'none'
+                }}>
+                  {selectedPosts.includes(p.slug) ? '✓' : ''}
+                </div>
               )}
-              <PostCard post={p} />
+              <div style={{
+                opacity: deleteMode && selectedPosts.includes(p.slug) ? 0.7 : 1,
+                transform: deleteMode && selectedPosts.includes(p.slug) ? 'scale(0.98)' : 'scale(1)',
+                transition: 'all 0.2s ease'
+              }}>
+                <PostCard post={p} />
+              </div>
             </div>
           ))}
         </div>

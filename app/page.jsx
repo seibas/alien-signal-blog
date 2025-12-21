@@ -9,7 +9,7 @@ import { posts } from "@/content/posts";
 import PostCard from "@/components/PostCard";
 
 export default function Home() {
-  const [latestPosts, setLatestPosts] = useState(posts.slice(0, 2));
+  const [latestPosts, setLatestPosts] = useState(posts.slice(0, 3));
 
   useEffect(() => {
     // Fetch fresh posts from database
@@ -17,9 +17,9 @@ export default function Home() {
       .then(res => res.json())
       .then(data => {
         if (data.posts && data.posts.length > 0) {
-          // Sort by date (newest first) and take the first 2
+          // Sort by date (newest first) and take the first 3
           const sorted = data.posts.sort((a, b) => (a.date < b.date ? 1 : -1));
-          setLatestPosts(sorted.slice(0, 2));
+          setLatestPosts(sorted.slice(0, 3));
         }
       })
       .catch(err => console.error('Error fetching posts:', err));
