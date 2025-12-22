@@ -16,12 +16,12 @@ export default function NewPostForm({ onCancel }) {
   });
 
   const handleImageInsert = (imageMarkdown) => {
-    // Insert image markdown at the end of content with proper spacing
+    // Insert image markdown at the very beginning of content for preview
     const currentContent = newPost.content;
-    const newContent = currentContent 
-      ? `${currentContent}\n\n${imageMarkdown}\n\n`
+    const newContent = currentContent
+      ? `${imageMarkdown}\n\n${currentContent}`
       : `${imageMarkdown}\n\n`;
-    setNewPost({...newPost, content: newContent});
+    setNewPost({ ...newPost, content: newContent });
   };
 
   const playAlienSound = () => {
