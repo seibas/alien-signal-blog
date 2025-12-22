@@ -8,12 +8,46 @@ export default function PostCard({ post }) {
     return text.substring(0, 80).trim() + '...';
   };
 
+  // Extract first image from content
+  const getFirstImage = () => {
+    if (!post.content) return null;
+    const contentStr = Array.isArray(post.content) ? post.content.join(' ') : post.content;
+    const imageRegex = /!\[([^\]]*)\]\(([^\)]+)\)/;
+    const match = contentStr.match(imageRegex);
+    return match ? match[2] : null;
+  };
+
+  const firstImage = getFirstImage();
+
   return (
     <article className="card postCard" style={{
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden'
     }}>
+      {firstImage && (
+        <div style={{
+          width: '100%',
+          height: '180px',
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'rgba(0,0,0,0.3)',
+          borderBottom: '1px solid rgba(234,255,247,.1)'
+        }}>
+          <img 
+            src={firstImage} 
+            alt={post.title}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center'
+            }}
+          />
+        </div>
+      )}
       <div className="cardPad" style={{
         flex: 1,
         display: 'flex',
