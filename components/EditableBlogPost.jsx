@@ -327,7 +327,7 @@ export default function EditableBlogPost({ post }) {
                       <img
                         key={partIdx}
                         src={part.src}
-                        alt=""
+                        alt={part.alt}
                         style={{
                           maxWidth: '85%',
                           height: 'auto',
