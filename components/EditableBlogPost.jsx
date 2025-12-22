@@ -295,7 +295,12 @@ export default function EditableBlogPost({ post }) {
             className="edit-toggle-btn"
             onClick={handleDelete}
             title="Delete post"
-            style={{ right: '60px', background: '#ff4444' }}
+            style={{ 
+              right: '60px', 
+              background: '#ca4a4aff',
+              fontSize: '0.7em',
+              padding: '4px 8px'
+            }}
           >
             🗑️ Delete
           </button>
@@ -322,7 +327,7 @@ export default function EditableBlogPost({ post }) {
                       <img
                         key={partIdx}
                         src={part.src}
-                        alt={part.alt}
+                        alt=""
                         style={{
                           maxWidth: '85%',
                           height: 'auto',
