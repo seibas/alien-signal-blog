@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 
 export default function SiteHeader() {
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -33,10 +32,6 @@ export default function SiteHeader() {
     window.location.href = '/';
   };
 
-  const handleLinkClick = () => {
-    setIsMenuOpen(false);
-  };
-
   return (
     <>
       <header className="header">
@@ -46,46 +41,13 @@ export default function SiteHeader() {
             <span>ALIEN SIGNAL</span>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="nav" aria-label="Primary">
             <Link href="/">Home</Link>
             <Link href="/about">About</Link>
             <Link href="/blog">Blog</Link>
             {!isAdmin && <Link href="/admin">🔒 Admin</Link>}
           </nav>
-
-          {/* Mobile Hamburger Menu Button */}
-          <button
-            className="hamburger"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-            aria-expanded={isMenuOpen}
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
         </div>
-
-        {/* Mobile Navigation Menu */}
-        {isMenuOpen && (
-          <nav className="mobileNav">
-            <Link href="/" onClick={handleLinkClick}>
-              Home
-            </Link>
-            <Link href="/about" onClick={handleLinkClick}>
-              About
-            </Link>
-            <Link href="/blog" onClick={handleLinkClick}>
-              Blog
-            </Link>
-            {!isAdmin && (
-              <Link href="/admin" onClick={handleLinkClick}>
-                🔒 Admin
-              </Link>
-            )}
-          </nav>
-        )}
       </header>
       {isAdmin && (
         <div className="admin-bar">
