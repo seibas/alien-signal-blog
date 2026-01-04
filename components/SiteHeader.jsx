@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 
 export default function SiteHeader() {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -25,30 +26,78 @@ export default function SiteHeader() {
     };
   }, []);
 
+  useEffect(() => {
+    // Prevent body scroll when mobile menu is open
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
   const handleLogout = () => {
     sessionStorage.removeItem('admin_authenticated');
     setIsAdmin(false);
     window.dispatchEvent(new Event('adminAuthChanged'));
+    setMobileMenuOpen(false);
     window.location.href = '/';
+  };
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
   };
 
   return (
     <>
       <header className="header">
         <div className="headerInner">
-          <Link className="brand" href="/">
+          <Link className="brand" href="/" onClick={closeMobileMenu}>
             <AlienLogo />
             <span>ALIEN SIGNAL</span>
           </Link>
 
+          {/* Desktop Navigation */}
           <nav className="nav" aria-label="Primary">
             <Link href="/">Home</Link>
             <Link href="/about">About</Link>
             <Link href="/blog">Blog</Link>
             {!isAdmin && <Link href="/admin">🔒 Admin</Link>}
           </nav>
+
+          {/* Mobile Menu Button */}
+          <button 
+            className={`mobile-menu-button ${mobileMenuOpen ? 'open' : ''}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
         </div>
       </header>
+
+      {/* Mobile Menu Backdrop */}
+      <div 
+        className={`nav-mobile-backdrop ${mobileMenuOpen ? 'open' : ''}`}
+        onClick={closeMobileMenu}
+      />
+      
+      {/* Mobile Navigation Overlay */}
+      <nav className={`nav-mobile ${mobileMenuOpen ? 'open' : ''}`} aria-label="Mobile">
+        <div className="nav-mobile-links">
+          <Link href="/" onClick={closeMobileMenu}>Home</Link>
+          <Link href="/about" onClick={closeMobileMenu}>About</Link>
+          <Link href="/blog" onClick={closeMobileMenu}>Blog</Link>
+          {!isAdmin && <Link href="/admin" onClick={closeMobileMenu}>🔒 Admin</Link>}
+        </div>
+      </nav>
+
       {isAdmin && (
         <div className="admin-bar">
           <div className="admin-bar-content">

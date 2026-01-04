@@ -276,6 +276,38 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
 .articleContent p { margin: 0 0 14px; }
 .articleContent ul { margin: 0 0 14px 18px; }
 .articleContent li { margin: 8px 0; }
+.articleContent img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+/* Mobile article optimizations */
+@media (max-width: 768px) {
+  .article {
+    padding: 20px 16px 32px;
+  }
+  
+  .articleTitle {
+    font-size: clamp(24px, 6vw, 32px) !important;
+    line-height: 1.15;
+  }
+  
+  .articleMeta {
+    font-size: 12px;
+  }
+  
+  .articleContent {
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  
+  .articleContent img {
+    margin: 16px 0;
+    border-radius: 10px;
+  }
+}
 
 /* ===== HERO (alien green + orange accent) ===== */
 .hero--alien{
@@ -379,6 +411,58 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   font-size: clamp(36px, 5.2vw, 72px);
   line-height:1.02;
   letter-spacing:-0.02em;
+}
+
+/* Mobile hero optimizations */
+@media (max-width: 768px) {
+  .hero {
+    min-height: clamp(420px, 60vh, 600px);
+    padding: 60px 16px;
+  }
+  
+  .heroInner {
+    padding: 6px 0;
+  }
+  
+  .kicker {
+    font-size: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .statusDot {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .heroTitle {
+    font-size: clamp(28px, 8vw, 48px) !important;
+    line-height: 1.1;
+  }
+  
+  .heroSub {
+    font-size: clamp(14px, 4vw, 18px) !important;
+    margin-top: 14px;
+  }
+  
+  .chip {
+    padding: 2px 8px 3px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 50px 12px;
+  }
+  
+  .heroTitle {
+    font-size: clamp(24px, 9vw, 38px) !important;
+  }
+  
+  .kicker {
+    font-size: 9px;
+  }
 }
 
 .glitch{
@@ -870,5 +954,355 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   100% {
     transform: translate(-50%, -50%) scale(1) rotate(0deg);
     opacity: 1;
+  }
+}
+
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+
+/* Hamburger Menu Button */
+.mobile-menu-button {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 28px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 50;
+  position: relative;
+}
+
+.mobile-menu-button span {
+  width: 100%;
+  height: 2px;
+  background: #00ff8c;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+  box-shadow: 0 0 8px rgba(0,255,140,.4);
+}
+
+.mobile-menu-button.open span {
+  background: #ff8c00 !important;
+  box-shadow: 0 0 8px rgba(255,140,0,.4) !important;
+}
+
+.mobile-menu-button.open span:nth-child(1) {
+  transform: rotate(45deg) translateY(8px);
+  background: #ff8c00 !important;
+}
+
+.mobile-menu-button.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-button.open span:nth-child(3) {
+  transform: rotate(-45deg) translateY(-8px);
+  background: #ff8c00 !important;
+}
+
+/* Mobile menu backdrop overlay */
+.nav-mobile-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  z-index: 39;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.nav-mobile-backdrop.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Mobile Navigation Overlay */
+.nav-mobile {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 85%;
+  max-width: 400px;
+  height: 100vh;
+  background: rgba(2,3,4,0.98);
+  backdrop-filter: blur(20px);
+  z-index: 40;
+  padding: 80px 30px 40px;
+  box-shadow: -4px 0 24px rgba(0,0,0,.5);
+  transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+}
+
+.nav-mobile.open {
+  right: 0;
+}
+
+.nav-mobile-links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.nav-mobile a {
+  display: block;
+  padding: 16px 20px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  text-align: left;
+  transition: all 0.2s ease;
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.nav-mobile.open a {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.nav-mobile.open a:nth-child(1) {
+  transition-delay: 0.1s;
+}
+
+.nav-mobile.open a:nth-child(2) {
+  transition-delay: 0.15s;
+}
+
+.nav-mobile.open a:nth-child(3) {
+  transition-delay: 0.2s;
+}
+
+.nav-mobile.open a:nth-child(4) {
+  transition-delay: 0.25s;
+}
+
+.nav-mobile a:hover,
+.nav-mobile a:active {
+  background: rgba(0,255,140,.08);
+  border-color: rgba(0,255,140,.2);
+  color: #00ff8c;
+  transform: translateX(0);
+}
+
+/* Tablet & Mobile Breakpoints */
+@media (max-width: 768px) {
+  /* Show mobile menu button, hide desktop nav */
+  .mobile-menu-button {
+    display: flex;
+  }
+  
+  .nav {
+    display: none;
+  }
+  
+  .nav-mobile {
+    display: block;
+  }
+  
+  /* Adjust container padding */
+  .container {
+    padding: 16px 16px;
+  }
+  
+  .headerInner {
+    padding: 12px 16px;
+  }
+  
+  /* Brand / Logo adjustments */
+  .brand {
+    font-size: 16px;
+  }
+  
+  .brand svg {
+    width: 28px;
+    height: 28px;
+  }
+  
+  /* Typography */
+  body {
+    font-size: 15px;
+  }
+  
+  h1, .h1 {
+    font-size: 26px !important;
+  }
+  
+  h2, .h2 {
+    font-size: 20px !important;
+  }
+  
+  h3, .h3 {
+    font-size: 17px !important;
+  }
+  
+  /* Buttons */
+  .btn {
+    height: 42px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
+  
+  .btnRow {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .btnRow .btn {
+    width: 100%;
+  }
+  
+  /* Cards */
+  .card {
+    border-radius: 14px;
+  }
+  
+  .cardPad {
+    padding: 12px;
+  }
+  
+  /* Post Grid - Already handled but ensuring single column */
+  .postGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  
+  /* Post Card */
+  .postCard {
+    margin: 0;
+  }
+  
+  .postTitle {
+    font-size: 16px !important;
+  }
+  
+  .postExcerpt {
+    font-size: 14px !important;
+  }
+  
+  /* Footer */
+  .footerInner {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+    padding: 16px;
+  }
+  
+  /* Admin Bar */
+  .admin-bar {
+    padding: 8px 16px;
+  }
+  
+  .admin-bar-content {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+  
+  .admin-bar-actions {
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .admin-badge {
+    text-align: center;
+  }
+  
+  /* Forms */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Small mobile (phones in portrait) */
+@media (max-width: 480px) {
+  .container {
+    padding: 12px 12px;
+  }
+  
+  .headerInner {
+    padding: 10px 12px;
+  }
+  
+  .brand {
+    font-size: 14px;
+  }
+  
+  h1, .h1 {
+    font-size: 22px !important;
+  }
+  
+  h2, .h2 {
+    font-size: 18px !important;
+  }
+  
+  .btn {
+    height: 40px;
+    font-size: 13px;
+  }
+  
+  .nav-mobile a {
+    font-size: 16px;
+    padding: 16px 20px;
+  }
+}
+
+/* Tablet landscape */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    padding: 18px;
+  }
+  
+  .postGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger tap targets */
+  .btn {
+    min-height: 44px;
+  }
+  
+  .nav a,
+  .nav-mobile a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Remove hover effects on touch devices */
+  .card:hover,
+  .postCard:hover {
+    transform: none;
+  }
+  
+  /* Add active states instead */
+  .card:active {
+    transform: scale(0.98);
+  }
+  
+  .btn:active {
+    transform: scale(0.97);
   }
 }
