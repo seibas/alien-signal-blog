@@ -963,37 +963,47 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
 
 /* Hamburger Menu Button */
 .mobile-menu-button {
-  display: none;
+  position: relative;
+  width: 38px;
+  height: 38px;
+  display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  width: 28px;
-  height: 24px;
-  background: transparent;
+  justify-content: center;
+  align-items: center;
+  background: none;
   border: none;
   cursor: pointer;
-  padding: 0;
-  z-index: 50;
-  position: relative;
+  z-index: 120;
 }
 
 .mobile-menu-button span {
-  width: 100%;
-  height: 2px;
-  background: #00ff8c;
+  display: block;
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 3px;
+  background: #ff9100;
   border-radius: 2px;
-  transition: all 0.3s ease;
-  transform-origin: center;
-  box-shadow: 0 0 8px rgba(0,255,140,.4);
+  transition: transform 0.32s cubic-bezier(.4,0,.2,1), opacity 0.22s, background 0.18s;
 }
 
-.mobile-menu-button.open span {
-  background: #ff8c00 !important;
-  box-shadow: 0 0 8px rgba(255,140,0,.4) !important;
+.mobile-menu-button span:nth-child(1) {
+  top: 12px;
+  transform: none;
+}
+
+.mobile-menu-button span:nth-child(2) {
+  top: 18px;
+  transform: none;
+}
+
+.mobile-menu-button span:nth-child(3) {
+  top: 24px;
+  transform: none;
 }
 
 .mobile-menu-button.open span:nth-child(1) {
-  transform: rotate(45deg) translateY(8px);
-  background: #ff8c00 !important;
+  transform: translateY(6px) rotate(45deg);
 }
 
 .mobile-menu-button.open span:nth-child(2) {
@@ -1001,8 +1011,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
 }
 
 .mobile-menu-button.open span:nth-child(3) {
-  transform: rotate(-45deg) translateY(-8px);
-  background: #ff8c00 !important;
+  transform: translateY(-6px) rotate(-45deg);
 }
 
 /* Mobile menu backdrop overlay */
@@ -1031,7 +1040,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   position: fixed;
   top: 0;
   right: -100%;
-  width: 85%;
+  width: 75%;
   max-width: 400px;
   height: 100vh;
   background: rgba(2,3,4,0.98);
@@ -1040,7 +1049,48 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   padding: 80px 30px 40px;
   box-shadow: -4px 0 24px rgba(0,0,0,.5);
   transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow-y: auto;
+  overflow: visible;
+  
+}
+
+.nav-mobile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 100%;
+  background: linear-gradient(90deg, #00ff8c55 0%, transparent 100%);
+  filter: blur(6px);
+  opacity: 0.38;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.nav-mobile::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 18px;
+  height: 38px;
+  background: radial-gradient(circle at 8px 18px, #baffee 0%, #00ff8c 40%, transparent 80%);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 2;
+  animation: sparkAlienBlink 5.5s cubic-bezier(.4,0,.2,1) infinite;
+}
+
+@keyframes sparkAlienBlink {
+  0%   { top: 12px;   opacity: 0.6; filter: blur(1px); height: 38px; }
+  10%  { top: 60px;   opacity: 0.8; filter: blur(2px); height: 38px; }
+  25%  { top: 120px;  opacity: 1;   filter: blur(3px); height: 38px; }
+  40%  { top: 220px;  opacity: 0.7; filter: blur(2px); height: 38px; }
+  48%  { top: 340px;  opacity: 0.9; filter: blur(3px); height: 38px; }
+  52%  { top: 340px;  opacity: 0;   filter: blur(0px); height: 2px; }
+  56%  { top: 340px;  opacity: 0.9; filter: blur(3px); height: 38px; }
+  70%  { top: 480px;  opacity: 0.7; filter: blur(1px); height: 38px; }
+  85%  { top: 320px;  opacity: 1;   filter: blur(2px); height: 38px; }
+  100% { top: 18px;   opacity: 0.6; filter: blur(1px); height: 38px; }
 }
 
 .nav-mobile.open {
@@ -1090,6 +1140,17 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
 
 .nav-mobile.open a:nth-child(4) {
   transition-delay: 0.25s;
+}
+
+.nav-mobile a.nav-word-border {
+  border: 2px solid #ff9100 !important;
+  border-radius: 18px !important;
+  background: rgba(255, 145, 0, 0.13) !important;
+  color: #fff !important;
+  box-shadow: 0 0 8px 2px #ff9100cc, 0 0 16px 4px #ffae4288, 0 0 32px 8px #ff910044;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s, transform 0.2s, background 0.2s, border-color 0.2s;
 }
 
 .nav-mobile a:hover,
@@ -1307,4 +1368,48 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   .btn:active {
     transform: scale(0.97);
   }
+}
+
+/* Orange-accented X close button in the mobile menu overlay */
+.nav-mobile-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 100;
+  background: none;
+  border: none;
+  color: #ff9100;
+  width: 28px;
+  height: 28px;
+  font-size: 1.35em;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: none;
+  transition: color 0.18s;
+  animation: xPulse 1.6s infinite alternate;
+}
+@keyframes xPulse {
+  0% { color: #ff9100; text-shadow: 0 0 2px #ff9100; }
+  50% { color: #ffae42; text-shadow: 0 0 8px #ffae42; }
+  100% { color: #ff9100; text-shadow: 0 0 2px #ff9100; }
+}
+.nav-mobile-close:hover {
+  color: #fff;
+  text-shadow: 0 0 12px #ff9100;
+}
+
+.nav-mobile-logo {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 101;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: alienLogoPulse 2.2s infinite alternate;
 }
