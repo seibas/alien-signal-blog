@@ -1040,7 +1040,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   position: fixed;
   top: 0;
   right: -100%;
-  width: 105%;
+  width: 90%;
   max-width: 430px;
   height: 100vh;
   background: rgba(2,3,4,0.98);
@@ -1403,7 +1403,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
 
 .nav-mobile-logo {
   position: absolute;
-  top: 18px;
+  bottom: 18px;
   left: 18px;
   z-index: 9999;
   width: 40px;
