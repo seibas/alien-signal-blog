@@ -1375,10 +1375,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   position: absolute;
   top: 18px;
   right: 18px;
-  z-index: 100;
+  z-index: 9999;
   background: none;
   border: none;
-  color: #ff9100;
+  color: #ffae42;
   width: 28px;
   height: 28px;
   font-size: 1.35em;
@@ -1405,9 +1405,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   position: absolute;
   top: 18px;
   left: 18px;
-  z-index: 101;
-  width: 32px;
-  height: 32px;
+  z-index: 9999;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
