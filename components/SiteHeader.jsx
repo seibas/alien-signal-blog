@@ -90,7 +90,17 @@ export default function SiteHeader() {
       
       {/* Mobile Navigation Overlay */}
       <nav className={`nav-mobile ${mobileMenuOpen ? 'open' : ''}`} aria-label="Mobile">
+        {mobileMenuOpen && (
+          <>
+            <button className="nav-mobile-close" onClick={closeMobileMenu} aria-label="Close menu">
+              <span>&#10005;</span>
+            </button>
+          </>
+        )}
         <div className="nav-mobile-links">
+          <div className="nav-mobile-logo">
+            <AlienLogo />
+          </div>
           <Link href="/" onClick={closeMobileMenu}>Home</Link>
           <Link href="/about" onClick={closeMobileMenu}>About</Link>
           <Link href="/blog" onClick={closeMobileMenu}>Blog</Link>

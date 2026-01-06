@@ -1402,9 +1402,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
 }
 
 .nav-mobile-logo {
-  position: absolute;
-  bottom: 18px;
-  left: 18px;
+  position: static;
+  margin-bottom: 18px;
   z-index: 9999;
   width: 40px;
   height: 40px;
