@@ -8,13 +8,26 @@ export default function PostCard({ post }) {
     return text.substring(0, 80).trim() + '...';
   };
 
-  // Extract first image from content
+  // Extract first image from either blocks (new) or content (old)
   const getFirstImage = () => {
-    if (!post.content) return null;
-    const contentStr = Array.isArray(post.content) ? post.content.join(' ') : post.content;
-    const imageRegex = /!\[([^\]]*)\]\(([^\)]+)\)/;
-    const match = contentStr.match(imageRegex);
-    return match ? match[2] : null;
+    // New format: blocks
+    if (Array.isArray(post.blocks)) {
+      for (const block of post.blocks) {
+        if (block.type === 'text') {
+          const imageRegex = /!\[([^\]]*)\]\(([^\)]+)\)/;
+          const match = block.value && block.value.match(imageRegex);
+          if (match) return match[2];
+        }
+      }
+    }
+    // Old format: content
+    if (post.content) {
+      const contentStr = Array.isArray(post.content) ? post.content.join(' ') : post.content;
+      const imageRegex = /!\[([^\]]*)\]\(([^\)]+)\)/;
+      const match = contentStr.match(imageRegex);
+      if (match) return match[2];
+    }
+    return null;
   };
 
   const firstImage = getFirstImage();
