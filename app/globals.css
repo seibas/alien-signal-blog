@@ -287,6 +287,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
 
 /* Mobile article optimizations */
 @media (max-width: 768px) {
+    /* Make mobile menu font bigger */
+    .nav-mobile a {
+      font-size: 85px;
+    }
   .article {
     padding: 20px 16px 32px;
   }
