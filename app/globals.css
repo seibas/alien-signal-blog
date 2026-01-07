@@ -1,3 +1,42 @@
+@media (max-width: 768px) {
+  .nav-mobile-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 24px;
+    padding: 0 8px;
+    min-height: 56px;
+  }
+  .nav-mobile-logo {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    padding-left: 2px;
+    font-size: 1.2em;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #eafff7;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 70vw;
+  }
+  .nav-mobile-close {
+    background: none;
+    border: none;
+    font-size: 44px;
+    color: #ff9100;
+    cursor: pointer;
+    margin-left: 12px;
+    height: 48px;
+    width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+}
 /* Vercel deployment test: 2026-01-05 */
 
 /* ===== Import cool coding fonts ===== */
@@ -64,6 +103,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   padding: 1px;
   background: linear-gradient(135deg, rgba(0,255,136,.15) 0%, rgba(0,200,255,.08) 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
