@@ -1,11 +1,36 @@
 import Link from "next/link";
 
 export default function PostCard({ post }) {
-  // Truncate excerpt to max 80 characters for cleaner display
-  const truncateExcerpt = (text) => {
-    if (!text) return '';
-    if (text.length <= 80) return text;
-    return text.substring(0, 80).trim() + '...';
+  // Truncate excerpt to max 80 characters for cleaner display, skipping image markdown
+  const getCleanExcerpt = () => {
+    let excerpt = post.excerpt || '';
+    // If excerpt is image markdown, try to get first non-image text from blocks/content
+    const imageRegex = /^!\[.*\]\(.*\)$/;
+    if (imageRegex.test(excerpt.trim())) {
+      // Try blocks (new format)
+      if (Array.isArray(post.blocks)) {
+        for (const block of post.blocks) {
+          if (block.type === 'text') {
+            const lines = block.value.split(/\n+/).map(l => l.trim()).filter(Boolean);
+            for (const line of lines) {
+              if (!imageRegex.test(line)) return line;
+            }
+          }
+        }
+      }
+      // Try content (old format)
+      if (post.content) {
+        const contentArr = Array.isArray(post.content) ? post.content : post.content.split(/\n+/);
+        for (const line of contentArr) {
+          if (!imageRegex.test(line.trim())) return line.trim();
+        }
+      }
+      return '';
+    }
+    // Remove image markdown from excerpt if present
+    excerpt = excerpt.replace(/!\[.*?\]\(.*?\)/g, '').trim();
+    if (excerpt.length <= 80) return excerpt;
+    return excerpt.substring(0, 80).trim() + '...';
   };
 
   // Extract first image from either blocks (new) or content (old)
@@ -112,7 +137,7 @@ export default function PostCard({ post }) {
             minHeight: '39px',
             flex: 1
           }}>
-            {truncateExcerpt(post.excerpt)}
+            {getCleanExcerpt()}
           </p>
           
           <div className="btn" style={{
