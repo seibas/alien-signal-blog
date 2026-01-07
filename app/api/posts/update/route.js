@@ -3,22 +3,32 @@ import { updatePost } from '@/lib/db';
 
 export async function POST(request) {
   try {
-    const { slug, title, date, readTime, tags, content } = await request.json();
+    const body = await request.json();
+    const { slug, title, date, readTime, tags, content, blocks } = body;
 
-    // Parse tags and content
-    const tagsArray = tags.split(',').map(t => t.trim()).filter(Boolean);
-    const contentArray = content.split('\n\n').filter(Boolean);
+    // Parse tags
+    const tagsArray = typeof tags === 'string' ? tags.split(',').map(t => t.trim()).filter(Boolean) : Array.isArray(tags) ? tags : [];
 
-    // Create updated post object
-    const updatedPost = {
+    let updatedPost = {
       slug,
       title,
       date,
       readTime,
-      excerpt: contentArray[0] || '',
       tags: tagsArray,
-      content: contentArray
     };
+
+    // Support legacy and new format
+    if (blocks && Array.isArray(blocks)) {
+      updatedPost.blocks = blocks;
+      // Use first text block as excerpt if available
+      const firstText = blocks.find(b => b.type === 'text');
+      updatedPost.excerpt = firstText ? firstText.value.slice(0, 160) : '';
+    } else if (content) {
+      // Legacy: content as string or array
+      const contentArray = Array.isArray(content) ? content : content.split('\n\n').filter(Boolean);
+      updatedPost.content = contentArray;
+      updatedPost.excerpt = contentArray[0] || '';
+    }
 
     // Update in database
     await updatePost(slug, updatedPost);
