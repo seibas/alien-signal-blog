@@ -264,8 +264,8 @@ export default function NewPostForm({ onCancel }) {
             </div>
           ))}
           <div style={{ display: 'flex', gap: 12 }}>
-            <button className="btn" type="button" onClick={() => addBlock('text')}>+ Add Text Block</button>
-            <button className="btn" type="button" onClick={() => addBlock('code')}>+ Add Code Block</button>
+            <button className="badge green" type="button" onClick={() => addBlock('text')}>+ Add Text Block</button>
+            <button className="badge orange" type="button" onClick={() => addBlock('code')}>+ Add Code Block</button>
           </div>
         </div>
       </div>
