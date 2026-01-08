@@ -225,6 +225,18 @@ export default function EditableBlogPost({ post }) {
         return { ...prev, blocks };
       });
     };
+
+    const moveBlock = (idx, direction) => {
+      setEditedPost((prev) => {
+        const blocks = [...prev.blocks];
+        const newIndex = idx + direction;
+        if (newIndex < 0 || newIndex >= blocks.length) return prev;
+        const temp = blocks[idx];
+        blocks[idx] = blocks[newIndex];
+        blocks[newIndex] = temp;
+        return { ...prev, blocks };
+      });
+    };
     return (
       <article className="article">
         <div className="card cardPad">
@@ -285,7 +297,59 @@ export default function EditableBlogPost({ post }) {
               <div key={idx} style={{ marginBottom: 24, border: '1px solid #222', borderRadius: 8, padding: 12, background: '#181c1f' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <span style={{ fontWeight: 600 }}>{block.type === 'code' ? 'Code Block' : 'Text Block'}</span>
-                  <button onClick={() => removeBlock(idx)} style={{ color: '#ca4a4a', background: 'none', border: 'none', fontSize: 18, cursor: 'pointer' }}>✕</button>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <button
+                      type="button"
+                      title="Move Up"
+                      onClick={() => moveBlock(idx, -1)}
+                      disabled={idx === 0}
+                      style={{
+                        color: idx === 0 ? '#555' : '#00ff8c',
+                        background: 'linear-gradient(180deg, #00ff8c 0%, #007a4d 100%)',
+                        border: 'none',
+                        borderRadius: '50%',
+                        fontSize: 22,
+                        width: 32,
+                        height: 32,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: idx === 0 ? 'none' : '0 2px 8px #00ff8c44',
+                        cursor: idx === 0 ? 'not-allowed' : 'pointer',
+                        padding: 0,
+                        marginRight: 2,
+                        transition: 'transform 0.1s',
+                      }}
+                    >
+                      <span style={{ display: 'inline-block', transform: 'translateY(-1px)' }}>▲</span>
+                    </button>
+                    <button
+                      type="button"
+                      title="Move Down"
+                      onClick={() => moveBlock(idx, 1)}
+                      disabled={idx === editedPost.blocks.length - 1}
+                      style={{
+                        color: idx === editedPost.blocks.length - 1 ? '#555' : '#ff9100',
+                        background: 'linear-gradient(180deg, #ff9100 0%, #7a4d00 100%)',
+                        border: 'none',
+                        borderRadius: '50%',
+                        fontSize: 22,
+                        width: 32,
+                        height: 32,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: idx === editedPost.blocks.length - 1 ? 'none' : '0 2px 8px #ff910044',
+                        cursor: idx === editedPost.blocks.length - 1 ? 'not-allowed' : 'pointer',
+                        padding: 0,
+                        marginRight: 2,
+                        transition: 'transform 0.1s',
+                      }}
+                    >
+                      <span style={{ display: 'inline-block', transform: 'translateY(1px)' }}>▼</span>
+                    </button>
+                    <button onClick={() => removeBlock(idx)} style={{ color: '#ca4a4a', background: 'none', border: 'none', fontSize: 18, cursor: 'pointer' }}>✕</button>
+                  </div>
                 </div>
                 {block.type === 'text' ? (
                   <textarea
