@@ -1,5 +1,10 @@
 export const metadata = {
-  title: "About • Alien Signal Blog",
+  title: "About",
+  description: "Learn about the Alien Signal Blog and my journey into programming, web development, and the digital universe.",
+  openGraph: {
+    title: "About | Alien Signal Blog",
+    description: "Learn about my journey into programming and web development",
+  },
 };
 
 export default function AboutPage() {

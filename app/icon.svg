@@ -1,0 +1,20 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Alien head shape -->
+  <ellipse cx="16" cy="14" rx="12" ry="14" fill="#00ff8c" opacity="0.9"/>
+
+  <!-- Eyes -->
+  <ellipse cx="11" cy="12" rx="3" ry="4" fill="#020304"/>
+  <ellipse cx="21" cy="12" rx="3" ry="4" fill="#020304"/>
+
+  <!-- Eye highlights -->
+  <ellipse cx="11.5" cy="11" rx="1" ry="1.5" fill="#00ff8c"/>
+  <ellipse cx="21.5" cy="11" rx="1" ry="1.5" fill="#00ff8c"/>
+
+  <!-- Signal waves (antenna effect) -->
+  <path d="M 16 2 Q 14 4 16 6" stroke="#ff8c00" stroke-width="1.5" fill="none" opacity="0.8"/>
+  <path d="M 16 2 Q 18 4 16 6" stroke="#ff8c00" stroke-width="1.5" fill="none" opacity="0.8"/>
+  <circle cx="16" cy="1" r="1.5" fill="#ff8c00" opacity="0.9"/>
+
+  <!-- Subtle mouth -->
+  <path d="M 12 19 Q 16 21 20 19" stroke="#020304" stroke-width="1" fill="none" opacity="0.6"/>
+</svg>
