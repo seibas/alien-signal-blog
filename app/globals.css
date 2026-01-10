@@ -928,12 +928,27 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  /* Mobile touch optimizations */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
-.new-post-btn:hover {
-  background: rgba(0,140,255,.2);
-  border-color: rgba(0,140,255,.4);
-  transform: translateY(-1px);
+/* Desktop-only hover */
+@media (hover: hover) and (pointer: fine) {
+  .new-post-btn:hover {
+    background: rgba(0,140,255,.2);
+    border-color: rgba(0,140,255,.4);
+    transform: translateY(-1px);
+  }
+}
+
+/* Instant active feedback for all devices */
+.new-post-btn:active {
+  background: rgba(0,140,255,.25);
+  border-color: rgba(0,140,255,.5);
+  transform: scale(0.97);
+  transition: all 50ms ease;
 }
 
 .edit-toggle-btn {
@@ -946,12 +961,27 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  /* Mobile touch optimizations */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
-.edit-toggle-btn:hover {
-  background: rgba(0,255,140,.2);
-  border-color: rgba(0,255,140,.4);
-  transform: translateY(-1px);
+/* Desktop-only hover */
+@media (hover: hover) and (pointer: fine) {
+  .edit-toggle-btn:hover {
+    background: rgba(0,255,140,.2);
+    border-color: rgba(0,255,140,.4);
+    transform: translateY(-1px);
+  }
+}
+
+/* Instant active feedback for all devices */
+.edit-toggle-btn:active {
+  background: rgba(0,255,140,.25);
+  border-color: rgba(0,255,140,.5);
+  transform: scale(0.97);
+  transition: all 50ms ease;
 }
 
 .edit-controls {
@@ -1158,12 +1188,27 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   transition: all 0.2s ease;
   text-decoration: none;
   display: inline-block;
+  /* Mobile touch optimizations */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
-.admin-settings:hover {
-  background: rgba(255,255,255,.15);
-  border-color: rgba(234,255,247,.3);
-  transform: translateY(-1px);
+/* Desktop-only hover */
+@media (hover: hover) and (pointer: fine) {
+  .admin-settings:hover {
+    background: rgba(255,255,255,.15);
+    border-color: rgba(234,255,247,.3);
+    transform: translateY(-1px);
+  }
+}
+
+/* Instant active feedback for all devices */
+.admin-settings:active {
+  background: rgba(255,255,255,.2);
+  border-color: rgba(234,255,247,.4);
+  transform: scale(0.97);
+  transition: all 50ms ease;
 }
 
 .admin-logout {
@@ -1176,12 +1221,27 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  /* Mobile touch optimizations */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
-.admin-logout:hover {
-  background: rgba(255,255,255,.15);
-  border-color: rgba(234,255,247,.3);
-  transform: translateY(-1px);
+/* Desktop-only hover */
+@media (hover: hover) and (pointer: fine) {
+  .admin-logout:hover {
+    background: rgba(255,255,255,.15);
+    border-color: rgba(234,255,247,.3);
+    transform: translateY(-1px);
+  }
+}
+
+/* Instant active feedback for all devices */
+.admin-logout:active {
+  background: rgba(255,255,255,.2);
+  border-color: rgba(234,255,247,.4);
+  transform: scale(0.97);
+  transition: all 50ms ease;
 }
 
 /* ===== Alien Success Message ===== */
