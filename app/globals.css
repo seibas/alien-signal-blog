@@ -271,6 +271,11 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  /* Mobile touch optimizations */
+  touch-action: manipulation; /* Remove 300ms tap delay */
+  -webkit-tap-highlight-color: transparent; /* Remove iOS tap highlight flash */
+  user-select: none; /* Prevent text selection on double-tap */
 }
 
 .btn::before {
@@ -280,16 +285,42 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   background: radial-gradient(circle at center, rgba(0, 255, 140, 0.15) 0%, transparent 70%);
   opacity: 0;
   transition: opacity 200ms ease;
+  pointer-events: none; /* Don't interfere with button clicks */
 }
 
-.btn:hover {
-  transform: translateY(-2px);
-  background: rgba(255,255,255,.06);
-  border-color: rgba(0, 255, 140, 0.4);
-  box-shadow: 0 8px 24px rgba(0, 255, 140, 0.15), 0 0 30px rgba(0, 255, 140, 0.1);
+/* Desktop-only hover effects - prevents hover triggering on touch */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    transform: translateY(-2px);
+    background: rgba(255,255,255,.06);
+    border-color: rgba(0, 255, 140, 0.4);
+    box-shadow: 0 8px 24px rgba(0, 255, 140, 0.15), 0 0 30px rgba(0, 255, 140, 0.1);
+  }
+
+  .btn:hover::before {
+    opacity: 1;
+  }
+
+  .btnPrimary:hover {
+    border-color: var(--color-green-primary);
+    box-shadow: var(--glow-green), var(--shadow-elevated);
+  }
+
+  .btnGhost:hover {
+    border-color: var(--color-green-primary);
+    background: rgba(0, 255, 140, 0.05);
+  }
 }
 
-.btn:hover::before {
+/* Active state for ALL devices - immediate tap/click feedback */
+.btn:active {
+  transform: scale(0.97);
+  background: rgba(0, 255, 140, 0.1);
+  border-color: rgba(0, 255, 140, 0.5);
+  transition: all 50ms ease; /* Fast response for instant feedback */
+}
+
+.btn:active::before {
   opacity: 1;
 }
 
@@ -299,8 +330,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   box-shadow: var(--shadow-elevated);
 }
 
-.btnPrimary:hover {
-  border-color: var(--color-green-primary);
+.btnPrimary:active {
+  background: linear-gradient(90deg, rgba(0,255,140,.25), rgba(255,140,0,.20));
   box-shadow: var(--glow-green), var(--shadow-elevated);
 }
 
@@ -308,9 +339,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   background: transparent;
 }
 
-.btnGhost:hover {
-  border-color: var(--color-green-primary);
-  background: rgba(0, 255, 140, 0.05);
+.btnGhost:active {
+  background: rgba(0, 255, 140, 0.12);
 }
 .btnRow { display: flex; gap: 12px; flex-wrap: wrap; }
 
@@ -1616,7 +1646,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   .btn {
     min-height: 44px;
   }
-  
+
   .nav a,
   .nav-mobile a {
     min-height: 44px;
@@ -1624,21 +1654,19 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
     align-items: center;
     justify-content: center;
   }
-  
+
   /* Remove hover effects on touch devices */
   .card:hover,
   .postCard:hover {
     transform: none;
   }
-  
-  /* Add active states instead */
+
+  /* Active state for cards on touch */
   .card:active {
     transform: scale(0.98);
   }
-  
-  .btn:active {
-    transform: scale(0.97);
-  }
+
+  /* Note: .btn:active is handled globally above for all devices */
 }
 
 /* Orange-accented X close button in the mobile menu overlay */
