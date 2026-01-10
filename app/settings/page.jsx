@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { toast } from '@/lib/toast';
 
 export default function SettingsPage() {
@@ -95,14 +96,23 @@ export default function SettingsPage() {
 
             <div className="avatar-upload-area">
               <div className="avatar-preview">
-                <img 
-                  src={currentAvatar} 
-                  alt="Current Avatar"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'flex';
-                  }}
-                />
+                <div style={{ position: 'relative', width: '120px', height: '120px' }}>
+                  <Image
+                    src={currentAvatar}
+                    alt="Current Avatar"
+                    width={120}
+                    height={120}
+                    style={{
+                      borderRadius: '50%',
+                      objectFit: 'cover'
+                    }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      const fallback = e.target.parentElement?.nextSibling;
+                      if (fallback) fallback.style.display = 'flex';
+                    }}
+                  />
+                </div>
                 <div className="avatar-placeholder">👽</div>
               </div>
 
@@ -218,13 +228,10 @@ export default function SettingsPage() {
           flex-shrink: 0;
         }
 
-        .avatar-preview img {
-          width: 120px;
-          height: 120px;
-          border-radius: 50%;
-          object-fit: cover;
+        .avatar-preview > div:first-child {
           border: 3px solid rgba(0,255,136,.3);
           box-shadow: 0 4px 16px rgba(0,255,136,.2);
+          border-radius: 50%;
         }
 
         .avatar-placeholder {

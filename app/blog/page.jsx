@@ -12,6 +12,8 @@ export default function BlogIndex() {
   const [allPosts, setAllPosts] = useState(posts);
   const [selectedPosts, setSelectedPosts] = useState([]);
   const [deleteMode, setDeleteMode] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     // Check admin status
@@ -23,6 +25,7 @@ export default function BlogIndex() {
   }, []);
 
   const fetchPosts = () => {
+    setLoading(true);
     fetch('/api/posts/list')
       .then(res => res.json())
       .then(data => {
@@ -30,7 +33,8 @@ export default function BlogIndex() {
           setAllPosts(data.posts);
         }
       })
-      .catch(err => console.error('Error fetching posts:', err));
+      .catch(err => console.error('Error fetching posts:', err))
+      .finally(() => setLoading(false));
   };
 
   const handleSelectPost = (slug) => {
@@ -43,13 +47,14 @@ export default function BlogIndex() {
 
   const handleDeleteSelected = async () => {
     if (selectedPosts.length === 0) return;
-    
-    const confirmMsg = selectedPosts.length === 1 
-      ? 'Delete this post?' 
+
+    const confirmMsg = selectedPosts.length === 1
+      ? 'Delete this post?'
       : `Delete ${selectedPosts.length} posts?`;
-    
+
     if (!confirm(confirmMsg)) return;
 
+    setDeleting(true);
     try {
       // Delete all selected posts
       for (const slug of selectedPosts) {
@@ -59,7 +64,7 @@ export default function BlogIndex() {
           body: JSON.stringify({ slug })
         });
       }
-      
+
       // Refresh posts
       fetchPosts();
       setSelectedPosts([]);
@@ -68,6 +73,8 @@ export default function BlogIndex() {
     } catch (error) {
       console.error('Error deleting posts:', error);
       toast.error('Failed to delete posts');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -87,19 +94,19 @@ export default function BlogIndex() {
               <div style={{ display: 'flex', gap: '10px' }}>
                 {deleteMode ? (
                   <>
-                    <button 
+                    <button
                       className="btn btnPrimary"
                       onClick={handleDeleteSelected}
-                      disabled={selectedPosts.length === 0}
-                      style={{ 
+                      disabled={selectedPosts.length === 0 || deleting}
+                      style={{
                         background: selectedPosts.length > 0 ? '#ff4444' : '#444',
-                        cursor: selectedPosts.length > 0 ? 'pointer' : 'not-allowed',
-                        opacity: selectedPosts.length > 0 ? 1 : 0.5,
+                        cursor: selectedPosts.length > 0 && !deleting ? 'pointer' : 'not-allowed',
+                        opacity: selectedPosts.length > 0 && !deleting ? 1 : 0.5,
                         padding: '8px 16px',
                         fontSize: '14px'
                       }}
                     >
-                      🗑️ Delete {selectedPosts.length > 0 ? `(${selectedPosts.length})` : ''}
+                      {deleting ? '⏳ Deleting...' : `🗑️ Delete ${selectedPosts.length > 0 ? `(${selectedPosts.length})` : ''}`}
                     </button>
                     <button 
                       className="btn btnGhost"
@@ -154,7 +161,18 @@ export default function BlogIndex() {
           </p>
         </div>
 
-        <div className="postGrid">
+        {loading ? (
+          <div style={{
+            padding: '60px 20px',
+            textAlign: 'center',
+            fontSize: '16px',
+            color: 'rgba(234,255,247,0.6)'
+          }}>
+            <div style={{ marginBottom: '16px', fontSize: '32px' }}>🛸</div>
+            Loading transmissions...
+          </div>
+        ) : (
+          <div className="postGrid">
           {all.map((p) => (
             <div 
               key={p.slug} 
@@ -197,6 +215,7 @@ export default function BlogIndex() {
             </div>
           ))}
         </div>
+        )}
       </div>
     </section>
   );

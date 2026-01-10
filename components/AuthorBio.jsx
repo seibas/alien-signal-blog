@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function AuthorBio() {
   const [authorName, setAuthorName] = useState('Alien Signal');
@@ -24,15 +25,24 @@ export default function AuthorBio() {
     <div className="author-bio">
       <div className="author-bio-content">
         <div className="author-avatar">
-          <img 
-            src="/images/avatar.jpg" 
-            alt="Author Avatar"
-            onError={(e) => {
-              // Fallback to alien emoji if image doesn't exist
-              e.target.style.display = 'none';
-              e.target.nextSibling.style.display = 'flex';
-            }}
-          />
+          <div style={{ position: 'relative', width: '80px', height: '80px' }}>
+            <Image
+              src="/images/avatar.jpg"
+              alt="Author Avatar"
+              width={80}
+              height={80}
+              style={{
+                borderRadius: '50%',
+                objectFit: 'cover'
+              }}
+              onError={(e) => {
+                // Fallback to alien emoji if image doesn't exist
+                e.target.style.display = 'none';
+                const fallback = e.target.parentElement?.nextSibling;
+                if (fallback) fallback.style.display = 'flex';
+              }}
+            />
+          </div>
           <div className="avatar-fallback">👽</div>
         </div>
         <div className="author-info">
@@ -62,13 +72,10 @@ export default function AuthorBio() {
           flex-shrink: 0;
         }
 
-        .author-avatar img {
-          width: 80px;
-          height: 80px;
-          border-radius: 50%;
-          object-fit: cover;
+        .author-avatar > div:first-child {
           border: 2px solid rgba(0,255,136,.3);
           box-shadow: 0 4px 16px rgba(0,255,136,.2);
+          border-radius: 50%;
         }
 
         .avatar-fallback {
@@ -118,13 +125,14 @@ export default function AuthorBio() {
             text-align: center;
           }
 
-          .author-avatar img,
-          .avatar-fallback {
-            width: 100px;
-            height: 100px;
+          .author-avatar > div:first-child {
+            width: 100px !important;
+            height: 100px !important;
           }
 
           .avatar-fallback {
+            width: 100px;
+            height: 100px;
             font-size: 50px;
           }
         }

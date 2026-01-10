@@ -110,6 +110,7 @@ body::before {
   z-index: -1;
   opacity: 0.4;
   pointer-events: none;
+  will-change: transform;
 }
 
 @keyframes starfield {
@@ -132,6 +133,7 @@ body::before {
   animation: nebula 30s ease-in-out infinite alternate;
   z-index: 0;
   pointer-events: none;
+  will-change: transform, opacity;
 }
 
 @keyframes nebula {

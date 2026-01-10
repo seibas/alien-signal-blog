@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import Image from 'next/image';
 import TypingAnimation from './TypingAnimation';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -431,20 +432,31 @@ export default function EditableBlogPost({ post }) {
                   {contentParts.map((part, partIdx) => {
                     if (part.type === 'image') {
                       return (
-                        <img
+                        <div
                           key={partIdx}
-                          src={part.src}
-                          alt={part.alt}
                           style={{
+                            position: 'relative',
                             maxWidth: '85%',
-                            height: 'auto',
-                            borderRadius: '12px',
                             margin: '2em auto',
-                            display: 'block',
+                            borderRadius: '12px',
+                            overflow: 'hidden',
                             boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
                             border: '1px solid rgba(234,255,247,.1)'
                           }}
-                        />
+                        >
+                          <Image
+                            src={part.src}
+                            alt={part.alt}
+                            width={800}
+                            height={600}
+                            style={{
+                              width: '100%',
+                              height: 'auto',
+                              display: 'block'
+                            }}
+                            loading="lazy"
+                          />
+                        </div>
                       );
                     }
                     return part.content ? (

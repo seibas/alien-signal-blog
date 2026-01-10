@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function PostCard({ post }) {
   // Truncate excerpt to max 80 characters for cleaner display, skipping image markdown
@@ -67,24 +68,23 @@ export default function PostCard({ post }) {
       }}>
         {firstImage && (
           <div style={{
+            position: 'relative',
             width: '100%',
             height: '180px',
             overflow: 'hidden',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             background: 'rgba(0,0,0,0.3)',
             borderBottom: '1px solid rgba(234,255,247,.1)'
           }}>
-            <img 
-              src={firstImage} 
+            <Image
+              src={firstImage}
               alt={post.title}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               style={{
-                width: '100%',
-                height: '100%',
                 objectFit: 'cover',
                 objectPosition: 'center'
               }}
+              loading="lazy"
             />
           </div>
         )}
