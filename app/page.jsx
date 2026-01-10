@@ -1,7 +1,5 @@
 'use client';
 
-// Test comment - Linux to Windows sync test (Dec 19, 2025)
-
 import { useState, useEffect } from "react";
 import HeroText from "@/components/HeroText";
 import Link from "next/link";

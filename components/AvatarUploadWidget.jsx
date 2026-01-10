@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { toast } from '@/lib/toast';
 
 export default function AvatarUploadWidget() {
   const [uploading, setUploading] = useState(false);
@@ -25,7 +26,7 @@ export default function AvatarUploadWidget() {
     const imageFiles = files.filter(file => file.type.startsWith('image/'));
 
     if (imageFiles.length === 0) {
-      alert('❌ Please drop an image file');
+      toast.error('Please drop an image file');
       return;
     }
 
@@ -53,14 +54,14 @@ export default function AvatarUploadWidget() {
       const data = await response.json();
 
       if (response.ok) {
-        alert('✅ Author avatar updated!');
+        toast.success('Author avatar updated!');
         window.location.reload(); // Reload to show new avatar
       } else {
-        alert(`❌ Failed to upload: ${data.error}`);
+        toast.error(`Failed to upload: ${data.error}`);
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('❌ Failed to upload avatar');
+      toast.error('Failed to upload avatar');
     }
 
     setUploading(false);

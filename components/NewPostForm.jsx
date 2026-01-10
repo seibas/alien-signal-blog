@@ -6,6 +6,8 @@ import dynamic from 'next/dynamic';
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 import Link from 'next/link';
 import ImageUpload from './ImageUpload';
+import { playAlienSound } from '@/lib/alienSound';
+import { toast } from '@/lib/toast';
 
 export default function NewPostForm({ onCancel }) {
     // Insert image markdown at the cursor or end of the last text block
@@ -77,45 +79,9 @@ export default function NewPostForm({ onCancel }) {
     });
   }
 
-  function playAlienSound() {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator1 = audioContext.createOscillator();
-    const gainNode1 = audioContext.createGain();
-    oscillator1.connect(gainNode1);
-    gainNode1.connect(audioContext.destination);
-    oscillator1.frequency.value = 440;
-    oscillator1.type = 'sine';
-    gainNode1.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
-    oscillator1.start(audioContext.currentTime);
-    oscillator1.stop(audioContext.currentTime + 0.15);
-
-    const oscillator2 = audioContext.createOscillator();
-    const gainNode2 = audioContext.createGain();
-    oscillator2.connect(gainNode2);
-    gainNode2.connect(audioContext.destination);
-    oscillator2.frequency.value = 600;
-    oscillator2.type = 'sine';
-    gainNode2.gain.setValueAtTime(0.3, audioContext.currentTime + 0.15);
-    gainNode2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.35);
-    oscillator2.start(audioContext.currentTime + 0.15);
-    oscillator2.stop(audioContext.currentTime + 0.35);
-
-    const oscillator3 = audioContext.createOscillator();
-    const gainNode3 = audioContext.createGain();
-    oscillator3.connect(gainNode3);
-    gainNode3.connect(audioContext.destination);
-    oscillator3.frequency.value = 700;
-    oscillator3.type = 'sine';
-    gainNode3.gain.setValueAtTime(0.3, audioContext.currentTime + 0.35);
-    gainNode3.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-    oscillator3.start(audioContext.currentTime + 0.35);
-    oscillator3.stop(audioContext.currentTime + 0.5);
-  }
-
   const handleCreate = async () => {
     if (!newPost.slug || !newPost.title || !newPost.excerpt || !newPost.tags || newPost.blocks.length === 0) {
-      alert('❌ Please fill in all fields');
+      toast.error('Please fill in all fields');
       return;
     }
 
@@ -132,20 +98,16 @@ export default function NewPostForm({ onCancel }) {
 
       if (response.ok) {
         playAlienSound();
-        const message = document.createElement('div');
-        message.className = 'alien-success-message';
-        message.innerHTML = '🛸 ✅ New post created successfully!';
-        document.body.appendChild(message);
+        toast.success('New post created successfully!');
         setTimeout(() => {
-          message.remove();
           window.location.reload();
         }, 1500);
       } else {
-        alert('❌ Failed to create post: ' + (data.error || 'Unknown error'));
+        toast.error('Failed to create post: ' + (data.error || 'Unknown error'));
       }
     } catch (error) {
       console.error('Create error:', error);
-      alert('❌ Failed to create post. Check console for details.');
+      toast.error('Failed to create post. Check console for details.');
     }
   };
 

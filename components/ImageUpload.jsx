@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { toast } from '@/lib/toast';
 
 export default function ImageUpload({ onImageInsert }) {
   const [isDragging, setIsDragging] = useState(false);
@@ -25,7 +26,7 @@ export default function ImageUpload({ onImageInsert }) {
     const imageFiles = files.filter(file => file.type.startsWith('image/'));
 
     if (imageFiles.length === 0) {
-      alert('❌ Please drop image files only');
+      toast.error('Please drop image files only');
       return;
     }
 
@@ -63,12 +64,12 @@ export default function ImageUpload({ onImageInsert }) {
         } else {
           // Show detailed error message
           const errorMsg = data.details || data.error || 'Upload failed';
-          const helpText = data.helpText ? `\n\n${data.helpText}` : '';
-          alert(`❌ Failed to upload ${file.name}\n\n${errorMsg}${helpText}`);
+          const helpText = data.helpText ? ` ${data.helpText}` : '';
+          toast.error(`Failed to upload ${file.name}: ${errorMsg}${helpText}`);
         }
       } catch (error) {
         console.error('Upload error:', error);
-        alert(`❌ Failed to upload ${file.name}: ${error.message}`);
+        toast.error(`Failed to upload ${file.name}: ${error.message}`);
       }
     }
 

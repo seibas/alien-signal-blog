@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
+import { toast } from '@/lib/toast';
 
 export default function SettingsPage() {
   const [uploading, setUploading] = useState(false);
@@ -47,13 +48,13 @@ export default function SettingsPage() {
         // Rename uploaded file to avatar.jpg
         const avatarUrl = `/images/avatar.jpg?t=${Date.now()}`; // Cache bust
         setCurrentAvatar(avatarUrl);
-        alert('✅ Avatar updated successfully!');
+        toast.success('Avatar updated successfully!');
       } else {
-        alert(`❌ Failed to upload: ${data.error}`);
+        toast.error(`Failed to upload: ${data.error}`);
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('❌ Failed to upload avatar');
+      toast.error('Failed to upload avatar');
     }
 
     setUploading(false);
@@ -70,11 +71,11 @@ export default function SettingsPage() {
       localStorage.setItem('author_title', authorTitle);
       localStorage.setItem('author_bio', authorBio);
       
-      alert('✅ Author settings saved successfully!');
+      toast.success('Author settings saved successfully!');
       window.location.reload(); // Reload to apply changes
     } catch (error) {
       console.error('Save error:', error);
-      alert('❌ Failed to save settings');
+      toast.error('Failed to save settings');
     }
     
     setSaving(false);

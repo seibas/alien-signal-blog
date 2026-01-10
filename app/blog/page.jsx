@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { posts } from "@/content/posts";
 import PostCard from "@/components/PostCard";
 import NewPostForm from "@/components/NewPostForm";
+import { toast } from '@/lib/toast';
 
 export default function BlogIndex() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -63,10 +64,10 @@ export default function BlogIndex() {
       fetchPosts();
       setSelectedPosts([]);
       setDeleteMode(false);
-      alert('✅ Posts deleted successfully!');
+      toast.success('Posts deleted successfully!');
     } catch (error) {
       console.error('Error deleting posts:', error);
-      alert('❌ Failed to delete posts');
+      toast.error('Failed to delete posts');
     }
   };
 

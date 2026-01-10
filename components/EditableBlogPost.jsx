@@ -9,6 +9,8 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import ImageUpload from './ImageUpload';
 import AuthorBio from './AuthorBio';
 import AvatarUploadWidget from './AvatarUploadWidget';
+import { playAlienSound } from '@/lib/alienSound';
+import { toast } from '@/lib/toast';
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
 export default function EditableBlogPost({ post }) {
@@ -27,7 +29,11 @@ export default function EditableBlogPost({ post }) {
           : [{ type: 'text', value: post.content || '' }])
   });
 
-  // Function to render content with image support
+  /**
+   * Parses text content and extracts inline markdown images
+   * Converts markdown image syntax ![alt](url) into structured parts
+   * Returns array of {type, content} or {type, alt, src} objects
+   */
   const renderContent = (text) => {
     // Match markdown image syntax: ![alt text](image-url)
     const imageRegex = /!\[([^\]]*)\]\(([^\)]+)\)/g;
@@ -35,17 +41,18 @@ export default function EditableBlogPost({ post }) {
     let lastIndex = 0;
     let match;
 
+    // Find all images in the text
     while ((match = imageRegex.exec(text)) !== null) {
       // Add text before the image
       if (match.index > lastIndex) {
         parts.push({ type: 'text', content: text.substring(lastIndex, match.index) });
       }
-      // Add the image
+      // Add the image (match[1] = alt text, match[2] = URL)
       parts.push({ type: 'image', alt: match[1], src: match[2] });
       lastIndex = match.index + match[0].length;
     }
 
-    // Add remaining text
+    // Add remaining text after last image
     if (lastIndex < text.length) {
       parts.push({ type: 'text', content: text.substring(lastIndex) });
     }
@@ -79,47 +86,6 @@ export default function EditableBlogPost({ post }) {
     setEditedPost({...editedPost, content: newContent});
   };
 
-  const playAlienSound = () => {
-    // Create an alien "beep-boop" sound effect using Web Audio API
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    
-    // First beep (higher pitch)
-    const oscillator1 = audioContext.createOscillator();
-    const gainNode1 = audioContext.createGain();
-    oscillator1.connect(gainNode1);
-    gainNode1.connect(audioContext.destination);
-    oscillator1.frequency.value = 800;
-    oscillator1.type = 'sine';
-    gainNode1.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
-    oscillator1.start(audioContext.currentTime);
-    oscillator1.stop(audioContext.currentTime + 0.15);
-    
-    // Second beep (lower pitch)
-    const oscillator2 = audioContext.createOscillator();
-    const gainNode2 = audioContext.createGain();
-    oscillator2.connect(gainNode2);
-    gainNode2.connect(audioContext.destination);
-    oscillator2.frequency.value = 600;
-    oscillator2.type = 'sine';
-    gainNode2.gain.setValueAtTime(0.3, audioContext.currentTime + 0.15);
-    gainNode2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.35);
-    oscillator2.start(audioContext.currentTime + 0.15);
-    oscillator2.stop(audioContext.currentTime + 0.35);
-    
-    // Third beep (middle pitch - cute finish)
-    const oscillator3 = audioContext.createOscillator();
-    const gainNode3 = audioContext.createGain();
-    oscillator3.connect(gainNode3);
-    gainNode3.connect(audioContext.destination);
-    oscillator3.frequency.value = 700;
-    oscillator3.type = 'sine';
-    gainNode3.gain.setValueAtTime(0.3, audioContext.currentTime + 0.35);
-    gainNode3.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-    oscillator3.start(audioContext.currentTime + 0.35);
-    oscillator3.stop(audioContext.currentTime + 0.5);
-  };
-
   const handleSave = async () => {
     try {
       const response = await fetch('/api/posts/update', {
@@ -140,20 +106,16 @@ export default function EditableBlogPost({ post }) {
       if (response.ok) {
         playAlienSound();
         setIsEditing(false);
-        const message = document.createElement('div');
-        message.className = 'alien-success-message';
-        message.innerHTML = '🛸 ✅ Signal transmitted successfully!';
-        document.body.appendChild(message);
+        toast.success('Signal transmitted successfully!');
         setTimeout(() => {
-          message.remove();
           window.location.reload();
         }, 1500);
       } else {
-        alert('❌ Failed to save: ' + (data.error || 'Unknown error'));
+        toast.error('Failed to save: ' + (data.error || 'Unknown error'));
       }
     } catch (error) {
       console.error('Save error:', error);
-      alert('❌ Failed to save changes. Check console for details.');
+      toast.error('Failed to save changes. Check console for details.');
     }
   };
 
@@ -184,15 +146,17 @@ export default function EditableBlogPost({ post }) {
       });
 
       if (response.ok) {
-        alert('✅ Post deleted successfully!');
-        window.location.href = '/blog';
+        toast.success('Post deleted successfully!');
+        setTimeout(() => {
+          window.location.href = '/blog';
+        }, 1000);
       } else {
         const data = await response.json();
-        alert(`❌ Failed to delete: ${data.error}`);
+        toast.error(`Failed to delete: ${data.error}`);
       }
     } catch (error) {
       console.error('Delete error:', error);
-      alert('❌ Failed to delete post');
+      toast.error('Failed to delete post');
     }
   };
 
