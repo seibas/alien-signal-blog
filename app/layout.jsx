@@ -1,4 +1,5 @@
 import "./globals.css";
+import "../styles/AlienTranslator.css";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import BackToTop from "@/components/BackToTop";
@@ -37,15 +38,8 @@ export const metadata = {
       'max-snippet': -1,
     },
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-  },
-  themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#020304' },
-    { media: '(prefers-color-scheme: light)', color: '#020304' }
-  ],
+  // viewport moved to viewport export below
+  // themeColor moved to viewport export below
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
@@ -55,6 +49,17 @@ export const metadata = {
       { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
     ],
   },
+
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#020304' },
+    { media: '(prefers-color-scheme: light)', color: '#020304' }
+  ]
 };
 
 export default function RootLayout({ children }) {

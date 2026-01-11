@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
     "@monaco-editor/react": "^4.7.0",
     "@upstash/redis": "^1.35.8",
     "@vercel/blob": "^2.0.0",
