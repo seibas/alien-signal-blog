@@ -1,4 +1,4 @@
-
+import { Anthropic } from '@anthropic-ai/sdk';
 import { checkRateLimit } from '@/lib/rateLimiter';
 // Initialize Anthropic client
 const anthropic = new Anthropic({
