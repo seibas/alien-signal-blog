@@ -99,7 +99,7 @@ IMPORTANT RULES:
         {
           role: 'user',
           content: `Help me understand: ${question}\n\nGenerate ${language} code if applicable.`
-
+        }
       ]
     });
 
