@@ -405,13 +405,12 @@ export default function EditableBlogPost({ post }) {
                       ) : (
                         <div style={{ color: '#555', fontSize: '14px', textAlign: 'center' }}>
                           <div style={{ fontSize: '48px', marginBottom: '8px' }}>📸</div>
-                          <div>No image uploaded yet</div>
-                          <div style={{ fontSize: '12px', marginTop: '4px' }}>Upload or paste URL below</div>
+                          <div>No image yet</div>
+                          <div style={{ fontSize: '12px', marginTop: '4px' }}>Click upload below</div>
                         </div>
                       )}
                     </div>
                     <div style={{ marginBottom: 8 }}>
-                      <label style={{ fontSize: 13, display: 'block', marginBottom: 4 }}>Alt Text:</label>
                       <input
                         type="text"
                         value={block.alt || ''}
@@ -422,23 +421,9 @@ export default function EditableBlogPost({ post }) {
                             return { ...prev, blocks };
                           });
                         }}
-                        placeholder="Image description"
+                        placeholder="Image description (optional)"
                         className="edit-input"
-                        style={{ marginBottom: 8 }}
-                      />
-                      <label style={{ fontSize: 13, display: 'block', marginBottom: 4 }}>Image URL:</label>
-                      <input
-                        type="text"
-                        value={block.src || ''}
-                        onChange={e => {
-                          setEditedPost((prev) => {
-                            const blocks = [...prev.blocks];
-                            blocks[idx].src = e.target.value;
-                            return { ...prev, blocks };
-                          });
-                        }}
-                        placeholder="https://..."
-                        className="edit-input"
+                        style={{ marginBottom: 8, fontSize: 13 }}
                       />
                     </div>
                     <ImageUpload onImageInsert={(markdown) => {
@@ -447,7 +432,7 @@ export default function EditableBlogPost({ post }) {
                       if (match) {
                         setEditedPost((prev) => {
                           const blocks = [...prev.blocks];
-                          blocks[idx].alt = match[1];
+                          blocks[idx].alt = match[1] || blocks[idx].alt;
                           blocks[idx].src = match[2];
                           return { ...prev, blocks };
                         });
