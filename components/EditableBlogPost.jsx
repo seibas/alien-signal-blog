@@ -178,10 +178,17 @@ export default function EditableBlogPost({ post }) {
       });
     };
     const addBlock = (type) => {
-      setEditedPost((prev) => ({
-        ...prev,
-        blocks: [...prev.blocks, type === 'code' ? { type: 'code', value: '', language: 'javascript' } : { type: 'text', value: '' }]
-      }));
+      if (type === 'image') {
+        setEditedPost((prev) => ({
+          ...prev,
+          blocks: [...prev.blocks, { type: 'image', src: '', alt: '' }]
+        }));
+      } else {
+        setEditedPost((prev) => ({
+          ...prev,
+          blocks: [...prev.blocks, type === 'code' ? { type: 'code', value: '', language: 'javascript' } : { type: 'text', value: '' }]
+        }));
+      }
     };
     const removeBlock = (idx) => {
       setEditedPost((prev) => {
@@ -261,7 +268,7 @@ export default function EditableBlogPost({ post }) {
             {editedPost.blocks.map((block, idx) => (
               <div key={idx} style={{ marginBottom: 24, border: '1px solid #222', borderRadius: 8, padding: 12, background: '#181c1f' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ fontWeight: 600 }}>{block.type === 'code' ? 'Code Block' : 'Text Block'}</span>
+                  <span style={{ fontWeight: 600 }}>{block.type === 'code' ? 'Code Block' : block.type === 'image' ? '📸 Image Block' : 'Text Block'}</span>
                   <div style={{ display: 'flex', gap: 6 }}>
                     <button
                       type="button"
@@ -331,7 +338,7 @@ export default function EditableBlogPost({ post }) {
                       }} />
                     </div>
                   </>
-                ) : (
+                ) : block.type === 'code' ? (
                   <>
                     <div style={{ marginBottom: 8 }}>
                       <label style={{ fontSize: 13, marginRight: 8 }}>Language:</label>
@@ -357,12 +364,64 @@ export default function EditableBlogPost({ post }) {
                       />
                     </div>
                   </>
-                )}
+                ) : block.type === 'image' ? (
+                  <>
+                    {block.src && (
+                      <div style={{ marginBottom: 12, position: 'relative', maxWidth: '100%', borderRadius: 8, overflow: 'hidden' }}>
+                        <img src={block.src} alt={block.alt || 'Preview'} style={{ width: '100%', display: 'block' }} />
+                      </div>
+                    )}
+                    <div style={{ marginBottom: 8 }}>
+                      <label style={{ fontSize: 13, display: 'block', marginBottom: 4 }}>Alt Text:</label>
+                      <input
+                        type="text"
+                        value={block.alt || ''}
+                        onChange={e => {
+                          setEditedPost((prev) => {
+                            const blocks = [...prev.blocks];
+                            blocks[idx].alt = e.target.value;
+                            return { ...prev, blocks };
+                          });
+                        }}
+                        placeholder="Image description"
+                        className="edit-input"
+                        style={{ marginBottom: 8 }}
+                      />
+                      <label style={{ fontSize: 13, display: 'block', marginBottom: 4 }}>Image URL:</label>
+                      <input
+                        type="text"
+                        value={block.src || ''}
+                        onChange={e => {
+                          setEditedPost((prev) => {
+                            const blocks = [...prev.blocks];
+                            blocks[idx].src = e.target.value;
+                            return { ...prev, blocks };
+                          });
+                        }}
+                        placeholder="https://..."
+                        className="edit-input"
+                      />
+                    </div>
+                    <ImageUpload onImageInsert={(markdown) => {
+                      // Parse markdown to extract URL and alt text: ![alt](url)
+                      const match = markdown.match(/!\[([^\]]*)\]\(([^\)]+)\)/);
+                      if (match) {
+                        setEditedPost((prev) => {
+                          const blocks = [...prev.blocks];
+                          blocks[idx].alt = match[1];
+                          blocks[idx].src = match[2];
+                          return { ...prev, blocks };
+                        });
+                      }
+                    }} />
+                  </>
+                ) : null}
               </div>
             ))}
-            <div style={{ display: 'flex', gap: 12 }}>
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
               <button className="btn" type="button" onClick={() => addBlock('text')}>+ Add Text Block</button>
               <button className="btn" type="button" onClick={() => addBlock('code')}>+ Add Code Block</button>
+              <button className="btn" type="button" onClick={() => addBlock('image')}>📸 Add Image Block</button>
             </div>
           </div>
           <div style={{ height: 10 }} />
@@ -432,9 +491,36 @@ export default function EditableBlogPost({ post }) {
                   </SyntaxHighlighter>
                 </div>
               );
+            } else if (block.type === 'image') {
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    position: 'relative',
+                    maxWidth: '85%',
+                    margin: '2em auto',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                    border: '1px solid rgba(234,255,247,.1)'
+                  }}
+                >
+                  <Image
+                    src={block.src}
+                    alt={block.alt || 'Blog image'}
+                    width={800}
+                    height={600}
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      display: 'block'
+                    }}
+                  />
+                </div>
+              );
             } else {
-              // Render text with image support
-              const contentParts = renderContent(block.value);
+              // Render text with inline image support
+              const contentParts = renderContent(block.value || '');
               return (
                 <div key={idx} style={{ marginBottom: '1.5em' }}>
                   {contentParts.map((part, partIdx) => {

@@ -53,10 +53,17 @@ export default function NewPostForm({ onCancel }) {
     });
   }
   function addBlock(type) {
-    setNewPost((prev) => ({
-      ...prev,
-      blocks: [...prev.blocks, type === 'code' ? { type: 'code', value: '', language: 'javascript' } : { type: 'text', value: '' }]
-    }));
+    if (type === 'image') {
+      setNewPost((prev) => ({
+        ...prev,
+        blocks: [...prev.blocks, { type: 'image', src: '', alt: '' }]
+      }));
+    } else {
+      setNewPost((prev) => ({
+        ...prev,
+        blocks: [...prev.blocks, type === 'code' ? { type: 'code', value: '', language: 'javascript' } : { type: 'text', value: '' }]
+      }));
+    }
   }
 
   function removeBlock(idx) {
@@ -224,7 +231,7 @@ export default function NewPostForm({ onCancel }) {
           {newPost.blocks.map((block, idx) => (
             <div key={idx} style={{ marginBottom: 24, border: '1px solid #222', borderRadius: 8, padding: 12, background: '#181c1f' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <span style={{ fontWeight: 600 }}>{block.type === 'code' ? 'Code Block' : 'Text Block'}</span>
+                <span style={{ fontWeight: 600 }}>{block.type === 'code' ? 'Code Block' : block.type === 'image' ? '📸 Image Block' : 'Text Block'}</span>
                 <div style={{ display: 'flex', gap: 6 }}>
                   <button
                     type="button"
@@ -280,13 +287,21 @@ export default function NewPostForm({ onCancel }) {
                 </div>
               </div>
               {block.type === 'text' ? (
-                <textarea
-                  value={block.value}
-                  onChange={e => handleBlockChange(idx, e.target.value)}
-                  className="edit-textarea"
-                  rows={4}
-                />
-              ) : (
+                <>
+                  <textarea
+                    value={block.value}
+                    onChange={e => handleBlockChange(idx, e.target.value)}
+                    className="edit-textarea"
+                    rows={4}
+                  />
+                  <div style={{ marginTop: 8 }}>
+                    <ImageUpload onImageInsert={(markdown) => {
+                      // Append image markdown to this text block
+                      handleBlockChange(idx, block.value + '\n\n' + markdown);
+                    }} />
+                  </div>
+                </>
+              ) : block.type === 'code' ? (
                 <>
                   <div style={{ marginBottom: 8 }}>
                     <label style={{ fontSize: 13, marginRight: 8 }}>Language:</label>
@@ -312,12 +327,64 @@ export default function NewPostForm({ onCancel }) {
                     />
                   </div>
                 </>
-              )}
+              ) : block.type === 'image' ? (
+                <>
+                  {block.src && (
+                    <div style={{ marginBottom: 12, position: 'relative', maxWidth: '100%', borderRadius: 8, overflow: 'hidden' }}>
+                      <img src={block.src} alt={block.alt || 'Preview'} style={{ width: '100%', display: 'block' }} />
+                    </div>
+                  )}
+                  <div style={{ marginBottom: 8 }}>
+                    <label style={{ fontSize: 13, display: 'block', marginBottom: 4 }}>Alt Text:</label>
+                    <input
+                      type="text"
+                      value={block.alt || ''}
+                      onChange={e => {
+                        setNewPost((prev) => {
+                          const blocks = [...prev.blocks];
+                          blocks[idx].alt = e.target.value;
+                          return { ...prev, blocks };
+                        });
+                      }}
+                      placeholder="Image description"
+                      className="edit-input"
+                      style={{ marginBottom: 8 }}
+                    />
+                    <label style={{ fontSize: 13, display: 'block', marginBottom: 4 }}>Image URL:</label>
+                    <input
+                      type="text"
+                      value={block.src || ''}
+                      onChange={e => {
+                        setNewPost((prev) => {
+                          const blocks = [...prev.blocks];
+                          blocks[idx].src = e.target.value;
+                          return { ...prev, blocks };
+                        });
+                      }}
+                      placeholder="https://..."
+                      className="edit-input"
+                    />
+                  </div>
+                  <ImageUpload onImageInsert={(markdown) => {
+                    // Parse markdown to extract URL and alt text: ![alt](url)
+                    const match = markdown.match(/!\[([^\]]*)\]\(([^\)]+)\)/);
+                    if (match) {
+                      setNewPost((prev) => {
+                        const blocks = [...prev.blocks];
+                        blocks[idx].alt = match[1];
+                        blocks[idx].src = match[2];
+                        return { ...prev, blocks };
+                      });
+                    }
+                  }} />
+                </>
+              ) : null}
             </div>
           ))}
           <div style={{ display: 'flex', gap: 12 }}>
             <button className="btn" type="button" onClick={() => addBlock('text')}>+ Add Text Block</button>
             <button className="btn" type="button" onClick={() => addBlock('code')}>+ Add Code Block</button>
+            <button className="btn" type="button" onClick={() => addBlock('image')}>📸 Add Image Block</button>
           </div>
         </div>
       </div>
