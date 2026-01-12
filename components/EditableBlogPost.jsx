@@ -357,6 +357,17 @@ export default function EditableBlogPost({ post }) {
               <button className="btn" type="button" onClick={() => addBlock('code')}>+ Add Code Block</button>
             </div>
           </div>
+          <div className="edit-section">
+            <label>📸 Upload Image</label>
+            <ImageUpload onImageInsert={(markdown) => {
+              // Insert image markdown into a new text block
+              const newBlock = { type: 'text', value: markdown };
+              setEditedPost(prev => ({
+                ...prev,
+                blocks: [...prev.blocks, newBlock]
+              }));
+            }} />
+          </div>
           <div style={{ height: 10 }} />
           <div className="btnRow">
             <Link className="btn btnPrimary" href="/blog">Back to Logbook</Link>
