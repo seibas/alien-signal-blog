@@ -85,16 +85,45 @@ export default function NewPostForm({ onCancel }) {
       return;
     }
 
+    // Validate that date and readTime are filled
+    if (!newPost.date || !newPost.readTime) {
+      toast.error('Please fill in date and read time');
+      return;
+    }
+
     try {
+      // Convert blocks to content string (API expects content, not blocks)
+      const content = newPost.blocks.map(block => {
+        if (block.type === 'code') {
+          return `\`\`\`${block.language || 'javascript'}\n${block.value}\n\`\`\``;
+        }
+        return block.value;
+      }).join('\n\n');
+
+      const postData = {
+        slug: newPost.slug,
+        title: newPost.title,
+        date: newPost.date,
+        readTime: newPost.readTime,
+        tags: newPost.tags,
+        excerpt: newPost.excerpt,
+        content: content
+      };
+
+      console.log('Sending post data:', postData);
+      console.log('Content blocks:', newPost.blocks);
+      console.log('Content length:', content.length);
+
       const response = await fetch('/api/posts/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newPost),
+        body: JSON.stringify(postData),
       });
 
       const data = await response.json();
+      console.log('API response:', data);
 
       if (response.ok) {
         playAlienSound();
@@ -103,7 +132,11 @@ export default function NewPostForm({ onCancel }) {
           window.location.reload();
         }, 1500);
       } else {
-        toast.error('Failed to create post: ' + (data.error || 'Unknown error'));
+        const errorMsg = data.missing 
+          ? `Missing fields: ${data.missing.join(', ')}` 
+          : (data.error || 'Unknown error');
+        console.error('Create failed:', errorMsg, data);
+        toast.error('Failed: ' + errorMsg);
       }
     } catch (error) {
       console.error('Create error:', error);
