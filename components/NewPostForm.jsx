@@ -288,6 +288,39 @@ export default function NewPostForm({ onCancel }) {
               </div>
               {block.type === 'text' ? (
                 <>
+                  {/* Show preview of images in text */}
+                  {(() => {
+                    const imageMatches = [...(block.value || '').matchAll(/!\[([^\]]*)\]\(([^\)]+)\)/g)];
+                    return imageMatches.length > 0 && (
+                      <div style={{ marginBottom: 12, padding: 12, background: '#0a0a0a', borderRadius: 8 }}>
+                        <div style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>📸 Images in this text block:</div>
+                        {imageMatches.map((match, i) => (
+                          <div key={i} style={{ marginBottom: 8, padding: 8, background: '#181c1f', borderRadius: 6 }}>
+                            <img src={match[2]} alt={match[1]} style={{ width: '100%', maxWidth: '300px', display: 'block', borderRadius: 4, marginBottom: 4 }} />
+                            <div style={{ fontSize: 11, color: '#666' }}>Alt: {match[1] || '(none)'}</div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                // Convert to image block
+                                const newImageBlock = { type: 'image', src: match[2], alt: match[1] };
+                                // Remove from text
+                                const newValue = block.value.replace(match[0], '').trim();
+                                setNewPost((prev) => {
+                                  const blocks = [...prev.blocks];
+                                  blocks[idx].value = newValue;
+                                  blocks.splice(idx + 1, 0, newImageBlock);
+                                  return { ...prev, blocks };
+                                });
+                              }}
+                              style={{ marginTop: 4, fontSize: 11, padding: '4px 8px', background: '#00ff8c', color: '#000', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+                            >
+                              🔄 Convert to Image Block
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
                   <textarea
                     value={block.value}
                     onChange={e => handleBlockChange(idx, e.target.value)}
