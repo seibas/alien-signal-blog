@@ -317,12 +317,20 @@ export default function EditableBlogPost({ post }) {
                   </div>
                 </div>
                 {block.type === 'text' ? (
-                  <textarea
-                    value={block.value}
-                    onChange={e => handleBlockChange(idx, e.target.value)}
-                    className="edit-textarea"
-                    rows={4}
-                  />
+                  <>
+                    <textarea
+                      value={block.value}
+                      onChange={e => handleBlockChange(idx, e.target.value)}
+                      className="edit-textarea"
+                      rows={4}
+                    />
+                    <div style={{ marginTop: 8 }}>
+                      <ImageUpload onImageInsert={(markdown) => {
+                        // Append image markdown to this text block
+                        handleBlockChange(idx, block.value + '\n\n' + markdown);
+                      }} />
+                    </div>
+                  </>
                 ) : (
                   <>
                     <div style={{ marginBottom: 8 }}>
@@ -356,17 +364,6 @@ export default function EditableBlogPost({ post }) {
               <button className="btn" type="button" onClick={() => addBlock('text')}>+ Add Text Block</button>
               <button className="btn" type="button" onClick={() => addBlock('code')}>+ Add Code Block</button>
             </div>
-          </div>
-          <div className="edit-section">
-            <label>📸 Upload Image</label>
-            <ImageUpload onImageInsert={(markdown) => {
-              // Insert image markdown into a new text block
-              const newBlock = { type: 'text', value: markdown };
-              setEditedPost(prev => ({
-                ...prev,
-                blocks: [...prev.blocks, newBlock]
-              }));
-            }} />
           </div>
           <div style={{ height: 10 }} />
           <div className="btnRow">
