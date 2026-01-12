@@ -366,11 +366,17 @@ export default function EditableBlogPost({ post }) {
                   </>
                 ) : block.type === 'image' ? (
                   <>
-                    {block.src && (
-                      <div style={{ marginBottom: 12, position: 'relative', maxWidth: '100%', borderRadius: 8, overflow: 'hidden' }}>
+                    <div style={{ marginBottom: 12, position: 'relative', maxWidth: '100%', borderRadius: 8, overflow: 'hidden', background: block.src ? 'transparent' : '#0a0a0a', minHeight: block.src ? 'auto' : '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {block.src ? (
                         <img src={block.src} alt={block.alt || 'Preview'} style={{ width: '100%', display: 'block' }} />
-                      </div>
-                    )}
+                      ) : (
+                        <div style={{ color: '#555', fontSize: '14px', textAlign: 'center' }}>
+                          <div style={{ fontSize: '48px', marginBottom: '8px' }}>📸</div>
+                          <div>No image uploaded yet</div>
+                          <div style={{ fontSize: '12px', marginTop: '4px' }}>Upload or paste URL below</div>
+                        </div>
+                      )}
+                    </div>
                     <div style={{ marginBottom: 8 }}>
                       <label style={{ fontSize: 13, display: 'block', marginBottom: 4 }}>Alt Text:</label>
                       <input
