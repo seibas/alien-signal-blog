@@ -4,6 +4,7 @@
 import { useState, useRef } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { translateQuestionDemo } from '@/lib/demoTranslator';
 
 export default function AlienCodeTranslator() {
   const [question, setQuestion] = useState('');
@@ -13,6 +14,7 @@ export default function AlienCodeTranslator() {
   const [error, setError] = useState(null);
   const [conversationHistory, setConversationHistory] = useState([]);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [demoMode, setDemoMode] = useState(true); // Start in demo mode
   const responseRef = useRef(null);
 
   const handleTranslate = async () => {
@@ -23,30 +25,37 @@ export default function AlienCodeTranslator() {
     setResponse(null);
 
     try {
-      const res = await fetch('/api/alien-translator', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          question, 
-          language,
-          userHistory: conversationHistory 
-        })
-      });
+      if (demoMode) {
+        // Use demo responses
+        const data = await translateQuestionDemo(question, language);
+        setResponse(data);
+      } else {
+        // Use real API
+        const res = await fetch('/api/alien-translator', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            question, 
+            language,
+            userHistory: conversationHistory 
+          })
+        });
 
-      const data = await res.json();
+        const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.error || 'Translation failed');
+        if (!res.ok) {
+          throw new Error(data.error || 'Translation failed');
+        }
+
+        setResponse(data);
+        
+        // Update conversation history
+        setConversationHistory(prev => [
+          ...prev,
+          { role: 'user', content: question },
+          { role: 'assistant', content: data.rawResponse }
+        ]);
       }
-
-      setResponse(data);
-      
-      // Update conversation history
-      setConversationHistory(prev => [
-        ...prev,
-        { role: 'user', content: question },
-        { role: 'assistant', content: data.rawResponse }
-      ]);
 
     } catch (err) {
       console.error('Translation error:', err);
@@ -97,6 +106,35 @@ export default function AlienCodeTranslator() {
         <p className="header-subtitle">
           Learn to code through cosmic metaphors and alien wisdom
         </p>
+        
+        {/* Demo Mode Toggle */}
+        <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+          <label style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '8px', 
+            cursor: 'pointer',
+            fontSize: '14px',
+            padding: '8px 16px',
+            background: demoMode ? 'rgba(0, 255, 140, 0.1)' : 'rgba(255, 145, 0, 0.1)',
+            border: demoMode ? '1px solid rgba(0, 255, 140, 0.3)' : '1px solid rgba(255, 145, 0, 0.3)',
+            borderRadius: '8px',
+            transition: 'all 0.3s ease'
+          }}>
+            <input 
+              type="checkbox" 
+              checked={demoMode} 
+              onChange={(e) => setDemoMode(e.target.checked)}
+              style={{ cursor: 'pointer' }}
+            />
+            <span>{demoMode ? '🎮 Demo Mode (Free)' : '🤖 AI Mode (API Key Required)'}</span>
+          </label>
+          {demoMode && (
+            <span style={{ fontSize: '12px', color: '#888' }}>
+              Try: "async", "hooks", or "debounce"
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Input Section */}
@@ -199,6 +237,24 @@ export default function AlienCodeTranslator() {
       {/* Response Display */}
       {response && (
         <div ref={responseRef} className="translator-response">
+          {/* Demo Mode Banner */}
+          {response.isDemoMode && (
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(0, 255, 140, 0.1), rgba(0, 255, 255, 0.1))',
+              border: '1px solid rgba(0, 255, 140, 0.3)',
+              borderRadius: '12px',
+              padding: '16px',
+              marginBottom: '24px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '24px', marginBottom: '8px' }}>🎮</div>
+              <div style={{ fontWeight: 600, marginBottom: '4px' }}>Demo Mode Active</div>
+              <div style={{ fontSize: '14px', color: '#888' }}>
+                This is a pre-written response. Toggle AI Mode above for custom responses to any question!
+              </div>
+            </div>
+          )}
+          
           {/* Alien Insight */}
           <section className="response-section insight-section">
             <h3 className="section-title">
