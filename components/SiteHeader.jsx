@@ -74,6 +74,7 @@ export default function SiteHeader() {
             <Link href="/">Home</Link>
             <Link href="/about">About</Link>
             <Link href="/blog">Blog</Link>
+            <Link href="/alien-translator">🛸 AI Translator</Link>
             {!isAdmin && <Link href="/admin">🔒 Admin</Link>}
           </nav>
 
@@ -116,6 +117,7 @@ export default function SiteHeader() {
           <Link href="/" onClick={closeMobileMenu}>Home</Link>
           <Link href="/about" onClick={closeMobileMenu}>About</Link>
           <Link href="/blog" onClick={closeMobileMenu}>Blog</Link>
+          <Link href="/alien-translator" onClick={closeMobileMenu}>🛸 AI Translator</Link>
           {!isAdmin && <Link href="/admin" onClick={closeMobileMenu}>🔒 Admin</Link>}
         </div>
       </nav>
