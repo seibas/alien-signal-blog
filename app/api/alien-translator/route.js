@@ -1,5 +1,7 @@
 import { Anthropic } from '@anthropic-ai/sdk';
 import { checkRateLimit } from '@/lib/rateLimiter';
+import { getAllPosts } from '@/lib/db';
+
 // Initialize Anthropic client
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -29,7 +31,7 @@ export async function POST(req) {
 
   // Rate limiting (3/hour for anonymous)
   const identifier = req.headers.get('x-forwarded-for') || 'anonymous';
-  const rateLimit = checkRateLimit(identifier, 'anonymous');
+  const rateLimit = await checkRateLimit(identifier, 'anonymous');
   if (!rateLimit.allowed) {
     return new Response(JSON.stringify({
       error: `🛸 Cosmic bandwidth exceeded! Try again in ${rateLimit.resetIn} minutes.`,
@@ -38,9 +40,11 @@ export async function POST(req) {
   }
 
   try {
-    // Fetch recent blog posts for context (implement this based on your data source)
+    // Fetch recent blog posts for context
     const blogPosts = await fetchRecentBlogPosts();
-    const blogContext = blogPosts.map(post => `- "${post.title}": ${post.summary}`).join('\n');
+    const blogContext = blogPosts.length > 0 
+      ? blogPosts.map(post => `- "${post.title}": ${post.excerpt || post.summary || 'Explore the post for details'}`).join('\n')
+      : '- Check out alien-signal-blog for coding wisdom and tutorials';
     // Create the alien-themed system prompt
     const systemPrompt = `You are the Alien Code Translator from alien-signal-blog - a cosmic coding mentor who explains programming concepts using space and alien metaphors.
 
@@ -154,22 +158,33 @@ function extractCodeBlock(text) {
 }
 
 async function fetchRecentBlogPosts() {
-  // TODO: Implement based on your data source
-  // For now, return static examples
-  return [
-    {
-      title: "Debugging Like an Alien Anthropologist",
-      summary: "Approach bugs as if studying an alien civilization - observe, hypothesize, test"
-    },
-    {
-      title: "Async Programming: Navigating Spacetime",
-      summary: "Understanding promises and async/await through the lens of space-time communication"
-    },
-    {
-      title: "Clean Code: Messages from the Cosmos",
-      summary: "Write code so clear that even alien civilizations could understand it"
-    }
-  ];
+  try {
+    // Fetch real blog posts from database
+    const posts = await getAllPosts();
+    
+    // Return the 5 most recent posts
+    return posts
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 5)
+      .map(post => ({
+        title: post.title,
+        excerpt: post.excerpt,
+        slug: post.slug
+      }));
+  } catch (error) {
+    console.error('Failed to fetch blog posts:', error);
+    // Fallback to static examples if database fails
+    return [
+      {
+        title: "LOG 001: First Signal",
+        excerpt: "The beginning of a coding journey—curiosity activated"
+      },
+      {
+        title: "The Labyrinth of Code",
+        excerpt: "Navigating the forest of logic where syntax trees grow"
+      }
+    ];
+  }
 }
 
 async function trackUsage() {

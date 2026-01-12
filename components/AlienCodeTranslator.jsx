@@ -1,13 +1,9 @@
 
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import Prism from 'prismjs';
-import 'prismjs/themes/prism-tomorrow.css';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-typescript';
-import 'prismjs/components/prism-python';
-import 'prismjs/components/prism-jsx';
+import { useState, useRef } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 export default function AlienCodeTranslator() {
   const [question, setQuestion] = useState('');
@@ -16,14 +12,8 @@ export default function AlienCodeTranslator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [conversationHistory, setConversationHistory] = useState([]);
+  const [copySuccess, setCopySuccess] = useState(false);
   const responseRef = useRef(null);
-
-  // Syntax highlighting after response
-  useEffect(() => {
-    if (response && responseRef.current) {
-      Prism.highlightAll();
-    }
-  }, [response]);
 
   const handleTranslate = async () => {
     if (!question.trim()) return;
@@ -59,7 +49,16 @@ export default function AlienCodeTranslator() {
       ]);
 
     } catch (err) {
-      setError(err.message);
+      console.error('Translation error:', err);
+      
+      // More specific error messages
+      if (err.message.includes('fetch')) {
+        setError('🛸 Cannot reach alien servers. Check your internet connection!');
+      } else if (err.message.includes('bandwidth')) {
+        setError(err.message); // Rate limit message from API
+      } else {
+        setError(err.message || '🛸 Transmission interrupted! Try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -68,9 +67,11 @@ export default function AlienCodeTranslator() {
   const handleCopy = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
-      // Could add a toast notification here
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
     } catch (err) {
       console.error('Failed to copy:', err);
+      setError('Failed to copy to clipboard');
     }
   };
 
@@ -84,6 +85,11 @@ export default function AlienCodeTranslator() {
 
   return (
     <div className="alien-translator-container">
+      {/* Floating Particles */}
+      <div className="particle"></div>
+      <div className="particle"></div>
+      <div className="particle"></div>
+      
       {/* Header */}
       <div className="translator-header">
         <div className="header-icon">🛸</div>
@@ -114,19 +120,22 @@ export default function AlienCodeTranslator() {
           </div>
         </div>
 
-        <textarea
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-              handleTranslate();
-            }
-          }}
-          placeholder="Ask your cosmic coding question... (Cmd/Ctrl + Enter to send)"
-          className="question-textarea"
-          disabled={loading}
-          rows={4}
-        />
+        <div className="input-wrapper">
+          <div className="input-glow"></div>
+          <textarea
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                handleTranslate();
+              }
+            }}
+            placeholder="Ask your cosmic coding question... (Cmd/Ctrl + Enter to send)"
+            className="question-textarea"
+            disabled={loading}
+            rows={4}
+          />
+        </div>
 
         <div className="input-footer">
           <button 
@@ -214,15 +223,35 @@ export default function AlienCodeTranslator() {
                   className="copy-button"
                   title="Copy to clipboard"
                 >
-                  📋 Copy
+                  {copySuccess ? '✅ Copied!' : '📋 Copy'}
                 </button>
               </div>
               <div className="code-wrapper">
-                <pre className="code-block">
-                  <code className={`language-${response.language}`}>
-                    {response.code}
-                  </code>
-                </pre>
+                <SyntaxHighlighter
+                  language={response.language}
+                  style={tomorrow}
+                  customStyle={{
+                    margin: 0,
+                    padding: '1.5rem',
+                    borderRadius: '0',
+                    fontSize: '0.95rem',
+                    backgroundColor: '#000000',
+                    fontFamily: "'Fira Code', 'Monaco', 'Courier New', monospace",
+                    lineHeight: '1.7',
+                  }}
+                  showLineNumbers
+                  lineNumberStyle={{
+                    color: '#6B7280',
+                    paddingRight: '1.5rem',
+                    minWidth: '3rem',
+                    textAlign: 'right',
+                    userSelect: 'none',
+                  }}
+                  wrapLines={true}
+                  wrapLongLines={false}
+                >
+                  {response.code}
+                </SyntaxHighlighter>
               </div>
             </section>
           )}
