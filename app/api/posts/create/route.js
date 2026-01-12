@@ -4,13 +4,13 @@ import { createPost } from '@/lib/db';
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { slug, title, date, readTime, tags, excerpt, content } = body;
+    const { slug, title, date, readTime, tags, excerpt, blocks } = body;
 
     // Debug log to see what's received
-    console.log('Received post data:', { slug, title, date, readTime, tags, excerpt, contentLength: content?.length });
+    console.log('Received post data:', { slug, title, date, readTime, tags, excerpt, blocksCount: blocks?.length });
 
     // Validate required fields
-    if (!slug || !title || !date || !readTime || !tags || !excerpt || !content) {
+    if (!slug || !title || !date || !readTime || !tags || !excerpt || !blocks || blocks.length === 0) {
       const missing = [];
       if (!slug) missing.push('slug');
       if (!title) missing.push('title');
@@ -18,7 +18,7 @@ export async function POST(request) {
       if (!readTime) missing.push('readTime');
       if (!tags) missing.push('tags');
       if (!excerpt) missing.push('excerpt');
-      if (!content) missing.push('content');
+      if (!blocks || blocks.length === 0) missing.push('blocks');
       
       return NextResponse.json(
         { error: 'Missing required fields', missing },
@@ -26,11 +26,10 @@ export async function POST(request) {
       );
     }
 
-    // Parse tags and content
+    // Parse tags
     const tagsArray = tags.split(',').map(t => t.trim()).filter(Boolean);
-    const contentArray = content.split('\n\n').filter(Boolean);
 
-    // Create post object
+    // Create post object with blocks
     const newPost = {
       slug,
       title,
@@ -38,7 +37,7 @@ export async function POST(request) {
       readTime,
       excerpt,
       tags: tagsArray,
-      content: contentArray
+      blocks: blocks
     };
 
     // Save to database

@@ -92,14 +92,7 @@ export default function NewPostForm({ onCancel }) {
     }
 
     try {
-      // Convert blocks to content string (API expects content, not blocks)
-      const content = newPost.blocks.map(block => {
-        if (block.type === 'code') {
-          return `\`\`\`${block.language || 'javascript'}\n${block.value}\n\`\`\``;
-        }
-        return block.value;
-      }).join('\n\n');
-
+      // Send blocks array directly (not converted to string)
       const postData = {
         slug: newPost.slug,
         title: newPost.title,
@@ -107,12 +100,11 @@ export default function NewPostForm({ onCancel }) {
         readTime: newPost.readTime,
         tags: newPost.tags,
         excerpt: newPost.excerpt,
-        content: content
+        blocks: newPost.blocks
       };
 
       console.log('Sending post data:', postData);
-      console.log('Content blocks:', newPost.blocks);
-      console.log('Content length:', content.length);
+      console.log('Blocks:', newPost.blocks);
 
       const response = await fetch('/api/posts/create', {
         method: 'POST',
