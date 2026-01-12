@@ -39,6 +39,11 @@ export default function PostCard({ post }) {
     // New format: blocks
     if (Array.isArray(post.blocks)) {
       for (const block of post.blocks) {
+        // Check for dedicated image blocks
+        if (block.type === 'image' && block.src) {
+          return block.src;
+        }
+        // Check for markdown images in text blocks
         if (block.type === 'text') {
           const imageRegex = /!\[([^\]]*)\]\(([^\)]+)\)/;
           const match = block.value && block.value.match(imageRegex);
