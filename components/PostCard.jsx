@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
+import SpatialBlurTitle from "./SpatialBlurTitle";
 
-export default function PostCard({ post }) {
+export default function PostCard({ post, index = 0 }) {
   // Truncate excerpt to max 80 characters for cleaner display, skipping image markdown
   const getCleanExcerpt = () => {
     let excerpt = post.excerpt || '';
@@ -113,21 +114,13 @@ export default function PostCard({ post }) {
             <span>{post.readTime}</span>
           </div>
           
-          <h3 style={{ 
-            fontSize: '16px', 
-            marginBottom: '10px',
-            lineHeight: '1.3',
-            fontWeight: '600',
-            color: '#eaffef',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            minHeight: '42px'
-          }}>
-            {post.title}
-          </h3>
+          <SpatialBlurTitle 
+            text={post.title} 
+            as="h2"
+            sparkleCount={4}
+            delay={index * 0.15}
+            className="post-card-title"
+          />
           
           <p style={{ 
             fontSize: '13px', 

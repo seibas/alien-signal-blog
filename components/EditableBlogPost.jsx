@@ -12,6 +12,9 @@ import AuthorBio from './AuthorBio';
 import AvatarUploadWidget from './AvatarUploadWidget';
 import { playAlienSound } from '@/lib/alienSound';
 import { toast } from '@/lib/toast';
+import SpatialBlurTitle from './SpatialBlurTitle';
+import { useTranslation } from '@/hooks/useTranslation';
+import LanguageSwitcher from './LanguageSwitcher';
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
 export default function EditableBlogPost({ post }) {
@@ -29,6 +32,18 @@ export default function EditableBlogPost({ post }) {
           ? [{ type: 'text', value: post.content.join('\n\n') }]
           : [{ type: 'text', value: post.content || '' }])
   });
+
+  // Use translation hook
+  const { 
+    displayContent, 
+    displayTitle, 
+    isTranslating, 
+    error: translationError 
+  } = useTranslation(
+    post?.slug,
+    editedPost.blocks,
+    editedPost.title
+  );
 
   /**
    * Parses text content and extracts inline markdown images
@@ -460,16 +475,39 @@ export default function EditableBlogPost({ post }) {
 
   const displayTags = editedPost.tags.split(',').map(t => t.trim()).filter(Boolean);
 
-  // Multi-block rendering: support both new (blocks) and old (content) formats
-  const blocks = Array.isArray(post.blocks)
+  // Use translated content if available, otherwise use original
+  const blocks = displayContent || (Array.isArray(post.blocks)
     ? post.blocks
     : (Array.isArray(post.content)
         ? [{ type: 'text', value: post.content.join('\n\n') }]
-        : [{ type: 'text', value: post.content || '' }]);
+        : [{ type: 'text', value: post.content || '' }]));
 
   return (
     <article className="article">
       <div className="card cardPad">
+        {/* Language Switcher - Top Right */}
+        <div style={{ 
+          position: 'absolute', 
+          top: '1rem', 
+          right: '1rem',
+          zIndex: 10
+        }}>
+          <LanguageSwitcher />
+        </div>
+
+        {/* Translation Status Indicators */}
+        {isTranslating && (
+          <div className="translation-loading">
+            🛸 Translating to Italian...
+          </div>
+        )}
+        
+        {translationError && (
+          <div className="translation-error">
+            ⚠️ Translation failed. Showing original.
+          </div>
+        )}
+
         {isAdmin && (
           <button 
             className="edit-toggle-btn"
@@ -500,7 +538,13 @@ export default function EditableBlogPost({ post }) {
           <span>{editedPost.readTime}</span>
         </div>
 
-        <h1 className="articleTitle" style={{ marginTop: 10 }}>{editedPost.title}</h1>
+        <SpatialBlurTitle 
+          text={displayTitle || editedPost.title} 
+          as="h1"
+          sparkleCount={8}
+          className="post-main-title"
+        />
+        
         <p className="articleMeta">
           Tags: {displayTags.join(' • ')}
         </p>

@@ -316,7 +316,7 @@ a, button, input, select, textarea, label, .clickable {
 }
 
 .language-selector {
-  background: rgba(18, 22, 31, 0.8);
+  background: rgba(16, 17, 18, 0.8);
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.05);
   border-radius: 10px;
@@ -1540,18 +1540,25 @@ a, button, input, select, textarea, label, .clickable {
 
 /* ===== DEMO MODE TOGGLE - MOBILE FIRST ===== */
 .demo-mode-container {
-  margin-top: var(--spacing-lg);
+  margin: 0 auto var(--spacing-xl);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
+  max-width: 100%;
+  padding: var(--spacing-lg);
+  background: rgba(10, 14, 26, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 65, 0.15);
 }
 
 @media (min-width: 640px) {
   .demo-mode-container {
     flex-direction: row;
     gap: var(--spacing-md);
+    margin: 0 auto var(--spacing-xl);
+    padding: var(--spacing-md) var(--spacing-lg);
   }
 }
 
@@ -1561,11 +1568,12 @@ a, button, input, select, textarea, label, .clickable {
   gap: var(--spacing-sm);
   cursor: pointer;
   font-size: var(--text-base);
+  font-weight: 500;
   padding: 12px 16px;
   min-height: var(--touch-target-min);
   background: rgba(0, 255, 140, 0.1);
   border: 1px solid rgba(0, 255, 140, 0.3);
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.3s ease;
   touch-action: manipulation;
   width: 100%;
@@ -1575,6 +1583,9 @@ a, button, input, select, textarea, label, .clickable {
 @media (min-width: 640px) {
   .demo-mode-label {
     width: auto;
+    padding: 10px 14px;
+    font-size: var(--text-sm);
+    min-height: 40px;
   }
 }
 
@@ -1582,6 +1593,7 @@ a, button, input, select, textarea, label, .clickable {
   background: rgba(0, 255, 140, 0.15);
   border-color: rgba(0, 255, 140, 0.5);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 255, 65, 0.2);
 }
 
 .demo-mode-label:active {
@@ -1595,10 +1607,23 @@ a, button, input, select, textarea, label, .clickable {
   accent-color: var(--color-matrix-green);
 }
 
+@media (min-width: 640px) {
+  .demo-mode-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+  }
+}
+
 .demo-mode-hint {
   font-size: var(--text-sm);
   color: var(--color-text-tertiary);
   text-align: center;
+}
+
+@media (min-width: 640px) {
+  .demo-mode-hint {
+    font-size: var(--text-xs);
+  }
 }
 
 @media (max-width: 639px) {

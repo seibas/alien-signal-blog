@@ -3,6 +3,7 @@ import "../styles/AlienTranslator.css";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import BackToTop from "@/components/BackToTop";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 export const metadata = {
   title: {
@@ -66,12 +67,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <div className="site">
-          <SiteHeader />
-          <main className="main">{children}</main>
-          <SiteFooter />
-          <BackToTop />
-        </div>
+        <ErrorBoundary>
+          <div className="site">
+            <SiteHeader />
+            <main className="main">{children}</main>
+            <SiteFooter />
+            <BackToTop />
+          </div>
+        </ErrorBoundary>
       </body>
     </html>
   );

@@ -1,0 +1,267 @@
+/* ===== SPATIAL BLUR TITLE - APPLE VISION PRO STYLE ===== */
+/* 2026 Modern Futurism - Premium Animations with SUBTLE Effects */
+
+.spatial-blur-title-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* ===== MAIN TITLE STYLES ===== */
+.spatial-blur-title {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 2;
+  
+  /* Match existing blog typography */
+  font-family: 'Rajdhani', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 700;
+  color: #FFFFFF; /* WHITE text - NOT green */
+  text-align: inherit;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  
+  /* Initial state - blurred and scaled down */
+  filter: blur(20px);
+  opacity: 0;
+  transform: scale(0.96) translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity, filter;
+}
+
+/* Semantic HTML elements */
+.spatial-blur-title-wrapper h1.spatial-blur-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.spatial-blur-title-wrapper h2.spatial-blur-title {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+.spatial-blur-title-wrapper h3.spatial-blur-title {
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+}
+
+/* Focused state - animation trigger */
+.spatial-blur-title.focused {
+  animation: spatialFocus 1.2s cubic-bezier(0.16, 1, 0.3, 1) var(--animation-delay, 0s) forwards;
+}
+
+/* ===== FOCUS RING - VERY SUBTLE ===== */
+.focus-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(0, 255, 65, 0.15); /* Very faint */
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  z-index: 1;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+.focus-ring.active {
+  animation: focusRing 1.2s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--animation-delay, 0s) + 0.1s) forwards;
+}
+
+/* ===== SPARKLE PARTICLES - SUBTLE ===== */
+.sparkle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--sparkle-size);
+  height: var(--sparkle-size);
+  background: #00FF41; /* Matrix green accent */
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  transform: translate(-50%, -50%) 
+             translate(var(--sparkle-x), var(--sparkle-y)) 
+             scale(0) 
+             rotate(0deg)
+             translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  
+  /* Subtle glow */
+  box-shadow: 
+    0 0 4px rgba(0, 255, 65, 0.6),
+    0 0 8px rgba(0, 255, 65, 0.3);
+  
+  animation: 
+    sparkle var(--sparkle-duration) cubic-bezier(0.16, 1, 0.3, 1) calc(var(--animation-delay, 0s) + var(--sparkle-delay)) forwards;
+}
+
+/* ===== KEYFRAME ANIMATIONS ===== */
+
+/* Main spatial focus animation */
+@keyframes spatialFocus {
+  0% {
+    filter: blur(20px);
+    opacity: 0;
+    transform: scale(0.96) translateZ(0);
+  }
+  50% {
+    filter: blur(5px);
+    opacity: 0.7;
+  }
+  100% {
+    filter: blur(0px);
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+}
+
+/* Subtle focus ring expansion */
+@keyframes focusRing {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.15;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(20);
+    opacity: 0;
+  }
+}
+
+/* Sparkle particle animation - SUBTLE */
+@keyframes sparkle {
+  0% {
+    transform: translate(-50%, -50%) 
+               translate(var(--sparkle-x), var(--sparkle-y)) 
+               scale(0) 
+               rotate(0deg)
+               translateZ(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.6; /* Max opacity - keep subtle */
+    transform: translate(-50%, -50%) 
+               translate(var(--sparkle-x), var(--sparkle-y)) 
+               scale(1) 
+               rotate(calc(var(--sparkle-rotation) * 0.5))
+               translateZ(0);
+  }
+  70% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) 
+               translate(var(--sparkle-x), var(--sparkle-y)) 
+               scale(1.1) 
+               rotate(var(--sparkle-rotation))
+               translateZ(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) 
+               translate(var(--sparkle-x), var(--sparkle-y)) 
+               scale(0.8) 
+               rotate(var(--sparkle-rotation))
+               translateZ(0);
+  }
+}
+
+/* ===== MOBILE OPTIMIZATIONS ===== */
+@media (max-width: 768px) {
+  /* Reduce sparkle effects on mobile for performance */
+  .sparkle:nth-child(n+5) {
+    display: none;
+  }
+  
+  /* Slightly faster animation on mobile */
+  .spatial-blur-title.focused {
+    animation-duration: 1s;
+  }
+  
+  .focus-ring.active {
+    animation-duration: 1s;
+  }
+  
+  /* Reduce blur intensity on mobile */
+  @keyframes spatialFocus {
+    0% {
+      filter: blur(12px);
+      opacity: 0;
+      transform: scale(0.96) translateZ(0);
+    }
+    50% {
+      filter: blur(3px);
+      opacity: 0.7;
+    }
+    100% {
+      filter: blur(0px);
+      opacity: 1;
+      transform: scale(1) translateZ(0);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  /* Further reduce on small mobile */
+  .sparkle:nth-child(n+4) {
+    display: none;
+  }
+}
+
+/* ===== ACCESSIBILITY - REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .spatial-blur-title {
+    filter: blur(0px) !important;
+    opacity: 0;
+    transform: scale(1) translateZ(0);
+    animation: none !important;
+    transition: opacity 0.2s ease;
+  }
+  
+  .spatial-blur-title.focused {
+    opacity: 1;
+    animation: none !important;
+  }
+  
+  .focus-ring {
+    display: none;
+  }
+  
+  .sparkle {
+    display: none;
+  }
+}
+
+/* ===== HIGH CONTRAST MODE ===== */
+@media (prefers-contrast: high) {
+  .spatial-blur-title {
+    color: #FFFFFF !important;
+  }
+  
+  .focus-ring {
+    border-color: currentColor;
+  }
+  
+  .sparkle {
+    background: currentColor;
+  }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  .spatial-blur-title {
+    filter: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    color: #000000 !important;
+  }
+  
+  .focus-ring,
+  .sparkle {
+    display: none;
+  }
+}

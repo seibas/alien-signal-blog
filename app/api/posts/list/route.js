@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getAllPosts } from '@/content/posts';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const posts = await getAllPosts();
@@ -11,7 +13,6 @@ export async function GET() {
       count: posts.length
     });
   } catch (error) {
-    console.error('Error fetching posts:', error);
     return NextResponse.json(
       { error: 'Failed to fetch posts', details: error.message },
       { status: 500 }

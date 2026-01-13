@@ -1771,3 +1771,190 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   justify-content: center;
   animation: alienLogoPulse 2.2s infinite alternate;
 }
+
+/* ============================================
+   ORANGE VIEWPORT GLOW EFFECT
+   Permanent subtle glow around screen edges
+   ============================================ */
+
+/* Main viewport glow container */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none; /* Don't block clicks */
+  z-index: 9999; /* Always on top */
+  
+  /* Orange vignette effect */
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    rgba(255, 107, 53, 0.08) 70%,
+    rgba(255, 107, 53, 0.15) 100%
+  );
+  
+  /* Subtle breathing animation */
+  animation: orangeGlowPulse 6s ease-in-out infinite;
+  
+  /* Hardware acceleration */
+  will-change: opacity;
+  backface-visibility: hidden;
+}
+
+/* Breathing animation - very subtle */
+@keyframes orangeGlowPulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Enhanced glow on corners (more intense) */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 9998;
+  
+  /* Four-corner orange glow */
+  background: 
+    /* Top-left corner */
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(255, 107, 53, 0.12) 0%,
+      transparent 40%
+    ),
+    /* Top-right corner */
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(255, 140, 0, 0.12) 0%,
+      transparent 40%
+    ),
+    /* Bottom-left corner */
+    radial-gradient(
+      circle at 0% 100%,
+      rgba(255, 107, 53, 0.12) 0%,
+      transparent 40%
+    ),
+    /* Bottom-right corner */
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(255, 140, 0, 0.12) 0%,
+      transparent 40%
+    );
+  
+  /* Slower, offset breathing */
+  animation: orangeCornerPulse 8s ease-in-out infinite;
+  animation-delay: 1s;
+  
+  will-change: opacity;
+}
+
+@keyframes orangeCornerPulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* Optional: Stronger glow when hovering interactive elements */
+body.glow-active::after {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 25%,
+    rgba(255, 107, 53, 0.12) 65%,
+    rgba(255, 107, 53, 0.2) 100%
+  );
+}
+
+/* Respect user preferences */
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after {
+    animation: none;
+    opacity: 0.7; /* Static, no pulse */
+  }
+}
+
+/* Mobile - lighter effect for smaller screens */
+@media (max-width: 768px) {
+  body::after {
+    background: radial-gradient(
+      ellipse at center,
+      transparent 40%,
+      rgba(255, 107, 53, 0.06) 75%,
+      rgba(255, 107, 53, 0.12) 100%
+    );
+  }
+  
+  body::before {
+    opacity: 0.6; /* Lighter corners on mobile */
+  }
+}
+
+/* Optional: Enhance glow on focus/active states */
+*:focus-visible {
+  /* Add extra glow around focused elements */
+  box-shadow: 
+    0 0 0 3px rgba(255, 107, 53, 0.3),
+    0 0 20px rgba(255, 107, 53, 0.4);
+}
+
+/* ============================================
+   TRANSLATION UI STYLES
+   ============================================ */
+
+/* Translation loading indicator */
+.translation-loading {
+  background: rgba(0, 255, 65, 0.1);
+  border: 1px solid rgba(0, 255, 65, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #00FF41;
+  animation: translationPulse 1.5s ease-in-out infinite;
+  font-weight: 600;
+}
+
+.translation-error {
+  background: rgba(255, 107, 53, 0.1);
+  border: 1px solid rgba(255, 107, 53, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #FF6B35;
+  font-weight: 600;
+}
+
+@keyframes translationPulse {
+  0%, 100% { 
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .translation-loading,
+  .translation-error {
+    font-size: 0.9rem;
+    padding: 0.75rem;
+  }
+}

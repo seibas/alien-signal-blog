@@ -1,6 +1,7 @@
 import { Anthropic } from '@anthropic-ai/sdk';
 import { checkRateLimit } from '@/lib/rateLimiter';
 import { getAllPosts } from '@/lib/db';
+import { logApiError } from '@/lib/errorLogger';
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
@@ -127,16 +128,20 @@ IMPORTANT RULES:
     }), { status: 200 });
 
   } catch (error) {
-    console.error('Alien Translator Error:', error);
-    
+    // Log the error
+    logApiError('/api/alien-translator', error, error.status || 500, {
+      question: question?.substring(0, 50),
+      language
+    });
+
     if (error.status === 429) {
-      return new Response(JSON.stringify({ 
-        error: '🛸 Too many transmissions! The cosmic bandwidth is overloaded. Try again in a few moments.' 
+      return new Response(JSON.stringify({
+        error: '🛸 Too many transmissions! The cosmic bandwidth is overloaded. Try again in a few moments.'
       }), { status: 429 });
     }
 
-    return new Response(JSON.stringify({ 
-      error: '🛸 Transmission interrupted! Our alien servers encountered an anomaly.' 
+    return new Response(JSON.stringify({
+      error: '🛸 Transmission interrupted! Our alien servers encountered an anomaly.'
     }), { status: 500 });
   }
 }
@@ -161,7 +166,7 @@ async function fetchRecentBlogPosts() {
   try {
     // Fetch real blog posts from database
     const posts = await getAllPosts();
-    
+
     // Return the 5 most recent posts
     return posts
       .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -172,7 +177,6 @@ async function fetchRecentBlogPosts() {
         slug: post.slug
       }));
   } catch (error) {
-    console.error('Failed to fetch blog posts:', error);
     // Fallback to static examples if database fails
     return [
       {

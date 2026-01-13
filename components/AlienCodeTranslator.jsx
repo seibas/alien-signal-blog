@@ -5,6 +5,8 @@ import { useState, useRef } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { translateQuestionDemo } from '@/lib/demoTranslator';
+import { validateTranslatorQuestion } from '@/lib/validation';
+import { logUserActionError } from '@/lib/errorLogger';
 
 export default function AlienCodeTranslator() {
   const [question, setQuestion] = useState('');
@@ -18,7 +20,12 @@ export default function AlienCodeTranslator() {
   const responseRef = useRef(null);
 
   const handleTranslate = async () => {
-    if (!question.trim()) return;
+    // Validate question
+    const validation = validateTranslatorQuestion(question);
+    if (!validation.valid) {
+      setError(validation.errors[0]);
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -58,8 +65,13 @@ export default function AlienCodeTranslator() {
       }
 
     } catch (err) {
-      console.error('Translation error:', err);
-      
+      // Log the error
+      logUserActionError('alien-translator', err, {
+        question: question.substring(0, 50),
+        language,
+        demoMode
+      });
+
       // More specific error messages
       if (err.message.includes('fetch')) {
         setError('🛸 Cannot reach alien servers. Check your internet connection!');
@@ -79,7 +91,6 @@ export default function AlienCodeTranslator() {
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
       setError('Failed to copy to clipboard');
     }
   };
@@ -106,39 +117,26 @@ export default function AlienCodeTranslator() {
         <p className="header-subtitle">
           Learn to code through cosmic metaphors and alien wisdom
         </p>
-        
-        {/* Demo Mode Toggle */}
-        <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
-          <label style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '8px', 
-            cursor: 'pointer',
-            fontSize: '14px',
-            padding: '8px 16px',
-            background: demoMode ? 'rgba(0, 255, 140, 0.1)' : 'rgba(255, 145, 0, 0.1)',
-            border: demoMode ? '1px solid rgba(0, 255, 140, 0.3)' : '1px solid rgba(255, 145, 0, 0.3)',
-            borderRadius: '8px',
-            transition: 'all 0.3s ease'
-          }}>
-            <input 
-              type="checkbox" 
-              checked={demoMode} 
-              onChange={(e) => setDemoMode(e.target.checked)}
-              style={{ cursor: 'pointer' }}
-            />
-            <span>{demoMode ? '🎮 Demo Mode (Free)' : '🤖 AI Mode (API Key Required)'}</span>
-          </label>
-          {demoMode && (
-            <span style={{ fontSize: '12px', color: '#888' }}>
-              Try: "async", "hooks", or "debounce"
-            </span>
-          )}
-        </div>
       </div>
 
       {/* Input Section */}
       <div className="translator-input">
+        {/* Demo Mode Toggle - Better Position */}
+        <div className="demo-mode-container">
+          <label className="demo-mode-label">
+            <input
+              type="checkbox"
+              checked={demoMode}
+              onChange={(e) => setDemoMode(e.target.checked)}
+            />
+            <span>{demoMode ? '🎮 Demo Mode (Free)' : '🤖 AI Mode (API Key Required)'}</span>
+          </label>
+          {demoMode && (
+            <span className="demo-mode-hint">
+              Try: "async", "hooks", or "debounce"
+            </span>
+          )}
+        </div>
         <div className="input-controls">
           <select 
             value={language}
