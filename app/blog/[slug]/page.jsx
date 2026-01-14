@@ -9,12 +9,14 @@ export default function BlogPostPage({ params }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch the post from the database
-    fetch('/api/posts/list')
+    // Fetch the post from the database with cache-busting
+    fetch(`/api/posts/list?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
+        console.log('Fetched posts:', data.posts?.length, 'Looking for slug:', params.slug);
         if (data.posts) {
           const foundPost = data.posts.find(p => p.slug === params.slug);
+          console.log('Found post:', foundPost ? foundPost.slug : 'NOT FOUND');
           setPost(foundPost || null);
         }
         setLoading(false);
