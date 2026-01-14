@@ -138,7 +138,9 @@ IMPORTANT RULES:
     // Log the error
     logApiError('/api/alien-translator', error, error.status || 500, {
       question: question?.substring(0, 50),
-      language
+      language,
+      errorMessage: error.message,
+      errorStack: error.stack
     });
 
     if (error.status === 429) {
@@ -147,8 +149,14 @@ IMPORTANT RULES:
       }), { status: 429 });
     }
 
+    // Return more detailed error in development
+    const isDevelopment = process.env.NODE_ENV === 'development';
+
     return new Response(JSON.stringify({
-      error: '🛸 Transmission interrupted! Our alien servers encountered an anomaly.'
+      error: isDevelopment
+        ? `🛸 Error: ${error.message}`
+        : '🛸 Transmission interrupted! Our alien servers encountered an anomaly.',
+      ...(isDevelopment && { details: error.message, stack: error.stack?.split('\n').slice(0, 3) })
     }), { status: 500 });
   }
 }
