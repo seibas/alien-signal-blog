@@ -12,7 +12,6 @@ export function useTranslation(postSlug, originalContent, originalTitle) {
   // Translation function
   const translatePost = useCallback(async () => {
     if (isTranslating || !originalContent || !postSlug) {
-      console.log('Skipping translation:', { isTranslating, hasContent: !!originalContent, hasSlug: !!postSlug });
       return;
     }
     
@@ -66,7 +65,6 @@ export function useTranslation(postSlug, originalContent, originalTitle) {
             timestamp: Date.now(),
           };
           localStorage.setItem(`post_${postSlug}_it`, JSON.stringify(cacheData));
-          console.log('Translation cached for:', postSlug);
         }
       } else {
         throw new Error(data.error || 'Translation failed');
@@ -84,14 +82,12 @@ export function useTranslation(postSlug, originalContent, originalTitle) {
     if (!postSlug) return;
     
     const cached = localStorage.getItem(`post_${postSlug}_it`);
-    console.log('Checking cache for:', postSlug, 'Found:', !!cached);
     
     if (cached) {
       try {
         const parsed = JSON.parse(cached);
         setTranslatedContent(parsed.content);
         setTranslatedTitle(parsed.title);
-        console.log('Loaded cached translation for:', postSlug);
       } catch (err) {
         console.error('Failed to load cached translation:', err);
         // If cache is corrupted, fetch new translation
@@ -99,7 +95,6 @@ export function useTranslation(postSlug, originalContent, originalTitle) {
       }
     } else {
       // No cache, need to translate
-      console.log('No cache found, starting translation');
       translatePost();
     }
   }, [postSlug, translatePost]);
@@ -109,7 +104,6 @@ export function useTranslation(postSlug, originalContent, originalTitle) {
     if (!postSlug) return;
     
     const saved = localStorage.getItem('blog_language') || 'en';
-    console.log('Initial language:', saved, 'for post:', postSlug);
     setLanguage(saved);
     
     // Load cached translation if exists
@@ -124,7 +118,6 @@ export function useTranslation(postSlug, originalContent, originalTitle) {
     
     const handleLanguageChange = (event) => {
       const newLang = event.detail;
-      console.log('Language changed to:', newLang, 'for post:', postSlug);
       setLanguage(newLang);
       
       if (newLang === 'it') {

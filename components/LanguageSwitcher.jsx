@@ -9,7 +9,6 @@ export default function LanguageSwitcher({ onLanguageChange }) {
   useEffect(() => {
     // Load saved preference
     const saved = localStorage.getItem('blog_language') || 'en';
-    console.log('LanguageSwitcher: Initial language:', saved);
     setLanguage(saved);
     if (onLanguageChange) {
       onLanguageChange(saved);
@@ -18,7 +17,6 @@ export default function LanguageSwitcher({ onLanguageChange }) {
 
   const toggleLanguage = () => {
     const newLang = language === 'en' ? 'it' : 'en';
-    console.log('LanguageSwitcher: Toggling language from', language, 'to', newLang);
     setLanguage(newLang);
     localStorage.setItem('blog_language', newLang);
     
@@ -27,7 +25,6 @@ export default function LanguageSwitcher({ onLanguageChange }) {
     }
     
     // Dispatch custom event for other components to listen
-    console.log('LanguageSwitcher: Dispatching languageChanged event with:', newLang);
     window.dispatchEvent(new CustomEvent('languageChanged', { detail: newLang }));
   };
 

@@ -10,6 +10,27 @@ import { playAlienSound } from '@/lib/alienSound';
 import { toast } from '@/lib/toast';
 
 export default function NewPostForm({ onCancel }) {
+  // Generate URL-safe slug from title
+  const generateSlug = (title) => {
+    return title
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '') // Remove special characters
+      .replace(/\s+/g, '-')      // Replace spaces with hyphens
+      .replace(/-+/g, '-')       // Replace multiple hyphens with single
+      .replace(/^-|-$/g, '');    // Remove leading/trailing hyphens
+  };
+
+  // Sanitize slug input to ensure it's URL-safe
+  const sanitizeSlug = (slug) => {
+    return slug
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w-]/g, '-')   // Replace invalid chars with hyphen
+      .replace(/-+/g, '-')       // Replace multiple hyphens with single
+      .replace(/^-|-$/g, '');    // Remove leading/trailing hyphens
+  };
+
     // Insert image markdown at the cursor or end of the last text block
     function handleImageInsert(url) {
       setNewPost((prev) => {
@@ -110,9 +131,6 @@ export default function NewPostForm({ onCancel }) {
         blocks: newPost.blocks
       };
 
-      console.log('Sending post data:', postData);
-      console.log('Blocks:', newPost.blocks);
-
       const response = await fetch('/api/posts/create', {
         method: 'POST',
         headers: {
@@ -122,7 +140,6 @@ export default function NewPostForm({ onCancel }) {
       });
 
       const data = await response.json();
-      console.log('API response:', data);
 
       if (response.ok) {
         playAlienSound();
@@ -165,10 +182,20 @@ export default function NewPostForm({ onCancel }) {
           <input
             type="text"
             value={newPost.slug}
-            onChange={(e) => setNewPost({...newPost, slug: e.target.value})}
+            onChange={(e) => setNewPost({...newPost, slug: sanitizeSlug(e.target.value)})}
             placeholder="log-003-my-journey"
             className="edit-input"
           />
+          {newPost.title && !newPost.slug && (
+            <button 
+              type="button"
+              className="btn btnGhost"
+              onClick={() => setNewPost({...newPost, slug: generateSlug(newPost.title)})}
+              style={{ marginTop: '8px', fontSize: '12px' }}
+            >
+              🔗 Generate from title
+            </button>
+          )}
         </div>
 
         <div className="edit-section">
@@ -196,7 +223,15 @@ export default function NewPostForm({ onCancel }) {
           <input
             type="text"
             value={newPost.title}
-            onChange={(e) => setNewPost({...newPost, title: e.target.value})}
+            onChange={(e) => {
+              const title = e.target.value;
+              setNewPost({
+                ...newPost, 
+                title,
+                // Auto-generate slug from title if slug is empty
+                slug: newPost.slug === '' ? generateSlug(title) : newPost.slug
+              });
+            }}
             placeholder="LOG 003: My Amazing Journey"
             className="edit-input edit-title"
           />

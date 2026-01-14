@@ -13,10 +13,21 @@ export default function BlogPostPage({ params }) {
     fetch(`/api/posts/list?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
-        console.log('Fetched posts:', data.posts?.length, 'Looking for slug:', params.slug);
+        console.log('=== POST DEBUG ===');
+        console.log('Total posts fetched:', data.posts?.length);
+        console.log('Looking for slug:', params.slug);
+        console.log('All slugs in database:', data.posts?.map(p => p.slug));
         if (data.posts) {
           const foundPost = data.posts.find(p => p.slug === params.slug);
-          console.log('Found post:', foundPost ? foundPost.slug : 'NOT FOUND');
+          console.log('Found post:', foundPost ? foundPost.title : 'NOT FOUND');
+          if (foundPost) {
+            console.log('Post structure:', { 
+              hasBlocks: !!foundPost.blocks, 
+              hasContent: !!foundPost.content,
+              blocksLength: foundPost.blocks?.length,
+              contentLength: foundPost.content?.length 
+            });
+          }
           setPost(foundPost || null);
         }
         setLoading(false);

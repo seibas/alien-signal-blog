@@ -6,9 +6,6 @@ export async function POST(request) {
     const body = await request.json();
     const { slug, title, date, readTime, tags, excerpt, blocks } = body;
 
-    // Debug log to see what's received
-    console.log('Received post data:', { slug, title, date, readTime, tags, excerpt, blocksCount: blocks?.length });
-
     // Validate required fields
     if (!slug || !title || !date || !readTime || !tags || !excerpt || !blocks || blocks.length === 0) {
       const missing = [];
