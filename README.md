@@ -2,6 +2,8 @@
 
 A futuristic coding blog with Italian translation support.
 
+🚀 **Status**: Deployed and running with all posts!
+
 ## Run
 ```bash
 npm install
