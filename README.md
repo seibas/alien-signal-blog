@@ -1,5 +1,7 @@
 # Alien Signal Blog (Next.js)
 
+A futuristic coding blog with Italian translation support.
+
 ## Run
 ```bash
 npm install
