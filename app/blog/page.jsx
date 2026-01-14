@@ -15,6 +15,25 @@ export default function BlogIndex() {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
 
+  const handleFixSlugs = async () => {
+    if (!confirm('Fix all invalid slugs? This will update posts with spaces/special characters in their URLs.')) return;
+    
+    try {
+      const response = await fetch('/api/posts/fix-slugs', { method: 'POST' });
+      const data = await response.json();
+      
+      if (data.success) {
+        toast.success(`Fixed ${data.fixes?.length || 0} posts!`);
+        fetchPosts();
+      } else {
+        toast.error('Failed to fix slugs');
+      }
+    } catch (error) {
+      console.error('Error fixing slugs:', error);
+      toast.error('Error fixing slugs');
+    }
+  };
+
   useEffect(() => {
     // Check admin status
     const adminStatus = sessionStorage.getItem('admin_authenticated') === 'true';
@@ -121,6 +140,14 @@ export default function BlogIndex() {
                   </>
                 ) : (
                   <>
+                    <button 
+                      className="btn btnGhost"
+                      onClick={handleFixSlugs}
+                      title="Fix invalid slugs"
+                      style={{ padding: '8px 16px', fontSize: '14px' }}
+                    >
+                      🔧 Fix Slugs
+                    </button>
                     <button 
                       className="btn btnGhost"
                       onClick={() => setDeleteMode(true)}
