@@ -9,6 +9,13 @@ const anthropic = new Anthropic({
 });
 
 export async function POST(req) {
+  // Check if API key is configured
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return new Response(JSON.stringify({
+      error: '🛸 Configuration Error: ANTHROPIC_API_KEY is not set. Please add it in Vercel Dashboard → Settings → Environment Variables.'
+    }), { status: 500 });
+  }
+
   if (req.method && req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
   }
