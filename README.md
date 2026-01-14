@@ -2,7 +2,7 @@
 
 A futuristic coding blog with Italian translation support.
 
-🚀 **Status**: Live and fully operational!
+🚀 **Status**: Live with all features configured!
 
 ## Run
 ```bash
