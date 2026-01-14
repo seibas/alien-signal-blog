@@ -14,9 +14,7 @@ export default function AlienCodeTranslator() {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [conversationHistory, setConversationHistory] = useState([]);
   const [copySuccess, setCopySuccess] = useState(false);
-  const [demoMode, setDemoMode] = useState(true); // Start in demo mode
   const responseRef = useRef(null);
 
   const handleTranslate = async () => {
@@ -32,54 +30,17 @@ export default function AlienCodeTranslator() {
     setResponse(null);
 
     try {
-      if (demoMode) {
-        // Use demo responses
-        const data = await translateQuestionDemo(question, language);
-        setResponse(data);
-      } else {
-        // Use real API
-        const res = await fetch('/api/alien-translator', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            question, 
-            language,
-            userHistory: conversationHistory 
-          })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || 'Translation failed');
-        }
-
-        setResponse(data);
-        
-        // Update conversation history
-        setConversationHistory(prev => [
-          ...prev,
-          { role: 'user', content: question },
-          { role: 'assistant', content: data.rawResponse }
-        ]);
-      }
-
+      // Always use demo responses - no API needed!
+      const data = await translateQuestionDemo(question, language);
+      setResponse(data);
     } catch (err) {
       // Log the error
       logUserActionError('alien-translator', err, {
         question: question.substring(0, 50),
-        language,
-        demoMode
+        language
       });
 
-      // More specific error messages
-      if (err.message.includes('fetch')) {
-        setError('🛸 Cannot reach alien servers. Check your internet connection!');
-      } else if (err.message.includes('bandwidth')) {
-        setError(err.message); // Rate limit message from API
-      } else {
-        setError(err.message || '🛸 Transmission interrupted! Try again.');
-      }
+      setError('🛸 Transmission error! Please try again.');
     } finally {
       setLoading(false);
     }
@@ -96,11 +57,16 @@ export default function AlienCodeTranslator() {
   };
 
   const exampleQuestions = [
-    "How do I debounce user input in React?",
-    "Explain async/await like I'm a space explorer",
-    "Show me a custom React hook for API calls",
-    "What's the difference between map and forEach?",
-    "How do I optimize React performance?"
+    "Explain async/await",
+    "How do React hooks work?",
+    "What is a closure?",
+    "Show me array map vs forEach",
+    "How to use destructuring?",
+    "Explain spread operator",
+    "Show me useEffect examples",
+    "How to handle events in React?",
+    "What is localStorage?",
+    "Explain template literals"
   ];
 
   return (
@@ -115,28 +81,12 @@ export default function AlienCodeTranslator() {
         <div className="header-icon">🛸</div>
         <h2 className="header-title">Alien Code Translator</h2>
         <p className="header-subtitle">
-          Learn to code through cosmic metaphors and alien wisdom
+          Learn coding through cosmic metaphors - 15+ topics, always free, no limits!
         </p>
       </div>
 
       {/* Input Section */}
       <div className="translator-input">
-        {/* Demo Mode Toggle - Better Position */}
-        <div className="demo-mode-container">
-          <label className="demo-mode-label">
-            <input
-              type="checkbox"
-              checked={demoMode}
-              onChange={(e) => setDemoMode(e.target.checked)}
-            />
-            <span>{demoMode ? '🎮 Demo Mode (Free)' : '🤖 AI Mode (API Key Required)'}</span>
-          </label>
-          {demoMode && (
-            <span className="demo-mode-hint">
-              Try: "async", "hooks", or "debounce"
-            </span>
-          )}
-        </div>
         <div className="input-controls">
           <select 
             value={language}
@@ -150,10 +100,6 @@ export default function AlienCodeTranslator() {
             <option value="react">React/JSX</option>
             <option value="css">CSS</option>
           </select>
-
-          <div className="input-badge">
-            {conversationHistory.length / 2} transmissions sent
-          </div>
         </div>
 
         <div className="input-wrapper">
@@ -191,19 +137,6 @@ export default function AlienCodeTranslator() {
               </>
             )}
           </button>
-
-          {conversationHistory.length > 0 && (
-            <button
-              onClick={() => {
-                setConversationHistory([]);
-                setResponse(null);
-                setQuestion('');
-              }}
-              className="reset-button"
-            >
-              🔄 New Conversation
-            </button>
-          )}
         </div>
 
         {/* Example Questions */}
@@ -235,24 +168,6 @@ export default function AlienCodeTranslator() {
       {/* Response Display */}
       {response && (
         <div ref={responseRef} className="translator-response">
-          {/* Demo Mode Banner */}
-          {response.isDemoMode && (
-            <div style={{
-              background: 'linear-gradient(135deg, rgba(0, 255, 140, 0.1), rgba(0, 255, 255, 0.1))',
-              border: '1px solid rgba(0, 255, 140, 0.3)',
-              borderRadius: '12px',
-              padding: '16px',
-              marginBottom: '24px',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '24px', marginBottom: '8px' }}>🎮</div>
-              <div style={{ fontWeight: 600, marginBottom: '4px' }}>Demo Mode Active</div>
-              <div style={{ fontSize: '14px', color: '#888' }}>
-                This is a pre-written response. Toggle AI Mode above for custom responses to any question!
-              </div>
-            </div>
-          )}
-          
           {/* Alien Insight */}
           <section className="response-section insight-section">
             <h3 className="section-title">
