@@ -1,101 +1,137 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function ReadingModeToggle() {
+  const pathname = usePathname();
   const [isReadingMode, setIsReadingMode] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isIdle, setIsIdle] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Only render after client-side mount to avoid hydration mismatch
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  // Only show on blog post pages (e.g., /blog/my-post)
+  const isOnBlogPost = pathname?.startsWith('/blog/') && pathname !== '/blog';
 
-  // Load saved preference
+  // Initialize reading mode from localStorage
   useEffect(() => {
-    if (!isMounted) return;
-    
-    try {
-      const saved = localStorage.getItem('readingMode');
-      if (saved === 'true') {
-        document.documentElement.classList.add('reading-mode');
-        setIsReadingMode(true);
-      }
-    } catch (error) {
-      console.error('Reading mode error:', error);
+    const saved = localStorage.getItem('readingMode');
+    if (saved === 'true') {
+      setIsReadingMode(true);
+      document.documentElement.classList.add('reading-mode');
     }
     
-    // Cleanup: Remove reading mode when leaving the page
-    return () => {
-      document.documentElement.classList.remove('reading-mode');
-      localStorage.removeItem('readingMode');
-    };
-  }, [isMounted]);
+    // Show button after page load
+    const timer = setTimeout(() => setIsVisible(true), 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
-  // Keyboard shortcut: Ctrl/Cmd + Shift + R
+  // Handle scroll - hide button when scrolling
   useEffect(() => {
-    if (!isMounted) return;
+    let scrollTimer;
+    let idleTimer;
     
-    const handleKeyboard = (e) => {
+    const handleScroll = () => {
+      // Hide button when scrolling
+      setIsVisible(false);
+      setIsIdle(false);
+      
+      // Clear existing timers
+      clearTimeout(scrollTimer);
+      clearTimeout(idleTimer);
+      
+      // Show button again after 1 second of no scrolling
+      scrollTimer = setTimeout(() => {
+        setIsVisible(true);
+        
+        // Fade to 30% after 10 seconds of being still
+        idleTimer = setTimeout(() => {
+          setIsIdle(true);
+        }, 10000);
+      }, 1000);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    
+    // Initial idle timer
+    idleTimer = setTimeout(() => {
+      setIsIdle(true);
+    }, 10000);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimer);
+      clearTimeout(idleTimer);
+    };
+  }, []);
+
+  // Handle mouse movement near button - wake it up
+  const handleMouseEnter = () => {
+    setIsIdle(false);
+  };
+
+  // Toggle reading mode with smooth transition
+  const toggleReadingMode = () => {
+    setIsTransitioning(true);
+    
+    // Start transition
+    setTimeout(() => {
+      const newMode = !isReadingMode;
+      setIsReadingMode(newMode);
+      
+      // Save preference
+      localStorage.setItem('readingMode', newMode.toString());
+      
+      // Toggle class on html element
+      if (newMode) {
+        document.documentElement.classList.add('reading-mode');
+      } else {
+        document.documentElement.classList.remove('reading-mode');
+      }
+      
+      // End transition
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 600);
+    }, 150);
+  };
+
+  // Keyboard shortcut: Cmd/Ctrl + Shift + R
+  useEffect(() => {
+    const handleKeyPress = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'r') {
         e.preventDefault();
         toggleReadingMode();
       }
     };
 
-    document.addEventListener('keydown', handleKeyboard);
-    return () => document.removeEventListener('keydown', handleKeyboard);
-  }, [isMounted]);
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [isReadingMode]);
 
-  // Don't render until mounted on client
-  if (!isMounted) {
-    return null;
-  }
-
-  const toggleReadingMode = () => {
-    // Show transition overlay
-    setShowOverlay(true);
-
-    setTimeout(() => {
-      const html = document.documentElement;
-      const newMode = !isReadingMode;
-
-      if (newMode) {
-        html.classList.add('reading-mode');
-      } else {
-        html.classList.remove('reading-mode');
-      }
-
-      setIsReadingMode(newMode);
-      
-      try {
-        localStorage.setItem('readingMode', newMode.toString());
-      } catch (error) {
-        console.error('Failed to save reading mode:', error);
-      }
-
-      // Hide overlay after animation
-      setTimeout(() => {
-        setShowOverlay(false);
-      }, 600);
-    }, 150);
-  };
+  // Don't render if not on a blog post
+  if (!isOnBlogPost) return null;
 
   return (
     <>
-      {/* Transition Overlay */}
-      <div className={`reading-transition-overlay ${showOverlay ? 'active' : ''}`} />
+      {/* Transition overlay */}
+      <div className={`reading-mode-transition ${isTransitioning ? 'active' : ''}`} />
 
-      {/* Toggle Button */}
+      {/* Floating button */}
       <button
-        className="reading-mode-toggle"
+        className={`reading-mode-toggle ${isVisible ? 'visible' : ''} ${isIdle ? 'idle' : ''}`}
         onClick={toggleReadingMode}
-        aria-label={isReadingMode ? 'Switch to dark mode' : 'Switch to reading mode'}
-        title={isReadingMode ? 'Dark Mode (Ctrl+Shift+R)' : 'Reading Mode (Ctrl+Shift+R)'}
+        onMouseEnter={handleMouseEnter}
+        onFocus={handleMouseEnter}
+        aria-label={isReadingMode ? 'Exit reading mode' : 'Enter reading mode'}
+        title={isReadingMode ? 'Exit reading mode' : 'Enter reading mode (Ctrl+Shift+R)'}
       >
-        <span className="toggle-icon">{isReadingMode ? '🌙' : '📖'}</span>
-        <span className="toggle-tooltip">{isReadingMode ? 'Dark' : 'Read'}</span>
+        <span className="toggle-icon" aria-hidden="true">
+          {isReadingMode ? '🌙' : '📖'}
+        </span>
+        <span className="toggle-tooltip">
+          {isReadingMode ? 'Dark' : 'Read'}
+        </span>
       </button>
     </>
   );
