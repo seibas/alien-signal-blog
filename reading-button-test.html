@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Button Mobile Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #020304;
+            color: #E8E9ED;
+            padding: 20px;
+            min-height: 200vh; /* Make it scrollable */
+        }
+        
+        h1 {
+            color: #00FF41;
+            margin-bottom: 20px;
+        }
+        
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        
+        p {
+            margin-bottom: 20px;
+        }
+        
+        .status {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 255, 65, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            z-index: 1001;
+        }
+        
+        /* THE READING BUTTON - FIXED VERSION */
+        .reading-mode-toggle {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            left: auto !important; /* CRITICAL FIX - override any left value */
+            width: 56px;
+            height: 56px;
+            background: rgba(0, 255, 65, 0.95);
+            border: 2px solid rgba(0, 255, 65, 0.3);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            cursor: pointer;
+            z-index: 998;
+            box-shadow: 0 4px 20px rgba(0, 255, 65, 0.4);
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+            animation: bounce-in 0.6s ease;
+            border: none; /* Remove default button border */
+        }
+        
+        @keyframes bounce-in {
+            0% {
+                transform: translateX(100px) scale(0.8);
+            }
+            50% {
+                transform: translateX(-5px) scale(1.05);
+            }
+            100% {
+                transform: translateX(0) scale(1);
+            }
+        }
+        
+        .reading-mode-toggle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 255, 65, 0.6);
+            transform: translate(-50%, -50%);
+            animation: pulse-ring 2s ease-out infinite;
+        }
+        
+        @keyframes pulse-ring {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        .reading-mode-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(0, 255, 65, 0.6);
+        }
+        
+        .reading-mode-toggle:active {
+            transform: scale(0.95);
+        }
+        
+        .toggle-icon {
+            font-size: 1.5rem;
+            line-height: 1;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+        
+        .toggle-tooltip {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #020304;
+        }
+        
+        /* Reading mode colors */
+        html.reading-mode {
+            background: #FBF7F0;
+        }
+        
+        html.reading-mode body {
+            background: #FBF7F0;
+            color: #1A1816;
+        }
+        
+        html.reading-mode h1 {
+            color: #D97706;
+        }
+        
+        html.reading-mode .reading-mode-toggle {
+            background: rgba(255, 107, 53, 0.95);
+            border-color: rgba(255, 107, 53, 0.3);
+            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.4);
+        }
+        
+        html.reading-mode .reading-mode-toggle::before {
+            border-color: rgba(255, 107, 53, 0.6);
+        }
+        
+        html.reading-mode .reading-mode-toggle:hover {
+            box-shadow: 0 6px 30px rgba(255, 107, 53, 0.6);
+        }
+        
+        html.reading-mode .status {
+            background: rgba(217, 119, 6, 0.2);
+            color: #92400E;
+        }
+        
+        /* Mobile specific */
+        @media (max-width: 768px) {
+            .reading-mode-toggle {
+                bottom: 90px;
+                right: 16px;
+                left: auto !important; /* FORCE override on mobile */
+                width: 52px;
+                height: 52px;
+            }
+            
+            .toggle-icon {
+                font-size: 1.4rem;
+            }
+            
+            .toggle-tooltip {
+                font-size: 0.6rem;
+            }
+        }
+        
+        /* Transition overlay */
+        .transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(0px);
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease-in, backdrop-filter 0.15s ease-in;
+        }
+        
+        .transition-overlay.active {
+            opacity: 1;
+            backdrop-filter: blur(8px);
+            animation: transition-pulse 0.6s ease-in-out;
+        }
+        
+        @keyframes transition-pulse {
+            0% {
+                opacity: 0;
+                backdrop-filter: blur(0px);
+            }
+            50% {
+                opacity: 1;
+                backdrop-filter: blur(8px);
+            }
+            100% {
+                opacity: 0;
+                backdrop-filter: blur(0px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="transition-overlay"></div>
+    
+    <div class="status" id="status">
+        Button position: <span id="position">Checking...</span>
+    </div>
+    
+    <div class="content">
+        <h1>📱 Mobile Reading Button Test</h1>
+        
+        <p><strong>Look at the bottom-right corner!</strong></p>
+        <p>You should see a green floating button with 📖</p>
+        
+        <h2 style="color: #FF6B35; margin-top: 40px;">Test Instructions:</h2>
+        <ol style="line-height: 2; margin-left: 20px;">
+            <li>Check the status box (top-left) - it should say the button is "ON SCREEN"</li>
+            <li>Look at bottom-right - you should see the green button with 📖</li>
+            <li>Click the button - it should switch to orange with 🌙</li>
+            <li>Background should change from dark to cream</li>
+            <li>Scroll down/up - button should hide/reappear</li>
+        </ol>
+        
+        <h2 style="color: #00FF41; margin-top: 40px;">Sample Content to Scroll:</h2>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </p>
+        <p>
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+            culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+        <p>
+            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque 
+            laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi 
+            architecto beatae vitae dicta sunt explicabo.
+        </p>
+        <p>
+            Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia 
+            consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+        </p>
+        <p>
+            Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci 
+            velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam 
+            aliquam quaerat voluptatem.
+        </p>
+        <p>
+            Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, 
+            nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in 
+            ea voluptate velit esse quam nihil molestiae consequatur.
+        </p>
+        <p>
+            At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium 
+            voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint 
+            occaecati cupiditate non provident.
+        </p>
+        <p style="margin-bottom: 100px;">
+            Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum 
+            fuga. Et harum quidem rerum facilis est et expedita distinctio.
+        </p>
+    </div>
+    
+    <!-- The reading button -->
+    <button class="reading-mode-toggle" id="readingToggle">
+        <span class="toggle-icon" id="icon">📖</span>
+        <span class="toggle-tooltip" id="label">Read</span>
+    </button>
+    
+    <script>
+        // Check button position
+        function checkPosition() {
+            const btn = document.getElementById('readingToggle');
+            const rect = btn.getBoundingClientRect();
+            const windowWidth = window.innerWidth;
+            const statusEl = document.getElementById('position');
+            
+            const isOnScreen = rect.right <= windowWidth && rect.left >= 0;
+            
+            statusEl.textContent = isOnScreen 
+                ? `✅ ON SCREEN (right: ${Math.round(rect.right)}px, window: ${windowWidth}px)` 
+                : `❌ OFF SCREEN (right: ${Math.round(rect.right)}px, window: ${windowWidth}px)`;
+            
+            statusEl.style.color = isOnScreen ? '#00FF41' : '#FF6B35';
+        }
+        
+        // Toggle reading mode
+        let isReadingMode = false;
+        const btn = document.getElementById('readingToggle');
+        const overlay = document.querySelector('.transition-overlay');
+        const icon = document.getElementById('icon');
+        const label = document.getElementById('label');
+        
+        btn.addEventListener('click', () => {
+            overlay.classList.add('active');
+            
+            setTimeout(() => {
+                isReadingMode = !isReadingMode;
+                
+                if (isReadingMode) {
+                    document.documentElement.classList.add('reading-mode');
+                    icon.textContent = '🌙';
+                    label.textContent = 'Dark';
+                } else {
+                    document.documentElement.classList.remove('reading-mode');
+                    icon.textContent = '📖';
+                    label.textContent = 'Read';
+                }
+                
+                setTimeout(() => {
+                    overlay.classList.remove('active');
+                }, 600);
+            }, 150);
+        });
+        
+        // Initial check
+        checkPosition();
+        
+        // Check on resize
+        window.addEventListener('resize', checkPosition);
+        
+        // Update position every 2 seconds
+        setInterval(checkPosition, 2000);
+        
+        console.log('Test page loaded!');
+        console.log('Window width:', window.innerWidth);
+        console.log('Button element:', btn);
+        console.log('Button position:', btn.getBoundingClientRect());
+    </script>
+</body>
+</html>

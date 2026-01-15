@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 
 export default function ReadingModeToggle() {
   const pathname = usePathname();
+  const [isMounted, setIsMounted] = useState(false);
   const [isReadingMode, setIsReadingMode] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isIdle, setIsIdle] = useState(false);
@@ -13,8 +14,15 @@ export default function ReadingModeToggle() {
   // Only show on blog post pages (e.g., /blog/my-post)
   const isOnBlogPost = pathname?.startsWith('/blog/') && pathname !== '/blog';
 
+  // Mount check to prevent hydration errors
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // Initialize reading mode from localStorage
   useEffect(() => {
+    if (!isMounted) return;
+    
     const saved = localStorage.getItem('readingMode');
     if (saved === 'true') {
       setIsReadingMode(true);
@@ -24,10 +32,12 @@ export default function ReadingModeToggle() {
     // Show button after page load
     const timer = setTimeout(() => setIsVisible(true), 2000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [isMounted]);
 
   // Handle scroll - hide button when scrolling
   useEffect(() => {
+    if (!isMounted) return;
+    
     let scrollTimer;
     let idleTimer;
     
@@ -63,7 +73,7 @@ export default function ReadingModeToggle() {
       clearTimeout(scrollTimer);
       clearTimeout(idleTimer);
     };
-  }, []);
+  }, [isMounted]);
 
   // Handle mouse movement near button - wake it up
   const handleMouseEnter = () => {
@@ -98,6 +108,8 @@ export default function ReadingModeToggle() {
 
   // Keyboard shortcut: Cmd/Ctrl + Shift + R
   useEffect(() => {
+    if (!isMounted) return;
+    
     const handleKeyPress = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'r') {
         e.preventDefault();
@@ -107,10 +119,10 @@ export default function ReadingModeToggle() {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isReadingMode]);
+  }, [isReadingMode, isMounted]);
 
-  // Don't render if not on a blog post
-  if (!isOnBlogPost) return null;
+  // Don't render if not on a blog post or not mounted
+  if (!isOnBlogPost || !isMounted) return null;
 
   return (
     <>
