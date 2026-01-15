@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import SpatialBlurTitle from "./SpatialBlurTitle";
+import { UfoIcon, AlienFriendly, AlienCoding, Rocket, Saturn, PlanetAlien, AlienThinking, UfoSimple } from "./SvgIcons";
 
 export default function PostCard({ post, index = 0 }) {
   // Gradient colors (cycles through these for variety)
@@ -11,8 +12,12 @@ export default function PostCard({ post, index = 0 }) {
     'linear-gradient(135deg, #0A0E1A 0%, #1A1F2E 100%)', // Dark Blue
   ];
   
-  // Pick gradient based on index for variety
+  // SVG icons for variety (matches gradient cycling)
+  const icons = [UfoIcon, AlienFriendly, Rocket, AlienCoding, Saturn, PlanetAlien, AlienThinking, UfoSimple];
+  
+  // Pick gradient and icon based on index for variety
   const defaultGradient = gradients[index % gradients.length];
+  const IconComponent = icons[index % icons.length];
   
   // Truncate excerpt to max 80 characters for cleaner display, skipping image markdown
   const getCleanExcerpt = () => {
@@ -118,7 +123,7 @@ export default function PostCard({ post, index = 0 }) {
               style={{ background: defaultGradient }}
             >
               <div className="gradient-overlay">
-                <span className="default-icon">🛸</span>
+                <IconComponent className="default-icon" />
               </div>
             </div>
           )}
