@@ -13,6 +13,9 @@ export default function ReadingModeToggle() {
 
   // Only show on blog post pages (e.g., /blog/my-post)
   const isOnBlogPost = pathname?.startsWith('/blog/') && pathname !== '/blog';
+  
+  // Debug logging
+  console.log('ReadingModeToggle:', { pathname, isOnBlogPost, isMounted, isVisible });
 
   // Mount check to prevent hydration errors
   useEffect(() => {
@@ -41,13 +44,26 @@ export default function ReadingModeToggle() {
       document.documentElement.classList.add('reading-mode');
     }
     
-    // Show button immediately after mount
+    // Show button immediately after mount - always visible on mobile
+    const isMobile = window.innerWidth <= 768;
     setIsVisible(true);
+    
+    // On mobile, disable idle state
+    if (isMobile) {
+      setIsIdle(false);
+    }
   }, [isMounted]);
 
-  // Handle scroll - hide button when scrolling
+  // Handle scroll - hide button when scrolling (desktop only)
   useEffect(() => {
     if (!isMounted) return;
+    
+    // Skip scroll handling on mobile
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      setIsVisible(true);
+      return;
+    }
     
     let scrollTimer;
     let idleTimer;

@@ -2551,27 +2551,22 @@ body.mobile-menu-open .reading-mode-toggle {
     all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55),
     box-shadow 0.3s ease,
     opacity 0.3s ease;
-  transform: translateX(100px) scale(0.8);
   opacity: 0;
   backdrop-filter: blur(10px);
 }
 
 /* Show button */
 .reading-mode-toggle.visible {
-  transform: translateX(0) scale(1);
   opacity: 1;
   animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 @keyframes bounce-in {
   0% {
-    transform: translateX(100px) scale(0.8);
-  }
-  50% {
-    transform: translateX(-5px) scale(1.05);
+    opacity: 0;
   }
   100% {
-    transform: translateX(0) scale(1);
+    opacity: 1;
   }
 }
 
@@ -2584,7 +2579,6 @@ body.mobile-menu-open .reading-mode-toggle {
 .reading-mode-toggle:hover,
 .reading-mode-toggle:focus {
   opacity: 1 !important;
-  transform: translateX(0) scale(1.1);
   box-shadow: 
     0 6px 30px rgba(0, 255, 65, 0.6),
     0 0 0 8px rgba(0, 255, 65, 0.2);
@@ -2592,7 +2586,7 @@ body.mobile-menu-open .reading-mode-toggle {
 
 /* Active - click feedback */
 .reading-mode-toggle:active {
-  transform: translateX(0) scale(0.95);
+  transform: scale(0.95);
 }
 
 /* Icon */
@@ -2768,6 +2762,18 @@ html.reading-mode p {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Article content wrapper */
+html.reading-mode .articleContent {
+  color: #2D2A27 !important;
+}
+
+/* Article content paragraphs and text */
+html.reading-mode .articleContent p,
+html.reading-mode .articleContent li,
+html.reading-mode .articleContent div {
+  color: #2D2A27 !important;
+}
+
 /* Specific post content paragraphs */
 html.reading-mode .post-content p {
   font-size: 1.125rem !important;
@@ -2804,6 +2810,14 @@ html.reading-mode :not(pre) > code {
 html.reading-mode .post-card,
 html.reading-mode .site-header {
   background: rgba(237, 232, 225, 0.5) !important;
+  border-color: rgba(61, 58, 55, 0.1) !important;
+}
+
+/* Override card/article backgrounds in reading mode */
+html.reading-mode .card,
+html.reading-mode .article,
+html.reading-mode .cardPad {
+  background: #FBF7F0 !important;
   border-color: rgba(61, 58, 55, 0.1) !important;
 }
 
@@ -2883,12 +2897,21 @@ html.reading-mode .site-title {
 
 @media (max-width: 768px) {
   .reading-mode-toggle {
-    bottom: 90px;
-    right: 16px;
-    width: 52px;
-    height: 52px;
+    bottom: 90px !important;
+    right: 16px !important;
+    width: 52px !important;
+    height: 52px !important;
     opacity: 1 !important;
-    transform: translateX(0) scale(1) !important;
+    display: flex !important;
+    z-index: 10001 !important;
+  }
+  
+  /* Force visibility on mobile */
+  .reading-mode-toggle,
+  .reading-mode-toggle.visible,
+  .reading-mode-toggle.idle,
+  .reading-mode-toggle:not(.visible) {
+    opacity: 1 !important;
   }
   
   .toggle-icon {
