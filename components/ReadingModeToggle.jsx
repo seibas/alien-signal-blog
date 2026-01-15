@@ -17,6 +17,12 @@ export default function ReadingModeToggle() {
     } catch (error) {
       console.error('Reading mode error:', error);
     }
+    
+    // Cleanup: Remove reading mode when leaving the page
+    return () => {
+      document.documentElement.classList.remove('reading-mode');
+      localStorage.removeItem('readingMode');
+    };
   }, []);
 
   // Keyboard shortcut: Ctrl/Cmd + Shift + R
