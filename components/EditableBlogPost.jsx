@@ -93,13 +93,22 @@ export default function EditableBlogPost({ post }) {
     });
   }, [post]);
 
-  const handleImageInsert = (imageMarkdown) => {
-    // Insert image markdown at the end of content with proper spacing
-    const currentContent = editedPost.content;
-    const newContent = currentContent 
-      ? `${currentContent}\n\n${imageMarkdown}\n\n`
-      : `${imageMarkdown}\n\n`;
-    setEditedPost({...editedPost, content: newContent});
+  const handleImageInsert = (markdown) => {
+    // Insert image markdown at the end of the last text block
+    setEditedPost((prev) => {
+      const blocks = [...prev.blocks];
+      // Find last text block
+      let idx = blocks.length - 1;
+      while (idx >= 0 && blocks[idx].type !== 'text') idx--;
+      if (idx >= 0) {
+        // Insert image markdown at the end of the last text block
+        blocks[idx].value += `\n${markdown}\n`;
+      } else {
+        // If no text block, add a new one
+        blocks.push({ type: 'text', value: `${markdown}\n` });
+      }
+      return { ...prev, blocks };
+    });
   };
 
   const handleSave = async () => {
@@ -256,6 +265,10 @@ export default function EditableBlogPost({ post }) {
                 className="edit-input"
               />
             </div>
+          </div>
+          <div className="edit-section">
+            <label>📸 Add Images</label>
+            <ImageUpload onImageInsert={handleImageInsert} />
           </div>
           <div className="edit-section">
             <label>Title</label>
