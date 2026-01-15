@@ -2519,168 +2519,15 @@ body.mobile-menu-open {
 }
 
 /* ============================================
-   READING MODE TOGGLE
+   READING MODE TOGGLE - Cute Floating Button
    ============================================ */
 
-/* Reading mode color scheme */
-html.reading-mode {
-  background: #FBF7F0;
-  color: #1A1816;
-}
-
-html.reading-mode body {
-  background: #FBF7F0;
-  color: #1A1816;
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
-  line-height: 1.8;
-}
-
-/* Transition for smooth mode switching */
-html,
-body {
-  transition: background-color 0.6s ease, color 0.6s ease;
-}
-
-/* Adjust cards in reading mode */
-html.reading-mode .card {
-  background: rgba(237, 232, 225, 0.5);
-  border-color: rgba(61, 58, 55, 0.1);
-  box-shadow: 0 2px 8px rgba(29, 26, 22, 0.08);
-}
-
-/* Header adjustments */
-html.reading-mode .header {
-  background: rgba(251, 247, 240, 0.95);
-  border-bottom-color: rgba(61, 58, 55, 0.1);
-}
-
-html.reading-mode .brand {
-  color: #2D2A27;
-}
-
-html.reading-mode .nav a {
-  color: #3D3A37;
-  opacity: 0.9;
-}
-
-html.reading-mode .nav a:hover {
-  color: #D97706;
-  border-color: rgba(217, 119, 6, 0.3);
-  background: rgba(217, 119, 6, 0.05);
-  text-shadow: none;
-}
-
-/* Article content in reading mode */
-html.reading-mode .article,
-html.reading-mode .articleContent {
-  color: #3D3A37;
-}
-
-html.reading-mode .articleContent p {
-  font-size: 1.125rem;
-  font-weight: 450;
-  color: #2D2A27;
-  line-height: 1.8;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-html.reading-mode .articleTitle {
-  color: #2D2A27;
-}
-
-html.reading-mode .articleMeta {
-  color: #78716C;
-}
-
-/* Headings in reading mode */
-html.reading-mode h1,
-html.reading-mode h2,
-html.reading-mode h3,
-html.reading-mode h4,
-html.reading-mode h5,
-html.reading-mode h6 {
-  color: #2D2A27;
-}
-
-/* Buttons in reading mode */
-html.reading-mode .btn {
-  background: #D97706;
-  border-color: #D97706;
-  color: #FFFFFF;
-  font-weight: 600;
-}
-
-html.reading-mode .btn:hover {
-  background: #B45309;
-  border-color: #B45309;
-  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.3);
-}
-
-html.reading-mode .btn:active {
-  background: #92400E;
-  border-color: #92400E;
-}
-
-/* Footer in reading mode */
-html.reading-mode .footer {
-  background: rgba(237, 232, 225, 0.8);
-  border-top-color: rgba(61, 58, 55, 0.1);
-  color: #3D3A37;
-}
-
-html.reading-mode .footerInner {
-  color: #57534E;
-}
-
-/* Post cards in reading mode */
-html.reading-mode .postCard {
-  background: rgba(237, 232, 225, 0.5);
-  border-color: rgba(61, 58, 55, 0.15);
-}
-
-html.reading-mode .postCard:hover {
-  border-color: rgba(217, 119, 6, 0.3);
-  box-shadow: 0 18px 54px rgba(29, 26, 22, 0.15);
-}
-
-html.reading-mode .postTitle {
-  color: #2D2A27;
-}
-
-html.reading-mode .postExcerpt {
-  color: #3D3A37;
-}
-
-html.reading-mode .postMeta {
-  color: #78716C;
-}
-
-/* Code blocks - keep dark theme in reading mode */
-html.reading-mode pre,
-html.reading-mode pre code,
-html.reading-mode .code-block {
-  background: #1E1E1E !important;
-  color: #D4D4D4 !important;
-  border-radius: 8px;
-}
-
-/* Inline code - light style in reading mode */
-html.reading-mode p code,
-html.reading-mode li code,
-html.reading-mode :not(pre) > code {
-  background: #EDE8E1;
-  color: #92400E;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-weight: 500;
-}
-
-/* The Floating Toggle Button */
+/* Floating Button */
 .reading-mode-toggle {
   position: fixed;
   bottom: 80px;
   right: 20px;
+  left: auto; /* IMPORTANT: Override any conflicting left value */
   width: 56px;
   height: 56px;
   background: rgba(0, 255, 65, 0.95);
@@ -2693,15 +2540,23 @@ html.reading-mode :not(pre) > code {
   gap: 2px;
   cursor: pointer;
   z-index: 998;
-  box-shadow: 0 4px 20px rgba(0, 255, 65, 0.4);
-  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 
+    0 4px 20px rgba(0, 255, 65, 0.4),
+    0 0 0 0 rgba(0, 255, 65, 0.4);
+  transition: 
+    all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+    box-shadow 0.3s ease,
+    opacity 0.3s ease;
+  transform: translateX(100px) scale(0.8);
+  opacity: 0;
   backdrop-filter: blur(10px);
+}
+
+/* Show button */
+.reading-mode-toggle.visible {
+  transform: translateX(0) scale(1);
+  opacity: 1;
   animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  
-  /* Touch optimizations */
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  user-select: none;
 }
 
 @keyframes bounce-in {
@@ -2716,8 +2571,50 @@ html.reading-mode :not(pre) > code {
   }
 }
 
-/* Pulsing ring effect */
-.reading-mode-toggle::before {
+/* Idle state - fade to 30% */
+.reading-mode-toggle.idle {
+  opacity: 0.3;
+}
+
+/* Hover/Focus - wake up! */
+.reading-mode-toggle:hover,
+.reading-mode-toggle:focus {
+  opacity: 1 !important;
+  transform: translateX(0) scale(1.1);
+  box-shadow: 
+    0 6px 30px rgba(0, 255, 65, 0.6),
+    0 0 0 8px rgba(0, 255, 65, 0.2);
+}
+
+/* Active - click feedback */
+.reading-mode-toggle:active {
+  transform: translateX(0) scale(0.95);
+}
+
+/* Icon */
+.toggle-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.reading-mode-toggle:hover .toggle-icon {
+  transform: scale(1.1) rotate(-5deg);
+}
+
+/* Tooltip label */
+.toggle-tooltip {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #020304;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* Pulse animation on first appear */
+.reading-mode-toggle.visible::before {
   content: '';
   position: absolute;
   top: 50%;
@@ -2728,7 +2625,6 @@ html.reading-mode :not(pre) > code {
   border: 2px solid rgba(0, 255, 65, 0.6);
   transform: translate(-50%, -50%);
   animation: pulse-ring 2s ease-out infinite;
-  pointer-events: none;
 }
 
 @keyframes pulse-ring {
@@ -2742,52 +2638,31 @@ html.reading-mode :not(pre) > code {
   }
 }
 
-.reading-mode-toggle:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 30px rgba(0, 255, 65, 0.6);
-}
-
-.reading-mode-toggle:active {
-  transform: scale(0.95);
-}
-
-/* Reading mode button styles */
+/* Reading mode active state */
 html.reading-mode .reading-mode-toggle {
   background: rgba(255, 107, 53, 0.95);
   border-color: rgba(255, 107, 53, 0.3);
-  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.4);
+  box-shadow: 
+    0 4px 20px rgba(255, 107, 53, 0.4),
+    0 0 0 0 rgba(255, 107, 53, 0.4);
+}
+
+html.reading-mode .reading-mode-toggle:hover,
+html.reading-mode .reading-mode-toggle:focus {
+  box-shadow: 
+    0 6px 30px rgba(255, 107, 53, 0.6),
+    0 0 0 8px rgba(255, 107, 53, 0.2);
 }
 
 html.reading-mode .reading-mode-toggle::before {
   border-color: rgba(255, 107, 53, 0.6);
 }
 
-html.reading-mode .reading-mode-toggle:hover {
-  box-shadow: 0 6px 30px rgba(255, 107, 53, 0.6);
-}
+/* ============================================
+   TRANSITION OVERLAY - Smooth Morph Effect
+   ============================================ */
 
-/* Button icon and label */
-.toggle-icon {
-  font-size: 1.5rem;
-  line-height: 1;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.toggle-tooltip {
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #020304;
-  font-family: 'Share Tech Mono', monospace;
-}
-
-html.reading-mode .toggle-tooltip {
-  color: #FBF7F0;
-}
-
-/* Transition Overlay */
-.reading-transition-overlay {
+.reading-mode-transition {
   position: fixed;
   top: 0;
   left: 0;
@@ -2798,10 +2673,12 @@ html.reading-mode .toggle-tooltip {
   z-index: 9999;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.15s ease-in, backdrop-filter 0.15s ease-in;
+  transition: 
+    opacity 0.15s ease-in,
+    backdrop-filter 0.15s ease-in;
 }
 
-.reading-transition-overlay.active {
+.reading-mode-transition.active {
   opacity: 1;
   backdrop-filter: blur(8px);
   animation: transition-pulse 0.6s ease-in-out;
@@ -2822,18 +2699,195 @@ html.reading-mode .toggle-tooltip {
   }
 }
 
-/* Mobile adjustments for toggle button */
+/* ============================================
+   READING MODE STYLES - Light Cream Theme
+   ============================================ */
+
+/* Smooth color transitions on all elements */
+html {
+  transition: 
+    background-color 0.6s ease,
+    color 0.6s ease;
+}
+
+body,
+.post-content,
+.post-card,
+.site-header,
+.site-footer {
+  transition: 
+    background-color 0.6s ease,
+    color 0.6s ease,
+    border-color 0.6s ease;
+}
+
+/* Reading mode - Light cream theme */
+html.reading-mode {
+  background-color: #FBF7F0;
+  color: #1A1816;
+}
+
+html.reading-mode body {
+  background-color: #FBF7F0;
+  color: #1A1816;
+}
+
+/* Headers - Keep brand fonts but adjust color */
+html.reading-mode h1,
+html.reading-mode h2,
+html.reading-mode h3,
+html.reading-mode h4,
+html.reading-mode h5,
+html.reading-mode h6 {
+  color: #2D2A27;
+}
+
+/* Links - Warmer orange/brown */
+html.reading-mode a {
+  color: #D97706;
+}
+
+html.reading-mode a:hover {
+  color: #B45309;
+}
+
+/* Post content - Use readable font with better size and weight */
+html.reading-mode .post-content,
+html.reading-mode .post-card-excerpt,
+html.reading-mode p {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: 1.125rem; /* 18px - larger for readability */
+  font-weight: 450; /* Slightly bolder for better readability */
+  line-height: 1.8;
+  color: #2D2A27; /* Darker for better contrast */
+  -webkit-font-smoothing: antialiased; /* Smoother rendering */
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Specific post content paragraphs */
+html.reading-mode .post-content p {
+  font-size: 1.125rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Code blocks - KEEP ORIGINAL STYLES, don't change! */
+html.reading-mode pre,
+html.reading-mode pre code,
+html.reading-mode .code-block,
+html.reading-mode .hljs {
+  /* Reset to dark theme - don't change code colors! */
+  background: #1E1E1E !important;
+  color: #D4D4D4 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  font-family: 'Fira Code', 'Consolas', monospace !important;
+  font-size: 0.95rem !important;
+}
+
+/* Inline code - slightly different from blocks */
+html.reading-mode p code,
+html.reading-mode li code,
+html.reading-mode :not(pre) > code {
+  background: #EDE8E1;
+  color: #92400E;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+/* Cards and containers */
+html.reading-mode .post-card,
+html.reading-mode .site-header {
+  background: rgba(237, 232, 225, 0.5);
+  border-color: rgba(61, 58, 55, 0.1);
+}
+
+/* Footer - Better colors for reading mode */
+html.reading-mode .site-footer {
+  background: rgba(237, 232, 225, 0.8);
+  border-color: rgba(61, 58, 55, 0.1);
+  color: #3D3A37;
+}
+
+html.reading-mode .site-footer a {
+  color: #D97706;
+}
+
+html.reading-mode .site-footer a:hover {
+  color: #B45309;
+}
+
+/* Buttons and interactive elements - Better contrast */
+html.reading-mode button:not(.reading-mode-toggle):not(.mobile-menu-toggle),
+html.reading-mode .btn,
+html.reading-mode .back-to-top {
+  background: #D97706;
+  color: #FFFFFF;
+  border-color: #B45309;
+  font-weight: 600;
+}
+
+html.reading-mode button:not(.reading-mode-toggle):not(.mobile-menu-toggle):hover,
+html.reading-mode .btn:hover,
+html.reading-mode .back-to-top:hover {
+  background: #B45309;
+  color: #FFFFFF;
+}
+
+/* Input fields */
+html.reading-mode input,
+html.reading-mode textarea,
+html.reading-mode select {
+  background: #FFFFFF;
+  color: #1A1816;
+  border-color: #D4CFC7;
+}
+
+/* Shadows - Softer for light mode */
+html.reading-mode .post-card,
+html.reading-mode .site-header {
+  box-shadow: 0 2px 8px rgba(29, 26, 22, 0.08);
+}
+
+/* Accent elements - Use warm tones */
+html.reading-mode .tag,
+html.reading-mode .badge {
+  background: rgba(217, 119, 6, 0.1);
+  color: #D97706;
+  border-color: rgba(217, 119, 6, 0.2);
+  font-weight: 600;
+}
+
+/* Secondary text - Better contrast */
+html.reading-mode .post-card-meta,
+html.reading-mode .reading-time,
+html.reading-mode time {
+  color: #57534E;
+  font-weight: 500;
+}
+
+/* Preserve logo and brand elements */
+html.reading-mode .logo,
+html.reading-mode .site-title {
+  filter: brightness(0.3) saturate(1.2);
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
 @media (max-width: 768px) {
   .reading-mode-toggle {
-    bottom: 20px;
+    bottom: 90px;
     right: 16px;
+    left: auto !important; /* Force override any left value */
     width: 52px;
     height: 52px;
-    z-index: 1002; /* Above mobile menu */
   }
   
   .toggle-icon {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
   }
   
   .toggle-tooltip {
@@ -2841,17 +2895,57 @@ html.reading-mode .toggle-tooltip {
   }
 }
 
-/* Respect reduced motion preference */
-@media (prefers-reduced-motion: reduce) {
+/* For very small screens */
+@media (max-width: 380px) {
   .reading-mode-toggle {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* Tablet landscape - adjust position */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .reading-mode-toggle {
+    right: 24px;
+  }
+}
+
+/* ============================================
+   REDUCED MOTION SUPPORT
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .reading-mode-toggle,
+  .reading-mode-transition,
+  html,
+  body,
+  .toggle-icon {
+    animation: none !important;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+  }
+  
+  .reading-mode-toggle.visible {
     animation: none;
+    transform: translateX(0) scale(1);
   }
   
   .reading-mode-toggle::before {
-    animation: none;
+    display: none;
+  }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+  .reading-mode-toggle {
+    display: none;
   }
   
-  .reading-transition-overlay.active {
-    animation: none;
+  /* Always use reading mode colors for printing */
+  html {
+    background-color: #FFFFFF;
+    color: #1A1816;
   }
 }
