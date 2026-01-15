@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
+import DOMPurify from 'isomorphic-dompurify';
 import TypingAnimation from './TypingAnimation';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -12,6 +13,7 @@ import AuthorBio from './AuthorBio';
 import AvatarUploadWidget from './AvatarUploadWidget';
 import { playAlienSound } from '@/lib/alienSound';
 import { toast } from '@/lib/toast';
+import { logger } from '@/lib/logger';
 import SpatialBlurTitle from './SpatialBlurTitle';
 import { useTranslation } from '@/hooks/useTranslation';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -139,8 +141,8 @@ export default function EditableBlogPost({ post }) {
         toast.error('Failed to save: ' + (data.error || 'Unknown error'));
       }
     } catch (error) {
-      console.error('Save error:', error);
-      toast.error('Failed to save changes. Check console for details.');
+      logger.error('Save error:', error);
+      toast.error('Failed to save changes.');
     }
   };
 
@@ -180,7 +182,7 @@ export default function EditableBlogPost({ post }) {
         toast.error(`Failed to delete: ${data.error}`);
       }
     } catch (error) {
-      console.error('Delete error:', error);
+      logger.error('Delete error:', error);
       toast.error('Failed to delete post');
     }
   };
@@ -636,7 +638,12 @@ export default function EditableBlogPost({ post }) {
                     }
                     return part.content ? (
                       <TypingAnimation key={partIdx} speed={8}>
-                        {part.content}
+                        <div dangerouslySetInnerHTML={{ 
+                          __html: DOMPurify.sanitize(part.content, {
+                            ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'code', 'pre'],
+                            ALLOWED_ATTR: ['href', 'target', 'rel']
+                          })
+                        }} />
                       </TypingAnimation>
                     ) : null;
                   })}

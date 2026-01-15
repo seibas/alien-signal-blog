@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import EditableBlogPost from "@/components/EditableBlogPost";
+import { logger } from "@/lib/logger";
 
 export default function BlogPostPage({ params }) {
   const [post, setPost] = useState(null);
@@ -13,15 +14,15 @@ export default function BlogPostPage({ params }) {
     fetch(`/api/posts/list?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
-        console.log('=== POST DEBUG ===');
-        console.log('Total posts fetched:', data.posts?.length);
-        console.log('Looking for slug:', params.slug);
-        console.log('All slugs in database:', data.posts?.map(p => p.slug));
+        logger.debug('=== POST DEBUG ===');
+        logger.debug('Total posts fetched:', data.posts?.length);
+        logger.debug('Looking for slug:', params.slug);
+        logger.debug('All slugs in database:', data.posts?.map(p => p.slug));
         if (data.posts) {
           const foundPost = data.posts.find(p => p.slug === params.slug);
-          console.log('Found post:', foundPost ? foundPost.title : 'NOT FOUND');
+          logger.debug('Found post:', foundPost ? foundPost.title : 'NOT FOUND');
           if (foundPost) {
-            console.log('Post structure:', { 
+            logger.debug('Post structure:', { 
               hasBlocks: !!foundPost.blocks, 
               hasContent: !!foundPost.content,
               blocksLength: foundPost.blocks?.length,
@@ -33,7 +34,7 @@ export default function BlogPostPage({ params }) {
         setLoading(false);
       })
       .catch(err => {
-        console.error('Error fetching post:', err);
+        logger.error('Error fetching post:', err);
         setLoading(false);
       });
   }, [params.slug]);

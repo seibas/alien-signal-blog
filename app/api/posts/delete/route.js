@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server';
 import { deletePost } from '@/lib/db';
+import { applyRateLimit, rateLimitResponse } from '@/lib/rateLimit';
 
 export async function DELETE(request) {
+  // Apply rate limiting
+  const rateLimitResult = await applyRateLimit(request);
+  if (!rateLimitResult.success) {
+    return rateLimitResponse(rateLimitResult.reset);
+  }
+
   try {
     const { slug } = await request.json();
 

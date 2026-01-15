@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { toast } from '@/lib/toast';
+import { logger } from '@/lib/logger';
 
 export default function ImageUpload({ onImageInsert }) {
   const [isDragging, setIsDragging] = useState(false);
@@ -68,7 +69,7 @@ export default function ImageUpload({ onImageInsert }) {
           toast.error(`Failed to upload ${file.name}: ${errorMsg}${helpText}`);
         }
       } catch (error) {
-        console.error('Upload error:', error);
+        logger.error('Upload error:', error);
         toast.error(`Failed to upload ${file.name}: ${error.message}`);
       }
     }

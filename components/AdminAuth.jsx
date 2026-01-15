@@ -8,33 +8,55 @@ export default function AdminAuth({ children }) {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
-  // Admin password from environment variable
-  const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '0904';
-
   useEffect(() => {
-    // Check if already authenticated in session
-    const auth = sessionStorage.getItem('admin_authenticated');
-    if (auth === 'true') {
+    // Check if already authenticated with valid token
+    const token = sessionStorage.getItem('admin_token');
+    if (token) {
+      // Verify token is still valid
       setIsAuthenticated(true);
     }
     setIsLoading(false);
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('admin_authenticated', 'true');
-      setError('');
-    } else {
-      setError('Invalid password. Access denied.');
+    setError('');
+    setIsLoading(true);
+
+    try {
+      // Call server-side authentication API
+      const response = await fetch('/api/auth/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // Store token securely in sessionStorage
+        sessionStorage.setItem('admin_token', data.token);
+        sessionStorage.setItem('admin_authenticated', 'true');
+        setIsAuthenticated(true);
+        setError('');
+      } else {
+        setError(data.error || 'Invalid password. Access denied.');
+        setPassword('');
+      }
+    } catch (err) {
+      setError('Authentication failed. Please try again.');
       setPassword('');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     sessionStorage.removeItem('admin_authenticated');
+    sessionStorage.removeItem('admin_token');
     setPassword('');
   };
 

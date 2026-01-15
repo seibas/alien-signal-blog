@@ -8,6 +8,7 @@ import Link from 'next/link';
 import ImageUpload from './ImageUpload';
 import { playAlienSound } from '@/lib/alienSound';
 import { toast } from '@/lib/toast';
+import { logger } from '@/lib/logger';
 
 export default function NewPostForm({ onCancel }) {
   // Generate URL-safe slug from title
@@ -157,12 +158,12 @@ export default function NewPostForm({ onCancel }) {
         const errorMsg = data.missing 
           ? `Missing fields: ${data.missing.join(', ')}` 
           : (data.error || 'Unknown error');
-        console.error('Create failed:', errorMsg, data);
+        logger.error('Create failed:', errorMsg, data);
         toast.error('Failed: ' + errorMsg);
       }
     } catch (error) {
-      console.error('Create error:', error);
-      toast.error('Failed to create post. Check console for details.');
+      logger.error('Create error:', error);
+      toast.error('Failed to create post.');
     }
   };
 

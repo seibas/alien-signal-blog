@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createPost } from '@/lib/db';
+import { applyRateLimit, rateLimitResponse } from '@/lib/rateLimit';
 
 export async function POST(request) {
+  // Apply rate limiting
+  const rateLimitResult = await applyRateLimit(request);
+  if (!rateLimitResult.success) {
+    return rateLimitResponse(rateLimitResult.reset);
+  }
+
   try {
     const body = await request.json();
     const { slug, title, date, readTime, tags, excerpt, content, blocks } = body;
