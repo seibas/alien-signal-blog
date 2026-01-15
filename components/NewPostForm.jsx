@@ -58,6 +58,9 @@ export default function NewPostForm({ onCancel }) {
     blocks: [],
   });
 
+  // Track raw slug input before sanitization
+  const [rawSlug, setRawSlug] = useState('');
+
   // Handlers for multi-block editing
   function handleBlockChange(idx, value) {
     setNewPost((prev) => {
@@ -108,27 +111,29 @@ export default function NewPostForm({ onCancel }) {
   }
 
   const handleCreate = async () => {
-    if (!newPost.slug || !newPost.title || !newPost.excerpt || !newPost.tags || newPost.blocks.length === 0) {
-      toast.error('Please fill in all fields');
-      return;
-    }
-
-    // Validate that date and readTime are filled
-    if (!newPost.date || !newPost.readTime) {
-      toast.error('Please fill in date and read time');
-      return;
-    }
+    // Auto-generate missing fields - no validation needed!
+    const postTitle = newPost.title.trim() || 'Untitled Post';
+    const postSlug = newPost.slug.trim() || `untitled-${Date.now()}`;
+    const postExcerpt = newPost.excerpt.trim() || 'No description yet.';
+    const postTags = newPost.tags.trim() || 'draft';
+    const postDate = newPost.date.trim() || new Date().toISOString().split('T')[0];
+    const postReadTime = newPost.readTime.trim() || '1 min';
+    
+    // If no blocks, add a default text block
+    const postBlocks = newPost.blocks.length > 0 ? newPost.blocks : [
+      { type: 'text', value: 'Start writing your post here...' }
+    ];
 
     try {
       // Send blocks array directly (not converted to string)
       const postData = {
-        slug: newPost.slug,
-        title: newPost.title,
-        date: newPost.date,
-        readTime: newPost.readTime,
-        tags: newPost.tags,
-        excerpt: newPost.excerpt,
-        blocks: newPost.blocks
+        slug: postSlug,
+        title: postTitle,
+        date: postDate,
+        readTime: postReadTime,
+        tags: postTags,
+        excerpt: postExcerpt,
+        blocks: postBlocks
       };
 
       const response = await fetch('/api/posts/create', {
@@ -143,10 +148,10 @@ export default function NewPostForm({ onCancel }) {
 
       if (response.ok) {
         playAlienSound();
-        toast.success('New post created successfully!');
+        toast.success('Post created successfully! 🛸');
         setTimeout(() => {
-          window.location.reload();
-        }, 1500);
+          window.location.href = `/blog/${data.post.slug}`;
+        }, 1000);
       } else {
         const errorMsg = data.missing 
           ? `Missing fields: ${data.missing.join(', ')}` 
@@ -181,16 +186,29 @@ export default function NewPostForm({ onCancel }) {
           <label>Slug (URL identifier, e.g., "log-003-my-journey")</label>
           <input
             type="text"
-            value={newPost.slug}
-            onChange={(e) => setNewPost({...newPost, slug: sanitizeSlug(e.target.value)})}
+            value={rawSlug}
+            onChange={(e) => {
+              const input = e.target.value;
+              setRawSlug(input);
+              setNewPost({...newPost, slug: sanitizeSlug(input)});
+            }}
             placeholder="log-003-my-journey"
             className="edit-input"
           />
+          {rawSlug && newPost.slug !== rawSlug && (
+            <div style={{ fontSize: '12px', color: '#00ff8c', marginTop: '4px' }}>
+              Final URL: {newPost.slug}
+            </div>
+          )}
           {newPost.title && !newPost.slug && (
             <button 
               type="button"
               className="btn btnGhost"
-              onClick={() => setNewPost({...newPost, slug: generateSlug(newPost.title)})}
+              onClick={() => {
+                const generated = generateSlug(newPost.title);
+                setRawSlug(generated);
+                setNewPost({...newPost, slug: generated});
+              }}
               style={{ marginTop: '8px', fontSize: '12px' }}
             >
               🔗 Generate from title
@@ -225,12 +243,17 @@ export default function NewPostForm({ onCancel }) {
             value={newPost.title}
             onChange={(e) => {
               const title = e.target.value;
+              const generatedSlug = generateSlug(title);
               setNewPost({
                 ...newPost, 
                 title,
                 // Auto-generate slug from title if slug is empty
-                slug: newPost.slug === '' ? generateSlug(title) : newPost.slug
+                slug: newPost.slug === '' ? generatedSlug : newPost.slug
               });
+              // Update raw slug if it's empty
+              if (rawSlug === '') {
+                setRawSlug(generatedSlug);
+              }
             }}
             placeholder="LOG 003: My Amazing Journey"
             className="edit-input edit-title"

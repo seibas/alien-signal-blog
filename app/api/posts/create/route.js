@@ -4,37 +4,29 @@ import { createPost } from '@/lib/db';
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { slug, title, date, readTime, tags, excerpt, blocks } = body;
+    let { slug, title, date, readTime, tags, excerpt, blocks } = body;
 
-    // Validate required fields
-    if (!slug || !title || !date || !readTime || !tags || !excerpt || !blocks || blocks.length === 0) {
-      const missing = [];
-      if (!slug) missing.push('slug');
-      if (!title) missing.push('title');
-      if (!date) missing.push('date');
-      if (!readTime) missing.push('readTime');
-      if (!tags) missing.push('tags');
-      if (!excerpt) missing.push('excerpt');
-      if (!blocks || blocks.length === 0) missing.push('blocks');
-      
-      return NextResponse.json(
-        { error: 'Missing required fields', missing },
-        { status: 400 }
-      );
-    }
+    // Auto-generate missing fields server-side - no validation!
+    const postTitle = (title || '').trim() || 'Untitled Post';
+    const postSlug = (slug || '').trim() || `untitled-${Date.now()}`;
+    const postExcerpt = (excerpt || '').trim() || 'No description yet.';
+    const postTags = (tags || '').trim() || 'draft';
+    const postDate = (date || '').trim() || new Date().toISOString().split('T')[0];
+    const postReadTime = (readTime || '').trim() || '1 min';
+    const postBlocks = (blocks && blocks.length > 0) ? blocks : [{ type: 'text', value: 'Start writing...' }];
 
     // Parse tags
-    const tagsArray = tags.split(',').map(t => t.trim()).filter(Boolean);
+    const tagsArray = postTags.split(',').map(t => t.trim()).filter(Boolean);
 
     // Create post object with blocks
     const newPost = {
-      slug,
-      title,
-      date,
-      readTime,
-      excerpt,
+      slug: postSlug,
+      title: postTitle,
+      date: postDate,
+      readTime: postReadTime,
+      excerpt: postExcerpt,
       tags: tagsArray,
-      blocks: blocks
+      blocks: postBlocks
     };
 
     // Save to database
@@ -43,7 +35,7 @@ export async function POST(request) {
     return NextResponse.json({ 
       success: true, 
       message: 'Post created successfully',
-      slug: slug
+      post: { slug: postSlug }
     });
 
   } catch (error) {
