@@ -1,8 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import SpatialBlurTitle from "./SpatialBlurTitle";
+import { useEffect, useRef, useState } from "react";
 
 export default function PostCard({ post, index = 0 }) {
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const videoRef = useRef(null);
   // Gradient backgrounds for variety
   const gradients = [
     'linear-gradient(135deg, rgba(0, 255, 65, 0.12), rgba(0, 204, 51, 0.06))', // Green
@@ -80,6 +83,27 @@ export default function PostCard({ post, index = 0 }) {
   const firstImage = getFirstImage();
   const hasCustomImage = firstImage !== null;
 
+  // Lazy load video with IntersectionObserver
+  useEffect(() => {
+    if (hasCustomImage || !videoRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVideoLoaded(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin: '50px' }
+    );
+
+    observer.observe(videoRef.current);
+
+    return () => observer.disconnect();
+  }, [hasCustomImage]);
+
   return (
     <Link href={`/blog/${post.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
       <article className="card postCard" style={{
@@ -112,12 +136,38 @@ export default function PostCard({ post, index = 0 }) {
               />
             </div>
           ) : (
-            <div className="post-image-placeholder" style={{ background: defaultGradient }}>
-              <img 
-                src="/images/ufo-default.svg" 
-                alt="UFO Icon"
-                className="ufo-default-icon"
-              />
+            <div 
+              ref={videoRef}
+              className="post-image-placeholder" 
+              style={{ 
+                background: defaultGradient,
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              {isVideoLoaded && (
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  disablePictureInPicture
+                  controlsList="nodownload nofullscreen noremoteplayback"
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    opacity: 0.6,
+                    pointerEvents: 'none'
+                  }}
+                >
+                  <source src="/Nano-Banana-Pro-UFO.mp4" type="video/mp4" />
+                </video>
+              )}
             </div>
           )}
         </div>
