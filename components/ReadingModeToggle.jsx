@@ -1,10 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function ReadingModeToggle() {
   const [isReadingMode, setIsReadingMode] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
+  const pathname = usePathname();
+
+  // Only show on blog post pages
+  const isOnBlogPost = pathname?.startsWith('/blog/') && pathname !== '/blog';
+  if (!isOnBlogPost) return null;
 
   // Load saved preference
   useEffect(() => {

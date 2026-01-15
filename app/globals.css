@@ -85,6 +85,10 @@ body {
   letter-spacing: 0.03em;
   position: relative;
   overflow-x: hidden;
+  
+  /* Prevent accidental horizontal swipe */
+  touch-action: pan-y pinch-zoom;
+  overscroll-behavior-x: none;
 }
 
 /* ===== Animated Starfield Background ===== */
@@ -2202,6 +2206,9 @@ body.mobile-menu-open {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   
+  /* Prevent horizontal swipe */
+  touch-action: pan-y;
+  
   /* iOS safe area support */
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
@@ -2569,6 +2576,15 @@ html.reading-mode .articleContent {
   color: #3D3A37;
 }
 
+html.reading-mode .articleContent p {
+  font-size: 1.125rem;
+  font-weight: 450;
+  color: #2D2A27;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 html.reading-mode .articleTitle {
   color: #2D2A27;
 }
@@ -2589,22 +2605,32 @@ html.reading-mode h6 {
 
 /* Buttons in reading mode */
 html.reading-mode .btn {
-  background: rgba(217, 119, 6, 0.1);
-  border-color: rgba(217, 119, 6, 0.3);
-  color: #D97706;
+  background: #D97706;
+  border-color: #D97706;
+  color: #FFFFFF;
+  font-weight: 600;
 }
 
 html.reading-mode .btn:hover {
-  background: rgba(217, 119, 6, 0.2);
-  border-color: rgba(217, 119, 6, 0.4);
-  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.15);
+  background: #B45309;
+  border-color: #B45309;
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.3);
+}
+
+html.reading-mode .btn:active {
+  background: #92400E;
+  border-color: #92400E;
 }
 
 /* Footer in reading mode */
 html.reading-mode .footer {
-  background: rgba(251, 247, 240, 0.95);
+  background: rgba(237, 232, 225, 0.8);
   border-top-color: rgba(61, 58, 55, 0.1);
-  color: #78716C;
+  color: #3D3A37;
+}
+
+html.reading-mode .footerInner {
+  color: #57534E;
 }
 
 /* Post cards in reading mode */
@@ -2630,10 +2656,24 @@ html.reading-mode .postMeta {
   color: #78716C;
 }
 
-/* Code blocks in reading mode */
-html.reading-mode code {
+/* Code blocks - keep dark theme in reading mode */
+html.reading-mode pre,
+html.reading-mode pre code,
+html.reading-mode .code-block {
+  background: #1E1E1E !important;
+  color: #D4D4D4 !important;
+  border-radius: 8px;
+}
+
+/* Inline code - light style in reading mode */
+html.reading-mode p code,
+html.reading-mode li code,
+html.reading-mode :not(pre) > code {
   background: #EDE8E1;
-  color: #2D2A27;
+  color: #92400E;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
 }
 
 /* The Floating Toggle Button */
