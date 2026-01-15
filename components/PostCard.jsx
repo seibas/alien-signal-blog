@@ -1,10 +1,15 @@
 import Link from "next/link";
 import Image from "next/image";
+import { useRef, useEffect, useState } from "react";
 import SpatialBlurTitle from "./SpatialBlurTitle";
 import { UfoIcon, AlienFriendly, AlienCoding, Rocket, Saturn, PlanetAlien, AlienThinking, UfoSimple } from "./SvgIcons";
 
 export default function PostCard({ post, index = 0 }) {
-  // Gradient colors (cycles through these for variety)
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const cardRef = useRef(null);
+  
+  // Gradient colors for fallback
   const gradients = [
     'linear-gradient(135deg, #00FF41 0%, #00CC33 100%)', // Matrix Green
     'linear-gradient(135deg, #FF6B35 0%, #FF8C00 100%)', // Orange
@@ -12,12 +17,32 @@ export default function PostCard({ post, index = 0 }) {
     'linear-gradient(135deg, #0A0E1A 0%, #1A1F2E 100%)', // Dark Blue
   ];
   
-  // SVG icons for variety (matches gradient cycling)
+  // SVG icons for fallback
   const icons = [UfoIcon, AlienFriendly, Rocket, AlienCoding, Saturn, PlanetAlien, AlienThinking, UfoSimple];
   
   // Pick gradient and icon based on index for variety
   const defaultGradient = gradients[index % gradients.length];
   const IconComponent = icons[index % icons.length];
+  
+  // Lazy load video when card is visible
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoadVideo(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+    
+    return () => {
+      if (observer) observer.disconnect();
+    };
+  }, []);
   
   // Truncate excerpt to max 80 characters for cleaner display, skipping image markdown
   const getCleanExcerpt = () => {
@@ -93,7 +118,7 @@ export default function PostCard({ post, index = 0 }) {
         flexDirection: 'column',
         overflow: 'hidden',
         cursor: 'pointer'
-      }}>
+      }} ref={cardRef}>
         <div className="post-card-image-container">
           {hasCustomImage ? (
             <div style={{
@@ -118,13 +143,51 @@ export default function PostCard({ post, index = 0 }) {
               />
             </div>
           ) : (
-            <div 
-              className="post-card-default"
-              style={{ background: defaultGradient }}
-            >
-              <div className="gradient-overlay">
-                <IconComponent className="default-icon" />
-              </div>
+            <div className="post-card-video-container">
+              {shouldLoadVideo ? (
+                <>
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    onLoadedData={() => setIsVideoLoaded(true)}
+                    className={`post-card-video ${isVideoLoaded ? 'loaded' : ''}`}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  >
+                    <source src="/ufo-animation.mp4" type="video/mp4" />
+                  </video>
+                  
+                  {/* Gradient overlay for better text readability */}
+                  <div className="video-overlay"></div>
+                  
+                  {/* Fallback: Show SVG icon while video loads or if video fails */}
+                  {!isVideoLoaded && (
+                    <div 
+                      className="post-card-default"
+                      style={{ background: defaultGradient }}
+                    >
+                      <div className="gradient-overlay">
+                        <IconComponent className="default-icon" />
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                // Show gradient + icon before lazy load triggers
+                <div 
+                  className="post-card-default"
+                  style={{ background: defaultGradient }}
+                >
+                  <div className="gradient-overlay">
+                    <IconComponent className="default-icon" />
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
