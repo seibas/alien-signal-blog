@@ -2532,7 +2532,6 @@ body.mobile-menu-open .reading-mode-toggle {
   position: fixed;
   bottom: 80px;
   right: 20px;
-  left: auto; /* IMPORTANT: Override any conflicting left value */
   width: 56px;
   height: 56px;
   background: rgba(0, 255, 65, 0.95);
@@ -2544,7 +2543,7 @@ body.mobile-menu-open .reading-mode-toggle {
   justify-content: center;
   gap: 2px;
   cursor: pointer;
-  z-index: 10000;
+  z-index: 10001;
   box-shadow: 
     0 4px 20px rgba(0, 255, 65, 0.4),
     0 0 0 0 rgba(0, 255, 65, 0.4);
@@ -2728,13 +2727,13 @@ body,
 
 /* Reading mode - Light cream theme */
 html.reading-mode {
-  background-color: #FBF7F0;
-  color: #1A1816;
+  background-color: #FBF7F0 !important;
+  color: #1A1816 !important;
 }
 
 html.reading-mode body {
-  background-color: #FBF7F0;
-  color: #1A1816;
+  background-color: #FBF7F0 !important;
+  color: #1A1816 !important;
 }
 
 /* Headers - Keep brand fonts but adjust color */
@@ -2744,35 +2743,35 @@ html.reading-mode h3,
 html.reading-mode h4,
 html.reading-mode h5,
 html.reading-mode h6 {
-  color: #2D2A27;
+  color: #2D2A27 !important;
 }
 
 /* Links - Warmer orange/brown */
 html.reading-mode a {
-  color: #D97706;
+  color: #D97706 !important;
 }
 
 html.reading-mode a:hover {
-  color: #B45309;
+  color: #B45309 !important;
 }
 
 /* Post content - Use readable font with better size and weight */
 html.reading-mode .post-content,
 html.reading-mode .post-card-excerpt,
 html.reading-mode p {
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
-  font-size: 1.125rem; /* 18px - larger for readability */
-  font-weight: 450; /* Slightly bolder for better readability */
-  line-height: 1.8;
-  color: #2D2A27; /* Darker for better contrast */
-  -webkit-font-smoothing: antialiased; /* Smoother rendering */
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif !important;
+  font-size: 1.125rem !important;
+  font-weight: 450 !important;
+  line-height: 1.8 !important;
+  color: #2D2A27 !important;
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* Specific post content paragraphs */
 html.reading-mode .post-content p {
-  font-size: 1.125rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.125rem !important;
+  margin-bottom: 1.5rem !important;
 }
 
 /* Code blocks - KEEP ORIGINAL STYLES, don't change! */
@@ -2792,90 +2791,90 @@ html.reading-mode .hljs {
 html.reading-mode p code,
 html.reading-mode li code,
 html.reading-mode :not(pre) > code {
-  background: #EDE8E1;
-  color: #92400E;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: 'Fira Code', 'Consolas', monospace;
-  font-size: 0.9em;
-  font-weight: 500;
+  background: #EDE8E1 !important;
+  color: #92400E !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  font-family: 'Fira Code', 'Consolas', monospace !important;
+  font-size: 0.9em !important;
+  font-weight: 500 !important;
 }
 
 /* Cards and containers */
 html.reading-mode .post-card,
 html.reading-mode .site-header {
-  background: rgba(237, 232, 225, 0.5);
-  border-color: rgba(61, 58, 55, 0.1);
+  background: rgba(237, 232, 225, 0.5) !important;
+  border-color: rgba(61, 58, 55, 0.1) !important;
 }
 
 /* Footer - Better colors for reading mode */
 html.reading-mode .site-footer {
-  background: rgba(237, 232, 225, 0.8);
-  border-color: rgba(61, 58, 55, 0.1);
-  color: #3D3A37;
+  background: rgba(237, 232, 225, 0.8) !important;
+  border-color: rgba(61, 58, 55, 0.1) !important;
+  color: #3D3A37 !important;
 }
 
 html.reading-mode .site-footer a {
-  color: #D97706;
+  color: #D97706 !important;
 }
 
 html.reading-mode .site-footer a:hover {
-  color: #B45309;
+  color: #B45309 !important;
 }
 
 /* Buttons and interactive elements - Better contrast */
 html.reading-mode button:not(.reading-mode-toggle):not(.mobile-menu-toggle),
 html.reading-mode .btn,
 html.reading-mode .back-to-top {
-  background: #D97706;
-  color: #FFFFFF;
-  border-color: #B45309;
-  font-weight: 600;
+  background: #D97706 !important;
+  color: #FFFFFF !important;
+  border-color: #B45309 !important;
+  font-weight: 600 !important;
 }
 
 html.reading-mode button:not(.reading-mode-toggle):not(.mobile-menu-toggle):hover,
 html.reading-mode .btn:hover,
 html.reading-mode .back-to-top:hover {
-  background: #B45309;
-  color: #FFFFFF;
+  background: #B45309 !important;
+  color: #FFFFFF !important;
 }
 
 /* Input fields */
 html.reading-mode input,
 html.reading-mode textarea,
 html.reading-mode select {
-  background: #FFFFFF;
-  color: #1A1816;
-  border-color: #D4CFC7;
+  background: #FFFFFF !important;
+  color: #1A1816 !important;
+  border-color: #D4CFC7 !important;
 }
 
 /* Shadows - Softer for light mode */
 html.reading-mode .post-card,
 html.reading-mode .site-header {
-  box-shadow: 0 2px 8px rgba(29, 26, 22, 0.08);
+  box-shadow: 0 2px 8px rgba(29, 26, 22, 0.08) !important;
 }
 
 /* Accent elements - Use warm tones */
 html.reading-mode .tag,
 html.reading-mode .badge {
-  background: rgba(217, 119, 6, 0.1);
-  color: #D97706;
-  border-color: rgba(217, 119, 6, 0.2);
-  font-weight: 600;
+  background: rgba(217, 119, 6, 0.1) !important;
+  color: #D97706 !important;
+  border-color: rgba(217, 119, 6, 0.2) !important;
+  font-weight: 600 !important;
 }
 
 /* Secondary text - Better contrast */
 html.reading-mode .post-card-meta,
 html.reading-mode .reading-time,
 html.reading-mode time {
-  color: #57534E;
-  font-weight: 500;
+  color: #57534E !important;
+  font-weight: 500 !important;
 }
 
 /* Preserve logo and brand elements */
 html.reading-mode .logo,
 html.reading-mode .site-title {
-  filter: brightness(0.3) saturate(1.2);
+  filter: brightness(0.3) saturate(1.2) !important;
 }
 
 /* ============================================
@@ -2886,9 +2885,10 @@ html.reading-mode .site-title {
   .reading-mode-toggle {
     bottom: 90px;
     right: 16px;
-    left: auto !important; /* Force override any left value */
     width: 52px;
     height: 52px;
+    opacity: 1 !important;
+    transform: translateX(0) scale(1) !important;
   }
   
   .toggle-icon {
