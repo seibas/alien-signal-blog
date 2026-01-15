@@ -1,0 +1,153 @@
+'use client';
+
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+
+export default function MobileMenu({ isAdmin, onLogout }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  // Close menu on route change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
+  const menuItems = [
+    { href: '/', label: 'Home', icon: '🏠' },
+    { href: '/blog', label: 'Blog', icon: '📡' },
+    { href: '/about', label: 'About', icon: '👽' },
+  ];
+
+  const handleLinkClick = () => {
+    setIsOpen(false);
+  };
+
+  const handleLogout = () => {
+    setIsOpen(false);
+    if (onLogout) {
+      onLogout();
+    }
+  };
+
+  return (
+    <>
+      {/* Hamburger Button */}
+      <button
+        className={`mobile-menu-toggle ${isOpen ? 'open' : ''}`}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Toggle menu"
+        aria-expanded={isOpen}
+      >
+        <span className="hamburger-line"></span>
+        <span className="hamburger-line"></span>
+        <span className="hamburger-line"></span>
+      </button>
+
+      {/* Backdrop */}
+      {isOpen && (
+        <div
+          className="mobile-menu-backdrop"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Menu Panel */}
+      <nav
+        className={`mobile-menu-panel ${isOpen ? 'open' : ''}`}
+        aria-label="Mobile navigation"
+      >
+        <div className="mobile-menu-content">
+          {/* Cosmic Background Animation */}
+          <div className="mobile-menu-bg-orbs">
+            <div className="orb orb-1"></div>
+            <div className="orb orb-2"></div>
+            <div className="orb orb-3"></div>
+          </div>
+
+          {/* Menu Items */}
+          <div className="mobile-menu-items">
+            {menuItems.map((item, index) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`mobile-menu-item ${pathname === item.href ? 'active' : ''}`}
+                onClick={handleLinkClick}
+                style={{ '--item-index': index }}
+              >
+                <span className="menu-item-icon">{item.icon}</span>
+                <span className="menu-item-label">{item.label}</span>
+                <span className="menu-item-arrow">→</span>
+              </Link>
+            ))}
+
+            {/* Admin Section */}
+            {isAdmin && (
+              <>
+                <div className="mobile-menu-divider"></div>
+                
+                <Link
+                  href="/settings"
+                  className={`mobile-menu-item ${pathname === '/settings' ? 'active' : ''}`}
+                  onClick={handleLinkClick}
+                  style={{ '--item-index': menuItems.length }}
+                >
+                  <span className="menu-item-icon">⚙️</span>
+                  <span className="menu-item-label">Settings</span>
+                  <span className="menu-item-arrow">→</span>
+                </Link>
+
+                <button
+                  className="mobile-menu-item mobile-menu-logout"
+                  onClick={handleLogout}
+                  style={{ '--item-index': menuItems.length + 1 }}
+                >
+                  <span className="menu-item-icon">🚪</span>
+                  <span className="menu-item-label">Logout</span>
+                  <span className="menu-item-arrow">→</span>
+                </button>
+              </>
+            )}
+
+            {!isAdmin && (
+              <>
+                <div className="mobile-menu-divider"></div>
+                
+                <Link
+                  href="/admin"
+                  className={`mobile-menu-item ${pathname === '/admin' ? 'active' : ''}`}
+                  onClick={handleLinkClick}
+                  style={{ '--item-index': menuItems.length }}
+                >
+                  <span className="menu-item-icon">🔒</span>
+                  <span className="menu-item-label">Admin</span>
+                  <span className="menu-item-arrow">→</span>
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Status Indicator */}
+          <div className="mobile-menu-footer">
+            <div className="signal-status">
+              <span className="status-dot"></span>
+              <span className="status-text">Signal Active</span>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </>
+  );
+}
