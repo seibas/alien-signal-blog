@@ -13,9 +13,6 @@ export default function ReadingModeToggle() {
 
   // Only show on blog post pages (e.g., /blog/my-post)
   const isOnBlogPost = pathname?.startsWith('/blog/') && pathname !== '/blog';
-  
-  // Debug logging
-  console.log('ReadingModeToggle:', { pathname, isOnBlogPost, isMounted, isVisible });
 
   // Mount check to prevent hydration errors
   useEffect(() => {
