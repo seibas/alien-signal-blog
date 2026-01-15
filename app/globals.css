@@ -2510,3 +2510,307 @@ body.mobile-menu-open {
     font-size: 20px;
   }
 }
+
+/* ============================================
+   READING MODE TOGGLE
+   ============================================ */
+
+/* Reading mode color scheme */
+html.reading-mode {
+  background: #FBF7F0;
+  color: #1A1816;
+}
+
+html.reading-mode body {
+  background: #FBF7F0;
+  color: #1A1816;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+  line-height: 1.8;
+}
+
+/* Transition for smooth mode switching */
+html,
+body {
+  transition: background-color 0.6s ease, color 0.6s ease;
+}
+
+/* Adjust cards in reading mode */
+html.reading-mode .card {
+  background: rgba(237, 232, 225, 0.5);
+  border-color: rgba(61, 58, 55, 0.1);
+  box-shadow: 0 2px 8px rgba(29, 26, 22, 0.08);
+}
+
+/* Header adjustments */
+html.reading-mode .header {
+  background: rgba(251, 247, 240, 0.95);
+  border-bottom-color: rgba(61, 58, 55, 0.1);
+}
+
+html.reading-mode .brand {
+  color: #2D2A27;
+}
+
+html.reading-mode .nav a {
+  color: #3D3A37;
+  opacity: 0.9;
+}
+
+html.reading-mode .nav a:hover {
+  color: #D97706;
+  border-color: rgba(217, 119, 6, 0.3);
+  background: rgba(217, 119, 6, 0.05);
+  text-shadow: none;
+}
+
+/* Article content in reading mode */
+html.reading-mode .article,
+html.reading-mode .articleContent {
+  color: #3D3A37;
+}
+
+html.reading-mode .articleTitle {
+  color: #2D2A27;
+}
+
+html.reading-mode .articleMeta {
+  color: #78716C;
+}
+
+/* Headings in reading mode */
+html.reading-mode h1,
+html.reading-mode h2,
+html.reading-mode h3,
+html.reading-mode h4,
+html.reading-mode h5,
+html.reading-mode h6 {
+  color: #2D2A27;
+}
+
+/* Buttons in reading mode */
+html.reading-mode .btn {
+  background: rgba(217, 119, 6, 0.1);
+  border-color: rgba(217, 119, 6, 0.3);
+  color: #D97706;
+}
+
+html.reading-mode .btn:hover {
+  background: rgba(217, 119, 6, 0.2);
+  border-color: rgba(217, 119, 6, 0.4);
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.15);
+}
+
+/* Footer in reading mode */
+html.reading-mode .footer {
+  background: rgba(251, 247, 240, 0.95);
+  border-top-color: rgba(61, 58, 55, 0.1);
+  color: #78716C;
+}
+
+/* Post cards in reading mode */
+html.reading-mode .postCard {
+  background: rgba(237, 232, 225, 0.5);
+  border-color: rgba(61, 58, 55, 0.15);
+}
+
+html.reading-mode .postCard:hover {
+  border-color: rgba(217, 119, 6, 0.3);
+  box-shadow: 0 18px 54px rgba(29, 26, 22, 0.15);
+}
+
+html.reading-mode .postTitle {
+  color: #2D2A27;
+}
+
+html.reading-mode .postExcerpt {
+  color: #3D3A37;
+}
+
+html.reading-mode .postMeta {
+  color: #78716C;
+}
+
+/* Code blocks in reading mode */
+html.reading-mode code {
+  background: #EDE8E1;
+  color: #2D2A27;
+}
+
+/* The Floating Toggle Button */
+.reading-mode-toggle {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  background: rgba(0, 255, 65, 0.95);
+  border: 2px solid rgba(0, 255, 65, 0.3);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  z-index: 998;
+  box-shadow: 0 4px 20px rgba(0, 255, 65, 0.4);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  backdrop-filter: blur(10px);
+  animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Touch optimizations */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: translateX(100px) scale(0.8);
+  }
+  50% {
+    transform: translateX(-5px) scale(1.05);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Pulsing ring effect */
+.reading-mode-toggle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 255, 65, 0.6);
+  transform: translate(-50%, -50%);
+  animation: pulse-ring 2s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+.reading-mode-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 30px rgba(0, 255, 65, 0.6);
+}
+
+.reading-mode-toggle:active {
+  transform: scale(0.95);
+}
+
+/* Reading mode button styles */
+html.reading-mode .reading-mode-toggle {
+  background: rgba(255, 107, 53, 0.95);
+  border-color: rgba(255, 107, 53, 0.3);
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.4);
+}
+
+html.reading-mode .reading-mode-toggle::before {
+  border-color: rgba(255, 107, 53, 0.6);
+}
+
+html.reading-mode .reading-mode-toggle:hover {
+  box-shadow: 0 6px 30px rgba(255, 107, 53, 0.6);
+}
+
+/* Button icon and label */
+.toggle-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.toggle-tooltip {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #020304;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+html.reading-mode .toggle-tooltip {
+  color: #FBF7F0;
+}
+
+/* Transition Overlay */
+.reading-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(0px);
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease-in, backdrop-filter 0.15s ease-in;
+}
+
+.reading-transition-overlay.active {
+  opacity: 1;
+  backdrop-filter: blur(8px);
+  animation: transition-pulse 0.6s ease-in-out;
+}
+
+@keyframes transition-pulse {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  50% {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+  100% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+}
+
+/* Mobile adjustments for toggle button */
+@media (max-width: 768px) {
+  .reading-mode-toggle {
+    bottom: 20px;
+    right: 16px;
+    width: 52px;
+    height: 52px;
+  }
+  
+  .toggle-icon {
+    font-size: 1.3rem;
+  }
+  
+  .toggle-tooltip {
+    font-size: 0.6rem;
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .reading-mode-toggle {
+    animation: none;
+  }
+  
+  .reading-mode-toggle::before {
+    animation: none;
+  }
+  
+  .reading-transition-overlay.active {
+    animation: none;
+  }
+}
