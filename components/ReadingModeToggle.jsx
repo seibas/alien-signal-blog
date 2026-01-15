@@ -10,19 +10,26 @@ export default function ReadingModeToggle() {
 
   // Only show on blog post pages
   const isOnBlogPost = pathname?.startsWith('/blog/') && pathname !== '/blog';
-  if (!isOnBlogPost) return null;
 
   // Load saved preference
   useEffect(() => {
-    const saved = localStorage.getItem('readingMode');
-    if (saved === 'true') {
-      document.documentElement.classList.add('reading-mode');
-      setIsReadingMode(true);
+    if (!isOnBlogPost) return;
+    
+    try {
+      const saved = localStorage.getItem('readingMode');
+      if (saved === 'true') {
+        document.documentElement.classList.add('reading-mode');
+        setIsReadingMode(true);
+      }
+    } catch (error) {
+      console.error('Reading mode error:', error);
     }
-  }, []);
+  }, [isOnBlogPost]);
 
   // Keyboard shortcut: Ctrl/Cmd + Shift + R
   useEffect(() => {
+    if (!isOnBlogPost) return;
+    
     const handleKeyboard = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'r') {
         e.preventDefault();
@@ -32,7 +39,10 @@ export default function ReadingModeToggle() {
 
     document.addEventListener('keydown', handleKeyboard);
     return () => document.removeEventListener('keydown', handleKeyboard);
-  }, []);
+  }, [isOnBlogPost]);
+
+  // Don't render if not on blog post
+  if (!isOnBlogPost) return null;
 
   const toggleReadingMode = () => {
     // Show transition overlay
@@ -49,7 +59,12 @@ export default function ReadingModeToggle() {
       }
 
       setIsReadingMode(newMode);
-      localStorage.setItem('readingMode', newMode.toString());
+      
+      try {
+        localStorage.setItem('readingMode', newMode.toString());
+      } catch (error) {
+        console.error('Failed to save reading mode:', error);
+      }
 
       // Hide overlay after animation
       setTimeout(() => {
