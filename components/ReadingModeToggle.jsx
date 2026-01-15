@@ -1,20 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
 
 export default function ReadingModeToggle() {
   const [isReadingMode, setIsReadingMode] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
-  const pathname = usePathname();
-
-  // Only show on blog post pages
-  const isOnBlogPost = pathname?.startsWith('/blog/') && pathname !== '/blog';
 
   // Load saved preference
   useEffect(() => {
-    if (!isOnBlogPost) return;
-    
     try {
       const saved = localStorage.getItem('readingMode');
       if (saved === 'true') {
@@ -24,12 +17,10 @@ export default function ReadingModeToggle() {
     } catch (error) {
       console.error('Reading mode error:', error);
     }
-  }, [isOnBlogPost]);
+  }, []);
 
   // Keyboard shortcut: Ctrl/Cmd + Shift + R
   useEffect(() => {
-    if (!isOnBlogPost) return;
-    
     const handleKeyboard = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'r') {
         e.preventDefault();
@@ -39,10 +30,7 @@ export default function ReadingModeToggle() {
 
     document.addEventListener('keydown', handleKeyboard);
     return () => document.removeEventListener('keydown', handleKeyboard);
-  }, [isOnBlogPost]);
-
-  // Don't render if not on blog post
-  if (!isOnBlogPost) return null;
+  }, []);
 
   const toggleReadingMode = () => {
     // Show transition overlay

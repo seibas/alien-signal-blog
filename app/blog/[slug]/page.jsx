@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import EditableBlogPost from "@/components/EditableBlogPost";
+import ReadingModeToggle from "@/components/ReadingModeToggle";
 
 export default function BlogPostPage({ params }) {
   const [post, setPost] = useState(null);
@@ -61,5 +62,10 @@ export default function BlogPostPage({ params }) {
     );
   }
 
-  return <EditableBlogPost post={post} />;
+  return (
+    <>
+      <EditableBlogPost post={post} />
+      <ReadingModeToggle />
+    </>
+  );
 }
