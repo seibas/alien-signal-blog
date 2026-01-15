@@ -2829,6 +2829,7 @@ html.reading-mode .toggle-tooltip {
     right: 16px;
     width: 52px;
     height: 52px;
+    z-index: 1002; /* Above mobile menu */
   }
   
   .toggle-icon {
