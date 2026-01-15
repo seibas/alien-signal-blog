@@ -41,9 +41,8 @@ export default function ReadingModeToggle() {
       document.documentElement.classList.add('reading-mode');
     }
     
-    // Show button after page load
-    const timer = setTimeout(() => setIsVisible(true), 2000);
-    return () => clearTimeout(timer);
+    // Show button immediately after mount
+    setIsVisible(true);
   }, [isMounted]);
 
   // Handle scroll - hide button when scrolling

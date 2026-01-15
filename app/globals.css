@@ -2164,6 +2164,11 @@ body.mobile-menu-open {
   overscroll-behavior: none;
 }
 
+/* Hide reading button when mobile menu is open */
+body.mobile-menu-open .reading-mode-toggle {
+  display: none !important;
+}
+
 /* Backdrop Overlay */
 .mobile-menu-backdrop {
   position: fixed;
