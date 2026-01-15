@@ -5,9 +5,17 @@ import { useState, useEffect } from 'react';
 export default function ReadingModeToggle() {
   const [isReadingMode, setIsReadingMode] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Only render after client-side mount to avoid hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Load saved preference
   useEffect(() => {
+    if (!isMounted) return;
+    
     try {
       const saved = localStorage.getItem('readingMode');
       if (saved === 'true') {
@@ -23,10 +31,12 @@ export default function ReadingModeToggle() {
       document.documentElement.classList.remove('reading-mode');
       localStorage.removeItem('readingMode');
     };
-  }, []);
+  }, [isMounted]);
 
   // Keyboard shortcut: Ctrl/Cmd + Shift + R
   useEffect(() => {
+    if (!isMounted) return;
+    
     const handleKeyboard = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'r') {
         e.preventDefault();
@@ -36,7 +46,12 @@ export default function ReadingModeToggle() {
 
     document.addEventListener('keydown', handleKeyboard);
     return () => document.removeEventListener('keydown', handleKeyboard);
-  }, []);
+  }, [isMounted]);
+
+  // Don't render until mounted on client
+  if (!isMounted) {
+    return null;
+  }
 
   const toggleReadingMode = () => {
     // Show transition overlay
