@@ -3,6 +3,17 @@ import Image from "next/image";
 import SpatialBlurTitle from "./SpatialBlurTitle";
 
 export default function PostCard({ post, index = 0 }) {
+  // Gradient colors (cycles through these for variety)
+  const gradients = [
+    'linear-gradient(135deg, #00FF41 0%, #00CC33 100%)', // Matrix Green
+    'linear-gradient(135deg, #FF6B35 0%, #FF8C00 100%)', // Orange
+    'linear-gradient(135deg, #5B21B6 0%, #764ba2 100%)', // Purple
+    'linear-gradient(135deg, #0A0E1A 0%, #1A1F2E 100%)', // Dark Blue
+  ];
+  
+  // Pick gradient based on index for variety
+  const defaultGradient = gradients[index % gradients.length];
+  
   // Truncate excerpt to max 80 characters for cleaner display, skipping image markdown
   const getCleanExcerpt = () => {
     let excerpt = post.excerpt || '';
@@ -37,6 +48,11 @@ export default function PostCard({ post, index = 0 }) {
 
   // Extract first image from either blocks (new) or content (old)
   const getFirstImage = () => {
+    // Check for featured image first
+    if (post.featuredImage) {
+      return post.featuredImage;
+    }
+    
     // New format: blocks
     if (Array.isArray(post.blocks)) {
       for (const block of post.blocks) {
@@ -63,6 +79,7 @@ export default function PostCard({ post, index = 0 }) {
   };
 
   const firstImage = getFirstImage();
+  const hasCustomImage = firstImage !== null;
 
   return (
     <Link href={`/blog/${post.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -72,28 +89,40 @@ export default function PostCard({ post, index = 0 }) {
         overflow: 'hidden',
         cursor: 'pointer'
       }}>
-        {firstImage && (
-          <div style={{
-            position: 'relative',
-            width: '100%',
-            height: '180px',
-            overflow: 'hidden',
-            background: 'rgba(0,0,0,0.3)',
-            borderBottom: '1px solid rgba(234,255,247,.1)'
-          }}>
-            <Image
-              src={firstImage}
-              alt={post.title}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              style={{
-                objectFit: 'cover',
-                objectPosition: 'center'
-              }}
-              loading="lazy"
-            />
-          </div>
-        )}
+        <div className="post-card-image-container">
+          {hasCustomImage ? (
+            <div style={{
+              position: 'relative',
+              width: '100%',
+              height: '200px',
+              overflow: 'hidden',
+              background: 'rgba(0,0,0,0.3)',
+              borderBottom: '1px solid rgba(234,255,247,.1)'
+            }}>
+              <Image
+                src={firstImage}
+                alt={post.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                style={{
+                  objectFit: 'cover',
+                  objectPosition: 'center'
+                }}
+                loading="lazy"
+                className="post-card-image"
+              />
+            </div>
+          ) : (
+            <div 
+              className="post-card-default"
+              style={{ background: defaultGradient }}
+            >
+              <div className="gradient-overlay">
+                <span className="default-icon">🛸</span>
+              </div>
+            </div>
+          )}
+        </div>
         <div className="cardPad" style={{
           flex: 1,
           display: 'flex',

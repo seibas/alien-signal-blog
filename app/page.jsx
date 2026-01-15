@@ -42,8 +42,8 @@ export default function Home() {
           <div style={{ height: 14 }} />
 
           <div className="postGrid">
-            {latest.map((p) => (
-              <PostCard key={p.slug} post={p} />
+            {latest.map((p, index) => (
+              <PostCard key={p.slug} post={p} index={index} />
             ))}
           </div>
 

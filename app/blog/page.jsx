@@ -200,7 +200,7 @@ export default function BlogIndex() {
           </div>
         ) : (
           <div className="postGrid">
-          {all.map((p) => (
+          {all.map((p, index) => (
             <div 
               key={p.slug} 
               style={{ 
@@ -237,7 +237,7 @@ export default function BlogIndex() {
                 transform: deleteMode && selectedPosts.includes(p.slug) ? 'scale(0.98)' : 'scale(1)',
                 transition: 'all 0.2s ease'
               }}>
-                <PostCard post={p} />
+                <PostCard post={p} index={index} />
               </div>
             </div>
           ))}
