@@ -64,7 +64,7 @@ export async function POST(request) {
     // Delete all blob images
     try {
       // Check if Vercel Blob is configured
-      if (process.env.BLOB_READ_WRITE_TOKEN) {
+      if (process.env.VERCEL === '1' || process.env.BLOB_READ_WRITE_TOKEN) {
         // List all blobs
         const { blobs } = await list();
         
