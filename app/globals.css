@@ -2151,6 +2151,15 @@ body.glow-active::after {
   transform: translateY(-7px) rotate(-45deg);
 }
 
+/* Body Scroll Lock */
+body.mobile-menu-open {
+  overflow: hidden !important;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overscroll-behavior: none;
+}
+
 /* Backdrop Overlay */
 .mobile-menu-backdrop {
   position: fixed;
@@ -2164,6 +2173,7 @@ body.glow-active::after {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  touch-action: none;
 }
 
 .mobile-menu-backdrop.open {
@@ -2184,8 +2194,13 @@ body.glow-active::after {
   box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
   z-index: 1001;
   overflow-y: auto;
+  overflow-x: hidden;
   transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   transform: translateX(0);
+  
+  /* Prevent scroll chaining */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   
   /* iOS safe area support */
   padding-top: env(safe-area-inset-top);

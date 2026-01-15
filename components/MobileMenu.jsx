@@ -8,16 +8,23 @@ export default function MobileMenu({ isAdmin, onLogout }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
-  // Prevent body scroll when menu is open
+  // Prevent body scroll when menu is open - Robust iOS fix
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      
+      // Lock body scroll
+      document.body.classList.add('mobile-menu-open');
+      document.body.style.top = `-${scrollY}px`;
+      
+      return () => {
+        // Restore scroll position
+        document.body.classList.remove('mobile-menu-open');
+        document.body.style.top = '';
+        window.scrollTo(0, scrollY);
+      };
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
   }, [isOpen]);
 
   // Close menu on route change
