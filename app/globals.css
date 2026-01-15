@@ -2889,14 +2889,6 @@ html.reading-mode .site-title {
     left: auto !important; /* Force override any left value */
     width: 52px;
     height: 52px;
-    opacity: 1 !important; /* Always visible on mobile */
-    transform: translateX(0) scale(1) !important; /* Always shown */
-    animation: none !important; /* No animations on mobile */
-  }
-  
-  /* Keep button always visible - override idle state */
-  .reading-mode-toggle.idle {
-    opacity: 1 !important;
   }
   
   .toggle-icon {

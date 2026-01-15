@@ -3,30 +3,29 @@ import { createPost } from '@/lib/db';
 
 export async function POST(request) {
   try {
-    const body = await request.json();
-    let { slug, title, date, readTime, tags, excerpt, blocks } = body;
+    const { slug, title, date, readTime, tags, excerpt, content } = await request.json();
 
-    // Auto-generate missing fields server-side - no validation!
-    const postTitle = (title || '').trim() || 'Untitled Post';
-    const postSlug = (slug || '').trim() || `untitled-${Date.now()}`;
-    const postExcerpt = (excerpt || '').trim() || 'No description yet.';
-    const postTags = (tags || '').trim() || 'draft';
-    const postDate = (date || '').trim() || new Date().toISOString().split('T')[0];
-    const postReadTime = (readTime || '').trim() || '1 min';
-    const postBlocks = (blocks && blocks.length > 0) ? blocks : [{ type: 'text', value: 'Start writing...' }];
+    // Validate required fields
+    if (!slug || !title || !date || !readTime || !tags || !excerpt || !content) {
+      return NextResponse.json(
+        { error: 'All fields are required' },
+        { status: 400 }
+      );
+    }
 
-    // Parse tags
-    const tagsArray = postTags.split(',').map(t => t.trim()).filter(Boolean);
+    // Parse tags and content
+    const tagsArray = tags.split(',').map(t => t.trim()).filter(Boolean);
+    const contentArray = content.split('\n\n').filter(Boolean);
 
-    // Create post object with blocks
+    // Create post object
     const newPost = {
-      slug: postSlug,
-      title: postTitle,
-      date: postDate,
-      readTime: postReadTime,
-      excerpt: postExcerpt,
+      slug,
+      title,
+      date,
+      readTime,
+      excerpt,
       tags: tagsArray,
-      blocks: postBlocks
+      content: contentArray
     };
 
     // Save to database
@@ -35,7 +34,7 @@ export async function POST(request) {
     return NextResponse.json({ 
       success: true, 
       message: 'Post created successfully',
-      post: { slug: postSlug }
+      slug: slug
     });
 
   } catch (error) {
