@@ -19,6 +19,18 @@ export default function ReadingModeToggle() {
     setIsMounted(true);
   }, []);
 
+  // Clean up reading mode when leaving blog posts
+  useEffect(() => {
+    if (!isMounted) return;
+    
+    if (!isOnBlogPost) {
+      // Turn off reading mode when not on blog post
+      document.documentElement.classList.remove('reading-mode');
+      localStorage.removeItem('readingMode');
+      setIsReadingMode(false);
+    }
+  }, [isOnBlogPost, isMounted]);
+
   // Initialize reading mode from localStorage
   useEffect(() => {
     if (!isMounted) return;
