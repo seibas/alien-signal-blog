@@ -300,20 +300,24 @@ export default function NewPostForm({ onCancel }) {
                     disabled={idx === 0}
                     style={{
                       color: idx === 0 ? '#555' : '#00ff8c',
-                      background: 'linear-gradient(180deg, #00ff8c 0%, #007a4d 100%)',
+                      background: idx === 0 ? '#333' : 'linear-gradient(180deg, #00ff8c 0%, #007a4d 100%)',
                       border: 'none',
                       borderRadius: '50%',
-                      fontSize: 22,
-                      width: 32,
-                      height: 32,
+                      fontSize: 18,
+                      width: 44,
+                      height: 44,
+                      minWidth: 44,
+                      minHeight: 44,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       boxShadow: idx === 0 ? 'none' : '0 2px 8px #00ff8c44',
                       cursor: idx === 0 ? 'not-allowed' : 'pointer',
                       padding: 0,
-                      marginRight: 2,
+                      marginRight: 4,
                       transition: 'transform 0.1s',
+                      WebkitTapHighlightColor: 'transparent',
+                      touchAction: 'manipulation',
                     }}
                   >
                     <span style={{ display: 'inline-block', transform: 'translateY(-1px)' }}>▲</span>
@@ -325,25 +329,48 @@ export default function NewPostForm({ onCancel }) {
                     disabled={idx === newPost.blocks.length - 1}
                     style={{
                       color: idx === newPost.blocks.length - 1 ? '#555' : '#ff9100',
-                      background: 'linear-gradient(180deg, #ff9100 0%, #7a4d00 100%)',
+                      background: idx === newPost.blocks.length - 1 ? '#333' : 'linear-gradient(180deg, #ff9100 0%, #7a4d00 100%)',
                       border: 'none',
                       borderRadius: '50%',
-                      fontSize: 22,
-                      width: 32,
-                      height: 32,
+                      fontSize: 18,
+                      width: 44,
+                      height: 44,
+                      minWidth: 44,
+                      minHeight: 44,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       boxShadow: idx === newPost.blocks.length - 1 ? 'none' : '0 2px 8px #ff910044',
                       cursor: idx === newPost.blocks.length - 1 ? 'not-allowed' : 'pointer',
                       padding: 0,
-                      marginRight: 2,
+                      marginRight: 4,
                       transition: 'transform 0.1s',
+                      WebkitTapHighlightColor: 'transparent',
+                      touchAction: 'manipulation',
                     }}
                   >
                     <span style={{ display: 'inline-block', transform: 'translateY(1px)' }}>▼</span>
                   </button>
-                  <button onClick={() => removeBlock(idx)} style={{ color: '#ca4a4a', background: 'none', border: 'none', fontSize: 18, cursor: 'pointer' }}>✕</button>
+                  <button
+                    onClick={() => removeBlock(idx)}
+                    style={{
+                      color: '#ca4a4a',
+                      background: 'rgba(202,74,74,0.15)',
+                      border: '1px solid rgba(202,74,74,0.3)',
+                      borderRadius: '50%',
+                      fontSize: 16,
+                      width: 44,
+                      height: 44,
+                      minWidth: 44,
+                      minHeight: 44,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      WebkitTapHighlightColor: 'transparent',
+                      touchAction: 'manipulation',
+                    }}
+                  >✕</button>
                 </div>
               </div>
               {block.type === 'text' ? (
@@ -372,7 +399,7 @@ export default function NewPostForm({ onCancel }) {
                                   return { ...prev, blocks };
                                 });
                               }}
-                              style={{ marginTop: 4, fontSize: 11, padding: '4px 8px', background: '#00ff8c', color: '#000', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+                              style={{ marginTop: 8, fontSize: 13, padding: '10px 16px', minHeight: 44, background: '#00ff8c', color: '#000', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
                             >
                               🔄 Convert to Image Block
                             </button>
@@ -465,7 +492,7 @@ export default function NewPostForm({ onCancel }) {
               ) : null}
             </div>
           ))}
-          <div style={{ display: 'flex', gap: 12 }}>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             <button className="btn" type="button" onClick={() => addBlock('text')}>+ Add Text Block</button>
             <button className="btn" type="button" onClick={() => addBlock('code')}>+ Add Code Block</button>
             <button className="btn" type="button" onClick={() => addBlock('image')}>📸 Add Image Block</button>

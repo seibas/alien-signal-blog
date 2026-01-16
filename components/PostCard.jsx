@@ -117,7 +117,9 @@ export default function PostCard({ post, index = 0 }) {
             <div style={{
               position: 'relative',
               width: '100%',
-              height: '200px',
+              aspectRatio: '16/9',
+              minHeight: '150px',
+              maxHeight: '200px',
               overflow: 'hidden',
               background: 'rgba(0,0,0,0.3)',
               borderBottom: '1px solid rgba(234,255,247,.1)'
