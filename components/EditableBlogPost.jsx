@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
-import DOMPurify from 'isomorphic-dompurify';
 import TypingAnimation from './TypingAnimation';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -638,12 +637,7 @@ export default function EditableBlogPost({ post }) {
                     }
                     return part.content ? (
                       <TypingAnimation key={partIdx} speed={8}>
-                        <div dangerouslySetInnerHTML={{ 
-                          __html: DOMPurify.sanitize(part.content, {
-                            ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'code', 'pre'],
-                            ALLOWED_ATTR: ['href', 'target', 'rel']
-                          })
-                        }} />
+                        {part.content}
                       </TypingAnimation>
                     ) : null;
                   })}
