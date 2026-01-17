@@ -6,3 +6,6 @@ dist
 .env*
 
 .vercel
+
+# Claude skills and local files
+.claude/
