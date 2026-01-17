@@ -1,28 +1,73 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
 import TypingAnimation from './TypingAnimation';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import ImageUpload from './ImageUpload';
 import AuthorBio from './AuthorBio';
-import AvatarUploadWidget from './AvatarUploadWidget';
 import { playAlienSound } from '@/lib/alienSound';
 import { toast } from '@/lib/toast';
 import { logger } from '@/lib/logger';
 import SpatialBlurTitle from './SpatialBlurTitle';
 import { useTranslation } from '@/hooks/useTranslation';
 import LanguageSwitcher from './LanguageSwitcher';
+
+/**
+ * Rule 2.4: Dynamic Imports for Heavy Components
+ * SyntaxHighlighter (~300KB) and MonacoEditor (~2MB) loaded on demand
+ */
+const SyntaxHighlighter = dynamic(
+  () => import('react-syntax-highlighter').then(mod => mod.Prism),
+  {
+    ssr: false,
+    loading: () => (
+      <div style={{
+        background: '#1e1e1e',
+        borderRadius: 10,
+        padding: 18,
+        color: '#888',
+        fontFamily: 'monospace'
+      }}>
+        Loading code...
+      </div>
+    ),
+  }
+);
+
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
-export default function EditableBlogPost({ post }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  // Support multi-block content: [{type: 'text', value: ''}, {type: 'code', value: '', language: 'javascript'}]
-  const [editedPost, setEditedPost] = useState({
+// Dynamically import editing components only when needed
+const ImageUpload = dynamic(() => import('./ImageUpload'), { ssr: false });
+const AvatarUploadWidget = dynamic(() => import('./AvatarUploadWidget'), { ssr: false });
+
+// Import syntax highlighter theme
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+/**
+ * Rule 5.2: Extract to Memoized Components
+ * Prevents re-rendering of expensive SyntaxHighlighter
+ */
+const CodeBlock = memo(function CodeBlock({ code, language }) {
+  return (
+    <div style={{ margin: '2em 0' }}>
+      <SyntaxHighlighter
+        language={language || 'javascript'}
+        style={vscDarkPlus}
+        customStyle={{ borderRadius: 10, fontSize: 16, padding: 18 }}
+      >
+        {code}
+      </SyntaxHighlighter>
+    </div>
+  );
+});
+
+/**
+ * Rule 5.5: Use Lazy State Initialization
+ * Expensive initial state computation only runs once
+ */
+function initializeEditedPost(post) {
+  return {
     title: post.title,
     date: post.date,
     readTime: post.readTime,
@@ -32,7 +77,14 @@ export default function EditableBlogPost({ post }) {
       : (Array.isArray(post.content)
           ? [{ type: 'text', value: post.content.join('\n\n') }]
           : [{ type: 'text', value: post.content || '' }])
-  });
+  };
+}
+
+export default function EditableBlogPost({ post }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  // Rule 5.5: Lazy state initialization - function only runs on first render
+  const [editedPost, setEditedPost] = useState(() => initializeEditedPost(post));
 
   // Use translation hook
   const { 
@@ -593,11 +645,7 @@ export default function EditableBlogPost({ post }) {
           {blocks.map((block, idx) => {
             if (block.type === 'code') {
               return (
-                <div key={idx} style={{ margin: '2em 0' }}>
-                  <SyntaxHighlighter language={block.language || 'javascript'} style={vscDarkPlus} customStyle={{ borderRadius: 10, fontSize: 16, padding: 18 }}>
-                    {block.value}
-                  </SyntaxHighlighter>
-                </div>
+                <CodeBlock key={idx} code={block.value} language={block.language} />
               );
             } else if (block.type === 'image') {
               return (

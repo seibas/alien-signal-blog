@@ -1,53 +1,41 @@
-'use client';
+import { Suspense } from 'react';
+import Link from 'next/link';
+import { getPostBySlug } from '@/lib/posts';
+import { notFound } from 'next/navigation';
+import BlogPostContent from './BlogPostContent';
+import PostSkeleton from './PostSkeleton';
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import EditableBlogPost from "@/components/EditableBlogPost";
-import { logger } from "@/lib/logger";
+/**
+ * Optimized blog post page following React Best Practices:
+ * - Server Component by default (no 'use client')
+ * - Direct data fetching with cached function
+ * - Suspense boundary for streaming
+ * - Minimal serialization at RSC boundary
+ *
+ * Rules applied:
+ * - 1.5: Strategic Suspense Boundaries
+ * - 3.2: Minimize Serialization at RSC Boundaries
+ * - 3.4: Per-Request Deduplication with React.cache()
+ */
 
-export default function BlogPostPage({ params }) {
-  const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
+// Generate metadata for SEO
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
 
-  useEffect(() => {
-    // Fetch the post from the database with cache-busting
-    fetch(`/api/posts/list?t=${Date.now()}`, { cache: 'no-store' })
-      .then(res => res.json())
-      .then(data => {
-        logger.debug('=== POST DEBUG ===');
-        logger.debug('Total posts fetched:', data.posts?.length);
-        logger.debug('Looking for slug:', params.slug);
-        logger.debug('All slugs in database:', data.posts?.map(p => p.slug));
-        if (data.posts) {
-          const foundPost = data.posts.find(p => p.slug === params.slug);
-          logger.debug('Found post:', foundPost ? foundPost.title : 'NOT FOUND');
-          if (foundPost) {
-            logger.debug('Post structure:', { 
-              hasBlocks: !!foundPost.blocks, 
-              hasContent: !!foundPost.content,
-              blocksLength: foundPost.blocks?.length,
-              contentLength: foundPost.content?.length 
-            });
-          }
-          setPost(foundPost || null);
-        }
-        setLoading(false);
-      })
-      .catch(err => {
-        logger.error('Error fetching post:', err);
-        setLoading(false);
-      });
-  }, [params.slug]);
-
-  if (loading) {
-    return (
-      <section className="container">
-        <div className="card cardPad">
-          <p className="p">Loading...</p>
-        </div>
-      </section>
-    );
+  if (!post) {
+    return { title: 'Post Not Found | Alien Signal Blog' };
   }
+
+  return {
+    title: `${post.title} | Alien Signal Blog`,
+    description: post.excerpt || post.title,
+  };
+}
+
+export default async function BlogPostPage({ params }) {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return (
@@ -63,6 +51,8 @@ export default function BlogPostPage({ params }) {
   }
 
   return (
-    <EditableBlogPost post={post} />
+    <Suspense fallback={<PostSkeleton />}>
+      <BlogPostContent post={post} />
+    </Suspense>
   );
 }
