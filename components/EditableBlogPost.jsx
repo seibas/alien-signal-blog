@@ -580,10 +580,11 @@ export default function EditableBlogPost({ post }) {
       <div className="card cardPad">
         {/* Language Switcher - Top Right */}
         <div style={{ 
-          position: 'absolute', 
-          top: '1rem', 
-          right: '1rem',
-          zIndex: 10
+          position: 'fixed', 
+          top: '-21px', 
+          right: '-12px',
+          zIndex: 26,
+          
         }}>
           <LanguageSwitcher />
         </div>

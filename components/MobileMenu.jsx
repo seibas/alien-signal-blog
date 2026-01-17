@@ -76,6 +76,19 @@ export default function MobileMenu({ isAdmin, onLogout }) {
         className={`mobile-menu-panel ${isOpen ? 'open' : ''}`}
         aria-label="Mobile navigation"
       >
+        {/* Small Reading Mode Button */}
+        <button
+          className="mobile-menu-reading-btn"
+          onClick={() => {
+            const html = document.documentElement;
+            html.classList.toggle('reading-mode');
+          }}
+          aria-label="Toggle reading mode"
+          title="Reading Mode"
+        >
+          <span className="toggle-icon">📖</span>
+        </button>
+
         <div className="mobile-menu-content">
           {/* Cosmic Background Animation */}
           <div className="mobile-menu-bg-orbs">
