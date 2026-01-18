@@ -4,6 +4,7 @@ import SiteFooter from "@/components/SiteFooter";
 import BackToTop from "@/components/BackToTop";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ReadingModeToggle from "@/components/ReadingModeToggle";
+import ScrollToTop from "@/components/ScrollToTop";
 
 export const metadata = {
   title: {
@@ -68,6 +69,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <ErrorBoundary>
+          <ScrollToTop />
           <div className="site">
             <SiteHeader />
             <main className="main">{children}</main>
