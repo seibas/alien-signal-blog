@@ -4,6 +4,7 @@ import Link from "next/link";
 import AlienLogo from "./AlienLogo";
 import MobileMenu from "./MobileMenu";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import dynamic from 'next/dynamic';
 
 const QuickCapture = dynamic(() => import('./QuickCapture'), { ssr: false });
@@ -11,6 +12,7 @@ const QuickCapture = dynamic(() => import('./QuickCapture'), { ssr: false });
 export default function SiteHeader() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showQuickCapture, setShowQuickCapture] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const checkAuth = () => {
@@ -73,7 +75,7 @@ export default function SiteHeader() {
         </div>
       </header>
 
-      {isAdmin && (
+      {isAdmin && pathname === '/' && (
         <div className="admin-bar">
           <div className="admin-bar-content">
             <span className="admin-badge"> Admin Mode Active</span>
