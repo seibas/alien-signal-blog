@@ -1,14 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { posts } from "@/content/posts";
 import PostCard from "@/components/PostCard";
 import NewPostForm from "@/components/NewPostForm";
 import { toast } from '@/lib/toast';
 
+// Dynamically import QuickCapture for code splitting
+const QuickCapture = dynamic(() => import('@/components/QuickCapture'), { ssr: false });
+
 export default function BlogIndex() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showNewPostForm, setShowNewPostForm] = useState(false);
+  const [showQuickCapture, setShowQuickCapture] = useState(false);
   const [allPosts, setAllPosts] = useState(posts);
   const [selectedPosts, setSelectedPosts] = useState([]);
   const [deleteMode, setDeleteMode] = useState(false);
@@ -103,7 +108,30 @@ export default function BlogIndex() {
     return <NewPostForm onCancel={() => setShowNewPostForm(false)} />;
   }
 
+  if (showQuickCapture) {
+    return (
+      <QuickCapture
+        onClose={() => setShowQuickCapture(false)}
+        onPostCreated={(slug) => {
+          setShowQuickCapture(false);
+          fetchPosts();
+        }}
+      />
+    );
+  }
+
   return (
+    <>
+      {/* Quick Capture FAB - only for admin */}
+      {isAdmin && (
+        <button
+          className="fab-quick-capture"
+          onClick={() => setShowQuickCapture(true)}
+          title="Quick Capture"
+        >
+          ✨
+        </button>
+      )}
     <section className="container">
       <div className="card cardPad">
         <div style={{ marginBottom: '24px' }}>
@@ -245,5 +273,6 @@ export default function BlogIndex() {
         )}
       </div>
     </section>
+    </>
   );
 }

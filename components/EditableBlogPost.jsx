@@ -35,7 +35,7 @@ const SyntaxHighlighter = dynamic(
   }
 );
 
-const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
+// Monaco removed for lighter bundle - using textarea instead
 
 // Dynamically import editing components only when needed
 const ImageUpload = dynamic(() => import('./ImageUpload'), { ssr: false });
@@ -483,7 +483,19 @@ export default function EditableBlogPost({ post }) {
                   <>
                     <div style={{ marginBottom: 8 }}>
                       <label style={{ fontSize: 13, marginRight: 8 }}>Language:</label>
-                      <select value={block.language} onChange={e => handleBlockLanguage(idx, e.target.value)}>
+                      <select
+                        value={block.language}
+                        onChange={e => handleBlockLanguage(idx, e.target.value)}
+                        style={{
+                          background: '#1e1e1e',
+                          color: '#00ff8c',
+                          border: '1px solid #333',
+                          borderRadius: 6,
+                          padding: '8px 12px',
+                          fontSize: 14,
+                          cursor: 'pointer'
+                        }}
+                      >
                         <option value="javascript">JavaScript</option>
                         <option value="typescript">TypeScript</option>
                         <option value="python">Python</option>
@@ -492,17 +504,30 @@ export default function EditableBlogPost({ post }) {
                         <option value="json">JSON</option>
                         <option value="markdown">Markdown</option>
                         <option value="jsx">JSX</option>
+                        <option value="bash">Bash</option>
                       </select>
                     </div>
-                    <div style={{ border: '1px solid #333', borderRadius: 6 }}>
-                      <MonacoEditor
-                        height="180px"
-                        language={block.language}
-                        value={block.value}
-                        theme="vs-dark"
-                        options={{ fontSize: 15, minimap: { enabled: false } }}
-                        onChange={val => handleBlockChange(idx, val || '')}
-                      />
+                    <textarea
+                      value={block.value}
+                      onChange={e => handleBlockChange(idx, e.target.value)}
+                      className="edit-textarea"
+                      rows={8}
+                      placeholder="// Write your code here..."
+                      style={{
+                        fontFamily: "'Share Tech Mono', 'Fira Code', monospace",
+                        fontSize: 14,
+                        lineHeight: 1.5,
+                        background: '#1e1e1e',
+                        color: '#d4d4d4',
+                        border: '1px solid #333',
+                        borderRadius: 8,
+                        padding: 16,
+                        whiteSpace: 'pre',
+                        overflowX: 'auto'
+                      }}
+                    />
+                    <div style={{ fontSize: 11, color: '#666', marginTop: 4 }}>
+                      Code will be syntax-highlighted when displayed
                     </div>
                   </>
                 ) : block.type === 'image' ? (

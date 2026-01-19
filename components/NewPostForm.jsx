@@ -1,9 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import dynamic from 'next/dynamic';
-
-const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 import Link from 'next/link';
 import ImageUpload from './ImageUpload';
 import { playAlienSound } from '@/lib/alienSound';
@@ -44,6 +41,66 @@ export default function NewPostForm({ onCancel }) {
 
   // Track raw slug input before sanitization
   const [rawSlug, setRawSlug] = useState('');
+
+  // AI Magic state
+  const [isEnhancing, setIsEnhancing] = useState(false);
+  const [useAI, setUseAI] = useState(true);
+
+  // AI Magic - auto-fill fields
+  const handleMagic = async () => {
+    // Get content from blocks
+    const contentText = newPost.blocks
+      .map(b => b.type === 'code' ? `\`\`\`${b.language}\n${b.value}\n\`\`\`` : b.value)
+      .join('\n\n');
+
+    if (!newPost.title.trim() && !contentText.trim()) {
+      toast.error('Add a title or content first');
+      return;
+    }
+
+    setIsEnhancing(true);
+    toast.success('Applying magic...');
+
+    try {
+      const response = await fetch('/api/posts/enhance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: newPost.title.trim() || 'Untitled Post',
+          content: contentText,
+          useAI
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.enhanced) {
+        const enhanced = data.enhanced;
+
+        setNewPost(prev => ({
+          ...prev,
+          slug: enhanced.slug || prev.slug,
+          title: enhanced.title || prev.title,
+          date: enhanced.date || prev.date,
+          readTime: enhanced.readTime || prev.readTime,
+          excerpt: enhanced.excerpt || prev.excerpt,
+          tags: Array.isArray(enhanced.tags) ? enhanced.tags.join(', ') : enhanced.tags || prev.tags,
+          blocks: enhanced.blocks?.length > 0 ? enhanced.blocks : prev.blocks
+        }));
+
+        setRawSlug(enhanced.slug || '');
+        playAlienSound();
+        toast.success('Magic applied!');
+      } else {
+        toast.error(data.error || 'Enhancement failed');
+      }
+    } catch (error) {
+      console.error('Magic error:', error);
+      toast.error('Magic failed - try again');
+    } finally {
+      setIsEnhancing(false);
+    }
+  };
 
   // Insert image markdown at the cursor or end of the last text block
   function handleImageInsert(markdown) {
@@ -170,13 +227,46 @@ export default function NewPostForm({ onCancel }) {
   return (
     <article className="article">
       <div className="card cardPad">
-        <div className="edit-controls">
+        <div className="edit-controls" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
           <button className="btn btnPrimary" onClick={handleCreate}>
             🚀 Create Post
+          </button>
+          <button
+            className="btn"
+            onClick={handleMagic}
+            disabled={isEnhancing}
+            style={{
+              background: 'linear-gradient(135deg, #00ff8c 0%, #007a4d 100%)',
+              color: '#000',
+              fontWeight: 700,
+              border: 'none',
+              boxShadow: '0 0 20px rgba(0, 255, 140, 0.3)'
+            }}
+          >
+            {isEnhancing ? '✨ Working...' : '✨ Magic'}
+          </button>
+          <button
+            className="btn"
+            onClick={() => setUseAI(!useAI)}
+            title={useAI ? 'AI Mode: ON' : 'AI Mode: OFF'}
+            style={{
+              background: useAI ? 'rgba(0, 255, 140, 0.2)' : 'rgba(255, 145, 0, 0.2)',
+              border: `1px solid ${useAI ? '#00ff8c' : '#ff9100'}`,
+              color: useAI ? '#00ff8c' : '#ff9100',
+              minWidth: 48
+            }}
+          >
+            {useAI ? '🤖' : '📝'}
           </button>
           <button className="btn btnGhost" onClick={onCancel}>
             ✕ Cancel
           </button>
+        </div>
+
+        <div style={{ fontSize: 12, color: '#888', marginTop: 8, marginBottom: 16 }}>
+          {useAI
+            ? '🤖 AI Mode: Click Magic to auto-generate slug, tags, excerpt & format content'
+            : '📝 Manual Mode: Basic auto-fill without AI'}
         </div>
 
         <div className="edit-section">
@@ -373,7 +463,58 @@ export default function NewPostForm({ onCancel }) {
                   >✕</button>
                 </div>
               </div>
-              {block.type === 'text' ? (
+              {block.type === 'code' ? (
+                <>
+                  <div style={{ marginBottom: 8 }}>
+                    <label style={{ fontSize: 13, marginRight: 8 }}>Language:</label>
+                    <select
+                      value={block.language}
+                      onChange={e => handleBlockLanguage(idx, e.target.value)}
+                      style={{
+                        background: '#1e1e1e',
+                        color: '#00ff8c',
+                        border: '1px solid #333',
+                        borderRadius: 6,
+                        padding: '8px 12px',
+                        fontSize: 14,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <option value="javascript">JavaScript</option>
+                      <option value="typescript">TypeScript</option>
+                      <option value="python">Python</option>
+                      <option value="html">HTML</option>
+                      <option value="css">CSS</option>
+                      <option value="json">JSON</option>
+                      <option value="markdown">Markdown</option>
+                      <option value="jsx">JSX</option>
+                      <option value="bash">Bash</option>
+                    </select>
+                  </div>
+                  <textarea
+                    value={block.value}
+                    onChange={e => handleBlockChange(idx, e.target.value)}
+                    className="edit-textarea code-textarea"
+                    rows={8}
+                    placeholder="// Write your code here..."
+                    style={{
+                      fontFamily: "'Share Tech Mono', 'Fira Code', monospace",
+                      fontSize: 14,
+                      lineHeight: 1.5,
+                      background: '#1e1e1e',
+                      color: '#d4d4d4',
+                      border: '1px solid #333',
+                      borderRadius: 8,
+                      padding: 16,
+                      whiteSpace: 'pre',
+                      overflowX: 'auto'
+                    }}
+                  />
+                  <div style={{ fontSize: 11, color: '#666', marginTop: 4 }}>
+                    Code will be syntax-highlighted when displayed
+                  </div>
+                </>
+              ) : block.type === 'text' ? (
                 <>
                   {/* Show preview of images in text */}
                   {(() => {
@@ -419,32 +560,6 @@ export default function NewPostForm({ onCancel }) {
                       // Append image markdown to this text block
                       handleBlockChange(idx, block.value + '\n\n' + markdown);
                     }} />
-                  </div>
-                </>
-              ) : block.type === 'code' ? (
-                <>
-                  <div style={{ marginBottom: 8 }}>
-                    <label style={{ fontSize: 13, marginRight: 8 }}>Language:</label>
-                    <select value={block.language} onChange={e => handleBlockLanguage(idx, e.target.value)}>
-                      <option value="javascript">JavaScript</option>
-                      <option value="typescript">TypeScript</option>
-                      <option value="python">Python</option>
-                      <option value="html">HTML</option>
-                      <option value="css">CSS</option>
-                      <option value="json">JSON</option>
-                      <option value="markdown">Markdown</option>
-                      <option value="jsx">JSX</option>
-                    </select>
-                  </div>
-                  <div style={{ border: '1px solid #333', borderRadius: 6 }}>
-                    <MonacoEditor
-                      height="180px"
-                      language={block.language}
-                      value={block.value}
-                      theme="vs-dark"
-                      options={{ fontSize: 15, minimap: { enabled: false } }}
-                      onChange={val => handleBlockChange(idx, val || '')}
-                    />
                   </div>
                 </>
               ) : block.type === 'image' ? (
