@@ -2613,11 +2613,19 @@ body.mobile-menu-open .reading-mode-toggle {
 
 /* Quick Capture Button - Special Highlight */
 .mobile-menu-quick-capture {
-  background: linear-gradient(135deg, rgba(0, 255, 140, 0.15) 0%, rgba(0, 200, 100, 0.1) 100%);
-  border: 2px solid rgba(0, 255, 140, 0.4);
+  background: linear-gradient(135deg, rgba(0, 255, 140, 0.25) 0%, rgba(0, 200, 100, 0.2) 100%) !important;
+  border: 2px solid rgba(0, 255, 140, 0.6) !important;
   position: relative;
   overflow: hidden;
   animation: qc-glow-pulse 3s ease-in-out infinite;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: flex !important;
+  color: var(--color-green-primary) !important;
+  text-align: left;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 20px;
 }
 
 .mobile-menu-quick-capture::before {
