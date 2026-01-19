@@ -2622,10 +2622,10 @@ body.mobile-menu-open .reading-mode-toggle {
   visibility: visible !important;
   display: flex !important;
   color: var(--color-green-primary) !important;
-  text-align: left;
-  justify-content: flex-start;
-  align-items: center;
-  padding-left: 20px;
+  gap: 16px !important;
+  padding: 16px 20px !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
 }
 
 .mobile-menu-quick-capture::before {
