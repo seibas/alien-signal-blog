@@ -7,6 +7,12 @@ import { usePathname } from 'next/navigation';
 export default function MobileMenu({ isAdmin, onLogout, onQuickCapture }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  
+  // Direct admin check - no state needed
+  const checkIsAdmin = () => {
+    if (typeof window === 'undefined') return false;
+    return sessionStorage.getItem('admin_authenticated') === 'true';
+  };
 
   // Prevent body scroll when menu is open - Robust iOS fix
   useEffect(() => {
@@ -114,7 +120,7 @@ export default function MobileMenu({ isAdmin, onLogout, onQuickCapture }) {
             ))}
 
             {/* Admin Section */}
-            {isAdmin && (
+            {checkIsAdmin() && (
               <>
                 <div className="mobile-menu-divider"></div>
                 
@@ -155,7 +161,7 @@ export default function MobileMenu({ isAdmin, onLogout, onQuickCapture }) {
               </>
             )}
 
-            {!isAdmin && (
+            {!checkIsAdmin() && (
               <>
                 <div className="mobile-menu-divider"></div>
                 
