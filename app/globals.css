@@ -2617,7 +2617,6 @@ body.mobile-menu-open .reading-mode-toggle {
   border: 2px solid rgba(0, 255, 140, 0.6) !important;
   position: relative;
   overflow: hidden;
-  animation: qc-glow-pulse 3s ease-in-out infinite;
   opacity: 1 !important;
   visibility: visible !important;
   display: flex !important;
