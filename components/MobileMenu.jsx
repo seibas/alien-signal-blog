@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
-export default function MobileMenu({ isAdmin, onLogout }) {
+export default function MobileMenu({ isAdmin, onLogout, onQuickCapture }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
@@ -118,11 +118,25 @@ export default function MobileMenu({ isAdmin, onLogout }) {
               <>
                 <div className="mobile-menu-divider"></div>
                 
+                {/* Quick Capture - Highlighted */}
+                <button
+                  className="mobile-menu-item mobile-menu-quick-capture"
+                  onClick={() => {
+                    setIsOpen(false);
+                    if (onQuickCapture) onQuickCapture();
+                  }}
+                  style={{ '--item-index': menuItems.length }}
+                >
+                  <span className="menu-item-icon">✨</span>
+                  <span className="menu-item-label">Quick Capture</span>
+                  <span className="menu-item-arrow">→</span>
+                </button>
+
                 <Link
                   href="/settings"
                   className={`mobile-menu-item ${pathname === '/settings' ? 'active' : ''}`}
                   onClick={handleLinkClick}
-                  style={{ '--item-index': menuItems.length }}
+                  style={{ '--item-index': menuItems.length + 1 }}
                 >
                   <span className="menu-item-icon">⚙️</span>
                   <span className="menu-item-label">Settings</span>
@@ -132,7 +146,7 @@ export default function MobileMenu({ isAdmin, onLogout }) {
                 <button
                   className="mobile-menu-item mobile-menu-logout"
                   onClick={handleLogout}
-                  style={{ '--item-index': menuItems.length + 1 }}
+                  style={{ '--item-index': menuItems.length + 2 }}
                 >
                   <span className="menu-item-icon">🚪</span>
                   <span className="menu-item-label">Logout</span>

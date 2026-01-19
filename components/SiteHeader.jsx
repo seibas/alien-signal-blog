@@ -4,9 +4,13 @@ import Link from "next/link";
 import AlienLogo from "./AlienLogo";
 import MobileMenu from "./MobileMenu";
 import { useState, useEffect } from "react";
+import dynamic from 'next/dynamic';
+
+const QuickCapture = dynamic(() => import('./QuickCapture'), { ssr: false });
 
 export default function SiteHeader() {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showQuickCapture, setShowQuickCapture] = useState(false);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -31,8 +35,22 @@ export default function SiteHeader() {
     window.location.href = '/';
   };
 
+  const handleQuickCapture = () => {
+    setShowQuickCapture(true);
+  };
+
   return (
     <>
+      {showQuickCapture && (
+        <QuickCapture
+          onClose={() => setShowQuickCapture(false)}
+          onPostCreated={(slug) => {
+            setShowQuickCapture(false);
+            window.location.href = `/blog/${slug}`;
+          }}
+        />
+      )}
+      
       <header className="header">
         <div className="headerInner">
           <Link className="brand" href="/">
@@ -47,7 +65,11 @@ export default function SiteHeader() {
             {!isAdmin && <Link href="/admin"> Admin</Link>}
           </nav>
 
-          <MobileMenu isAdmin={isAdmin} onLogout={handleLogout} />
+          <MobileMenu 
+            isAdmin={isAdmin} 
+            onLogout={handleLogout}
+            onQuickCapture={handleQuickCapture}
+          />
         </div>
       </header>
 

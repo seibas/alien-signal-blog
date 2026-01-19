@@ -9,3 +9,5 @@ dist
 
 # Claude skills and local files
 .claude/
+.gitignore
+nul
