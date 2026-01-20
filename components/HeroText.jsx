@@ -3,9 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 
 export default function HeroText({
-  headline = "Broadcasting my coding journey",
   rotating = ["JavaScript", "Python", "React", "Next.js", "AI tools"],
-}) {
+} = {}) {
   const words = useMemo(() => rotating.filter(Boolean), [rotating]);
   const [wordIndex, setWordIndex] = useState(0);
 
@@ -32,11 +31,18 @@ export default function HeroText({
           <span className="kickerMeta">LOG: 001</span>
         </p>
 
-        <h1 className="heroTitle">
-          <span className="glitch" data-text={headline}>
-            {headline}
-          </span>
-        </h1>
+        <div className="heroTitleWrap">
+          <h1 className="heroTitle">Broadcasting my</h1>
+          <div className="asciiRow">
+            <pre className="asciiArt" aria-label="CODING">{` ██████╗ ██████╗ ██████╗ ██╗███╗   ██╗ ██████╗
+██╔════╝██╔═══██╗██╔══██╗██║████╗  ██║██╔════╝
+██║     ██║   ██║██║  ██║██║██╔██╗ ██║██║  ███╗
+██║     ██║   ██║██║  ██║██║██║╚██╗██║██║   ██║
+╚██████╗╚██████╔╝██████╔╝██║██║ ╚████║╚██████╔╝
+ ╚═════╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝ ╚═════╝`}</pre>
+            <h1 className="heroTitle heroTitleJourney">journey</h1>
+          </div>
+        </div>
 
         <p className="heroSub">
           Decoding the unknown:{" "}

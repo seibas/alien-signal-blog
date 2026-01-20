@@ -40,6 +40,8 @@ const SyntaxHighlighter = dynamic(
 // Dynamically import editing components only when needed
 const ImageUpload = dynamic(() => import('./ImageUpload'), { ssr: false });
 const AvatarUploadWidget = dynamic(() => import('./AvatarUploadWidget'), { ssr: false });
+const RelatedPosts = dynamic(() => import('./RelatedPosts'), { ssr: false });
+const ShareButtons = dynamic(() => import('./ShareButtons'), { ssr: false });
 
 // Import syntax highlighter theme
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -85,6 +87,7 @@ export default function EditableBlogPost({ post }) {
   const [isAdmin, setIsAdmin] = useState(false);
   // Rule 5.5: Lazy state initialization - function only runs on first render
   const [editedPost, setEditedPost] = useState(() => initializeEditedPost(post));
+  const [allPosts, setAllPosts] = useState([]);
 
   // Use translation hook
   const { 
@@ -145,6 +148,16 @@ export default function EditableBlogPost({ post }) {
             : [{ type: 'text', value: post.content || '' }])
     });
   }, [post]);
+
+  // Fetch all posts for RelatedPosts component
+  useEffect(() => {
+    fetch('/api/posts/list')
+      .then(res => res.json())
+      .then(data => {
+        if (data.posts) setAllPosts(data.posts);
+      })
+      .catch(err => console.error('Error fetching posts for related:', err));
+  }, []);
 
   const handleImageInsert = (markdown) => {
     // Insert image markdown at the end of the last text block
@@ -667,6 +680,9 @@ export default function EditableBlogPost({ post }) {
           Tags: {displayTags.join(' • ')}
         </p>
 
+        {/* Social Sharing */}
+        <ShareButtons title={displayTitle} slug={post.slug} />
+
         <div className="articleContent">
           {blocks.map((block, idx) => {
             if (block.type === 'code') {
@@ -748,6 +764,14 @@ export default function EditableBlogPost({ post }) {
         </div>
 
         <AuthorBio />
+
+        {/* Share buttons at bottom */}
+        <ShareButtons title={displayTitle} slug={post.slug} />
+
+        {/* Related Posts Section */}
+        {allPosts.length > 0 && (
+          <RelatedPosts currentPost={editedPost} allPosts={allPosts} />
+        )}
 
         <div style={{ height: 10 }} />
         <div className="btnRow">

@@ -72,7 +72,7 @@
 }
 
 /* ===== Import cool coding fonts ===== */
-@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Share+Tech+Mono&family=Space+Mono:wght@400;700&family=Rajdhani:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Share+Tech+Mono&family=Space+Mono:wght@400;700&family=Rajdhani:wght@400;500;600;700&family=Press+Start+2P&display=swap');
 
 /* ===== Base reset ===== */
 * { box-sizing: border-box; }
@@ -80,6 +80,7 @@ html, body { height: 100%; }
 body {
   margin: 0;
   font-family: 'Share Tech Mono', 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 18px; /* Optimized for readability */
   background: var(--bg-primary);
   color: var(--text-primary);
   letter-spacing: 0.03em;
@@ -266,7 +267,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  height: 42px;
+  min-height: 48px; /* WCAG touch target minimum */
   padding: 0 24px;
   border-radius: 8px;
   text-decoration: none;
@@ -600,7 +601,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
 
 /* ===== Article ===== */
 .article {
-  width: min(860px, 100%);
+  width: min(680px, 100%); /* Optimal reading width: 45-75 chars per line */
   margin: 0 auto;
   padding: 26px 20px 40px;
 }
@@ -839,6 +840,93 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   
   .kicker {
     font-size: 9px;
+  }
+}
+
+/* ===== Hero Title Wrapper ===== */
+.heroTitleWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: left;
+}
+
+/* Row for ASCII art + journey */
+.asciiRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.heroTitleJourney {
+  margin-top: 0;
+}
+
+/* Mobile: put journey next to ASCII on same row */
+@media (max-width: 768px) {
+  .asciiRow {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 12px;
+  }
+
+  .heroTitleJourney {
+    margin: 0;
+    padding-bottom: 2px;
+  }
+}
+
+/* ===== ASCII Art Title - "CODING" ===== */
+.asciiArt {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: clamp(0.5rem, 1.1vw, 0.85rem);
+  line-height: 1.05;
+  /* Green and orange gradient effect */
+  background: linear-gradient(
+    180deg,
+    var(--color-green-primary) 0%,
+    var(--color-green-bright) 30%,
+    var(--color-orange-primary) 70%,
+    var(--color-orange-accent) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* Glow effect */
+  filter: drop-shadow(0 0 8px rgba(0, 255, 140, 0.6))
+          drop-shadow(0 0 16px rgba(255, 145, 0, 0.4))
+          drop-shadow(0 0 24px rgba(0, 255, 140, 0.3));
+  margin: 8px 0;
+  padding: 0;
+  white-space: pre;
+  text-align: left;
+  overflow: visible;
+  display: block;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .asciiArt {
+    font-size: clamp(0.32rem, 1.4vw, 0.55rem);
+    margin: 6px 0;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .asciiArt {
+    font-size: clamp(0.22rem, 1.8vw, 0.38rem);
+    margin: 4px 0;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  .asciiArt {
+    font-size: 0.2rem;
+    margin: 2px 0;
   }
 }
 
@@ -1901,7 +1989,7 @@ html.reading-mode .mobile-menu-reading-btn {
   
   /* Buttons */
   .btn {
-    height: 42px;
+    min-height: 48px; /* WCAG touch target minimum */
     padding: 0 14px;
     font-size: 14px;
   }
@@ -2004,7 +2092,7 @@ html.reading-mode .mobile-menu-reading-btn {
   }
   
   .btn {
-    height: 40px;
+    min-height: 48px; /* WCAG touch target minimum */
     font-size: 13px;
   }
   
@@ -2030,7 +2118,7 @@ html.reading-mode .mobile-menu-reading-btn {
 @media (hover: none) and (pointer: coarse) {
   /* Larger tap targets */
   .btn {
-    min-height: 44px;
+    min-height: 48px; /* WCAG touch target minimum */
   }
 
   .nav a,
@@ -3299,7 +3387,7 @@ html.reading-mode .site-title {
 
   /* Smaller buttons */
   .btn {
-    height: 40px;
+    min-height: 48px; /* WCAG touch target minimum */
     padding: 0 12px;
     font-size: 12px;
   }
@@ -3478,32 +3566,25 @@ html.reading-mode .site-title {
   font-size: 20px;
   font-weight: 600;
   padding: 20px 24px;
-  padding-top: 28px; /* Extra space for curved top */
   background: rgba(12, 14, 18, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   letter-spacing: 0.02em;
   position: relative;
-  overflow: hidden;
 }
 
-/* Curved step-down shape with gradient */
+/* Green-orange gradient line on top-left edge */
 .qc-input-title::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  width: 100px;
-  height: 20px;
-  background:
-    radial-gradient(ellipse 30px 20px at 100px 0px, transparent 18px, var(--color-orange-primary) 19px, transparent 21px),
-    linear-gradient(90deg, var(--color-green-primary) 0%, var(--color-orange-primary) 70%, transparent 100%);
-  background-size: 100% 100%, 100px 3px;
-  background-position: 0 0, 0 0;
-  background-repeat: no-repeat;
-  opacity: 0.8;
-  clip-path: path('M0,0 L80,0 Q100,0 100,20 L100,20 L0,20 Z');
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-green-primary) 0%, var(--color-orange-primary) 100%);
+  border-radius: 3px 0 0 0;
+  opacity: 0.9;
 }
 
 /* Orange line at bottom */
@@ -3581,26 +3662,22 @@ html.reading-mode .site-title {
   flex-direction: column;
 }
 
-/* Curved step-down shape with gradient */
+/* Green-orange gradient line on top-left edge */
 .qc-textarea-wrapper::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  width: 100px;
-  height: 20px;
-  background:
-    radial-gradient(  transparent 21px),
-    linear-gradient(90deg, var(--color-green-primary) 0%, var(--color-orange-primary) 70%, transparent 100%);
-  background-size: 100% 100%, 100px 3px;
-  background-position: 0 0, 0 0;
-  background-repeat: no-repeat;
-  opacity: 0.8;
-  clip-path: path('M0,0 L80,0 Q100,0 100,20 L100,20 L0,20 Z');
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-green-primary) 0%, var(--color-orange-primary) 100%);
+  border-radius: 16px 0 0 0;
+  opacity: 0.9;
   z-index: 1;
   pointer-events: none;
 }
 
+/* Orange line at bottom */
 .qc-textarea-wrapper::after {
   content: '';
   position: absolute;

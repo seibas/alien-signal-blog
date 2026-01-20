@@ -5,6 +5,37 @@ import { notFound } from 'next/navigation';
 import BlogPostContent from './BlogPostContent';
 import PostSkeleton from './PostSkeleton';
 
+// Generate JSON-LD structured data for SEO
+function generateJsonLd(post) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt || post.title,
+    datePublished: post.date,
+    dateModified: post.date,
+    author: {
+      '@type': 'Person',
+      name: 'Alien Signal',
+      url: 'https://alien-signal.blog'
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Alien Signal Blog',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://alien-signal.blog/icon.svg'
+      }
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://alien-signal.blog/blog/${post.slug}`
+    },
+    keywords: post.tags?.join(', ') || '',
+    articleBody: post.blocks?.map(b => b.value).join(' ').substring(0, 500)
+  };
+}
+
 /**
  * Optimized blog post page following React Best Practices:
  * - Server Component by default (no 'use client')
@@ -50,9 +81,19 @@ export default async function BlogPostPage({ params }) {
     );
   }
 
+  // Generate structured data for SEO
+  const jsonLd = generateJsonLd(post);
+
   return (
-    <Suspense fallback={<PostSkeleton />}>
-      <BlogPostContent post={post} />
-    </Suspense>
+    <>
+      {/* JSON-LD structured data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Suspense fallback={<PostSkeleton />}>
+        <BlogPostContent post={post} />
+      </Suspense>
+    </>
   );
 }

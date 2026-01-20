@@ -140,3 +140,37 @@ Response: { slug, tags, excerpt, readTime }
 - Primary: Green (#00ff8c)
 - Accent: Orange (#ff9100)
 - Background: Dark (#0a0a0a)
+
+---
+
+## Skills Library
+
+Available skills in `.claude/skills/`:
+
+### `blog-design-optimization`
+Comprehensive blog design guide with 45+ rules for readability, engagement, and conversions.
+
+**Use when:**
+- Optimizing blog typography and layout
+- Improving mobile reading experience
+- Adding SEO structured data
+- Implementing engagement features (progress bar, related posts)
+
+**Audit completed:** January 21, 2026
+**Full report:** `.claude/blog-design-audit-2026-01-21.md`
+
+**Applied optimizations:**
+- [x] Body font: 18px
+- [x] Article width: 680px (optimal line length)
+- [x] Line-height: 1.85
+- [x] Text contrast: ~18:1
+- [x] Touch targets: 48px minimum (WCAG)
+- [x] Schema.org BlogPosting JSON-LD
+- [x] Blog index metadata
+- [x] Related articles section
+- [x] Social sharing buttons (Twitter, LinkedIn, Copy)
+
+**Remaining items:**
+- [ ] Table of contents for long posts
+- [ ] Breadcrumb navigation
+- [ ] Reading progress indicator
