@@ -2,6 +2,11 @@
   "name": "alien-signal-blog",
   "private": true,
   "version": "1.0.2",
+  "author": "Sebastiano",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seibas/alien-signal-blog.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
