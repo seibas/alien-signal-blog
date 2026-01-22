@@ -1,3 +1,13 @@
+/* ===== Scroll Behavior: Always start from top ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent browser from restoring scroll position */
+html, body {
+  scroll-restoration: manual;
+}
+
 /* ===== CSS Variables for Consistent Theming ===== */
 :root {
   /* Colors - Alien/Sci-fi Theme */
