@@ -909,7 +909,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
 /* Tablet */
 @media (max-width: 768px) {
   .asciiArt {
-    font-size: clamp(0.32rem, 1.4vw, 0.55rem);
+    font-size: clamp(0.35rem, 1.6vw, 0.6rem);
+    line-height: 1.15;
     margin: 6px 0;
   }
 }
@@ -917,7 +918,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
 /* Mobile */
 @media (max-width: 480px) {
   .asciiArt {
-    font-size: clamp(0.22rem, 1.8vw, 0.38rem);
+    font-size: clamp(0.28rem, 2.2vw, 0.45rem);
+    line-height: 1.2;
     margin: 4px 0;
   }
 }
@@ -925,7 +927,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
 /* Very small screens */
 @media (max-width: 360px) {
   .asciiArt {
-    font-size: 0.2rem;
+    font-size: clamp(0.24rem, 2.5vw, 0.35rem);
+    line-height: 1.25;
     margin: 2px 0;
   }
 }
