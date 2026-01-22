@@ -687,22 +687,23 @@ export default function NewPostForm({ onCancel }) {
             }
           }}
         >
+          {/* Mobile page marker tab - go back (no save for new posts) */}
+          <button
+            className="writing-mode-page-tab"
+            onClick={() => setWritingModeBlockIndex(null)}
+            title="Go back"
+            aria-label="Go back"
+          >
+            <span className="writing-mode-page-tab-arrow">←</span>
+          </button>
+
           <div className="writing-mode-container">
-            {/* Header */}
+            {/* Header - hidden on mobile */}
             <div className="writing-mode-header">
               <div id="writing-mode-title" className="writing-mode-header-title">
                 Writing Mode
               </div>
               <div className="writing-mode-header-actions">
-                {/* Mobile back button */}
-                <button
-                  className="writing-mode-back-btn"
-                  onClick={() => setWritingModeBlockIndex(null)}
-                  title="Exit writing mode"
-                  aria-label="Go back"
-                >
-                  ←
-                </button>
                 {/* Desktop exit button */}
                 <button
                   className="writing-mode-exit-btn"
@@ -745,7 +746,7 @@ export default function NewPostForm({ onCancel }) {
               </div>
             </div>
 
-            {/* Footer */}
+            {/* Footer - hidden on mobile */}
             <div className="writing-mode-footer">
               <div className="writing-mode-footer-hint">
                 Press <kbd>ESC</kbd> to close

@@ -669,28 +669,32 @@ export default function EditableBlogPost({ post }) {
             aria-labelledby="writing-mode-title"
             className="writing-mode-overlay"
             onClick={(e) => {
-              // Close on backdrop click
+              // Close on backdrop click (desktop only)
               if (e.target === e.currentTarget) {
                 setWritingModeBlockIndex(null);
               }
             }}
           >
+            {/* Mobile page marker tab - auto-save & go back */}
+            <button
+              className="writing-mode-page-tab"
+              onClick={async () => {
+                await handleSave();
+                setWritingModeBlockIndex(null);
+              }}
+              title="Save and go back"
+              aria-label="Save and go back"
+            >
+              <span className="writing-mode-page-tab-arrow">←</span>
+            </button>
+
             <div className="writing-mode-container">
-              {/* Header */}
+              {/* Header - hidden on mobile */}
               <div className="writing-mode-header">
                 <div id="writing-mode-title" className="writing-mode-header-title">
                   Writing Mode
                 </div>
                 <div className="writing-mode-header-actions">
-                  {/* Mobile back button */}
-                  <button
-                    className="writing-mode-back-btn"
-                    onClick={() => setWritingModeBlockIndex(null)}
-                    title="Exit writing mode"
-                    aria-label="Go back"
-                  >
-                    ←
-                  </button>
                   {/* Desktop exit button */}
                   <button
                     className="writing-mode-exit-btn"
@@ -733,7 +737,7 @@ export default function EditableBlogPost({ post }) {
                 </div>
               </div>
 
-              {/* Footer */}
+              {/* Footer - hidden on mobile */}
               <div className="writing-mode-footer">
                 <div className="writing-mode-footer-hint">
                   Press <kbd>ESC</kbd> to close
