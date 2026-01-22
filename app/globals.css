@@ -4097,11 +4097,11 @@ html.reading-mode .site-title {
 @keyframes writingModeMobileSlideIn {
   from {
     opacity: 0;
-    transform: translateY(100%);
+    transform: translate(-50%, -50%) scale(0.9);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 
@@ -4303,23 +4303,23 @@ html.reading-mode .site-title {
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
     animation: writingModeOverlayIn 0.2s ease-out;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* Ensure full coverage */
+    /* Full screen coverage */
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     /* Prevent accidental movement/scrolling */
     touch-action: none;
     overscroll-behavior: none;
   }
 
   .writing-mode-container {
+    /* Absolute center with transform */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 95vw;
     height: 95vh;
     max-height: 95vh;
@@ -4328,10 +4328,7 @@ html.reading-mode .site-title {
     border-radius: 12px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
     animation: writingModeMobileSlideIn 0.3s ease-out;
-    position: relative;
     overflow: hidden;
-    /* Ensure centering */
-    margin: auto;
     /* Lock position - prevent dragging */
     touch-action: none;
   }
