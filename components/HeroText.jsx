@@ -34,12 +34,15 @@ export default function HeroText({
         <div className="heroTitleWrap">
           <h1 className="heroTitle">Broadcasting my</h1>
           <div className="asciiRow">
+            {/* Desktop/Tablet: ASCII art */}
             <pre className="asciiArt" aria-label="CODING">{` ██████╗ ██████╗ ██████╗ ██╗███╗   ██╗ ██████╗
 ██╔════╝██╔═══██╗██╔══██╗██║████╗  ██║██╔════╝
 ██║     ██║   ██║██║  ██║██║██╔██╗ ██║██║  ███╗
 ██║     ██║   ██║██║  ██║██║██║╚██╗██║██║   ██║
 ╚██████╗╚██████╔╝██████╔╝██║██║ ╚████║╚██████╔╝
  ╚═════╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝ ╚═════╝`}</pre>
+            {/* Mobile: styled text fallback */}
+            <span className="asciiArtFallback">CODING</span>
             <h1 className="heroTitle heroTitleJourney">journey</h1>
           </div>
         </div>
