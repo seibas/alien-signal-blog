@@ -4306,18 +4306,34 @@ html.reading-mode .site-title {
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Ensure full coverage */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    /* Prevent accidental movement/scrolling */
+    touch-action: none;
+    overscroll-behavior: none;
   }
 
   .writing-mode-container {
     width: 95vw;
     height: 95vh;
     max-height: 95vh;
+    max-width: 95vw;
     aspect-ratio: auto;
     border-radius: 12px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
     animation: writingModeMobileSlideIn 0.3s ease-out;
     position: relative;
     overflow: hidden;
+    /* Ensure centering */
+    margin: auto;
+    /* Lock position - prevent dragging */
+    touch-action: none;
   }
 
   /* Hide the regular header on mobile */
@@ -4328,9 +4344,9 @@ html.reading-mode .site-title {
   /* Page marker tab - green/orange gradient */
   .writing-mode-page-tab {
     display: flex;
-    position: fixed;
-    top: calc(2.5vh + 12px);
-    left: calc(2.5vw - 8px);
+    position: absolute;
+    top: 12px;
+    left: -8px;
     width: 56px;
     height: 40px;
     background: linear-gradient(135deg, #00ff8c 0%, #00cc70 50%, #ff9100 100%);
@@ -4377,6 +4393,9 @@ html.reading-mode .site-title {
     padding-top: 16px;
     height: 100%;
     overflow-y: auto;
+    /* Allow scrolling inside the body */
+    touch-action: pan-y;
+    overscroll-behavior: contain;
   }
 
   .writing-mode-textarea {
@@ -4384,6 +4403,10 @@ html.reading-mode .site-title {
     padding: 20px;
     min-height: calc(95vh - 120px);
     border-radius: 10px;
+    /* Allow text selection and scrolling in textarea */
+    touch-action: pan-y manipulation;
+    user-select: text;
+    -webkit-user-select: text;
   }
 
   .writing-mode-footer {
