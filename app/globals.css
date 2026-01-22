@@ -864,17 +864,16 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   margin-top: 0;
 }
 
-/* Mobile: put journey next to ASCII on same row */
+/* Mobile: put journey below CODING */
 @media (max-width: 768px) {
   .asciiRow {
-    flex-direction: row;
-    align-items: flex-end;
-    gap: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 
   .heroTitleJourney {
     margin: 0;
-    padding-bottom: 2px;
   }
 }
 
