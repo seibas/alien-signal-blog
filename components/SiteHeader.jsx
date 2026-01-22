@@ -64,6 +64,7 @@ export default function SiteHeader() {
             <Link href="/">Home</Link>
             <Link href="/about">About</Link>
             <Link href="/blog">Blog</Link>
+            <Link href="/skills">Skills</Link>
             {!isAdmin && <Link href="/admin"> Admin</Link>}
           </nav>
 

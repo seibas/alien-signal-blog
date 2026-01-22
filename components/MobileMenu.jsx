@@ -47,6 +47,7 @@ export default function MobileMenu({ isAdmin, onLogout, onQuickCapture }) {
   const menuItems = [
     { href: '/', label: 'Home', icon: '🏠' },
     { href: '/blog', label: 'Blog', icon: '📡' },
+    { href: '/skills', label: 'Skills', icon: '🛠️' },
     { href: '/about', label: 'About', icon: '👽' },
   ];
 
