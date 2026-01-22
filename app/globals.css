@@ -4338,11 +4338,11 @@ html.reading-mode .site-title {
     display: none;
   }
 
-  /* Page marker tab - green/orange gradient */
+  /* Page marker tab - green/orange gradient, positioned below nav area */
   .writing-mode-page-tab {
     display: flex;
     position: absolute;
-    top: 12px;
+    top: 60px;
     left: -8px;
     width: 56px;
     height: 40px;
