@@ -45,6 +45,26 @@ export default function NewPostForm({ onCancel }) {
   // AI Magic state
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [useAI, setUseAI] = useState(true);
+  const [writingModeBlockIndex, setWritingModeBlockIndex] = useState(null);
+
+  // ESC key handler for writing mode
+  useEffect(() => {
+    const handleEscKey = (e) => {
+      if (e.key === 'Escape' && writingModeBlockIndex !== null) {
+        setWritingModeBlockIndex(null);
+      }
+    };
+
+    if (writingModeBlockIndex !== null) {
+      document.addEventListener('keydown', handleEscKey);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+      document.body.style.overflow = '';
+    };
+  }, [writingModeBlockIndex]);
 
   // AI Magic - auto-fill fields
   const handleMagic = async () => {
@@ -376,12 +396,48 @@ export default function NewPostForm({ onCancel }) {
         <div className="edit-section">
           <label>Content Blocks</label>
           <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px' }}>
-            💡 Add text or code blocks. Code blocks support language selection and Monaco Editor.
+            💡 Add text or code blocks. Click 📝 on any text block for focused writing mode.
           </div>
           {newPost.blocks.map((block, idx) => (
             <div key={idx} style={{ marginBottom: 24, border: '1px solid #222', borderRadius: 8, padding: 12, background: '#181c1f' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <span style={{ fontWeight: 600 }}>{block.type === 'code' ? 'Code Block' : block.type === 'image' ? '📸 Image Block' : 'Text Block'}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontWeight: 600 }}>{block.type === 'code' ? 'Code Block' : block.type === 'image' ? '📸 Image Block' : 'Text Block'}</span>
+                  {block.type === 'text' && (
+                    <button
+                      type="button"
+                      onClick={() => setWritingModeBlockIndex(idx)}
+                      title="Open focus writing mode"
+                      aria-label="Open focus writing mode"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(0, 255, 140, 0.2) 0%, rgba(0, 200, 100, 0.15) 100%)',
+                        border: '1px solid rgba(0, 255, 140, 0.35)',
+                        borderRadius: '6px',
+                        padding: '6px 12px',
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        color: '#00ff8c',
+                        cursor: 'pointer',
+                        minHeight: '32px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '5px',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 255, 140, 0.3) 0%, rgba(0, 200, 100, 0.25) 100%)';
+                        e.currentTarget.style.transform = 'translateY(-1px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 255, 140, 0.2) 0%, rgba(0, 200, 100, 0.15) 100%)';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                      }}
+                    >
+                      <span>📝</span>
+                      <span>Write</span>
+                    </button>
+                  )}
+                </div>
                 <div style={{ display: 'flex', gap: 6 }}>
                   <button
                     type="button"
@@ -608,12 +664,103 @@ export default function NewPostForm({ onCancel }) {
             </div>
           ))}
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            <button className="btn" type="button" onClick={() => addBlock('text')}>+ Add Text Block</button>
+            <button className="btn" type="button" onClick={() => {
+              addBlock('text');
+              // Open writing mode for the newly added block
+              setTimeout(() => setWritingModeBlockIndex(newPost.blocks.length), 0);
+            }}>+ Add Text Block</button>
             <button className="btn" type="button" onClick={() => addBlock('code')}>+ Add Code Block</button>
             <button className="btn" type="button" onClick={() => addBlock('image')}>📸 Add Image Block</button>
           </div>
         </div>
       </div>
+
+      {writingModeBlockIndex !== null && newPost.blocks[writingModeBlockIndex] && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="writing-mode-title"
+          className="writing-mode-overlay"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setWritingModeBlockIndex(null);
+            }
+          }}
+        >
+          <div className="writing-mode-container">
+            {/* Header */}
+            <div className="writing-mode-header">
+              <div id="writing-mode-title" className="writing-mode-header-title">
+                Writing Mode
+              </div>
+              <div className="writing-mode-header-actions">
+                {/* Mobile back button */}
+                <button
+                  className="writing-mode-back-btn"
+                  onClick={() => setWritingModeBlockIndex(null)}
+                  title="Exit writing mode"
+                  aria-label="Go back"
+                >
+                  ←
+                </button>
+                {/* Desktop exit button */}
+                <button
+                  className="writing-mode-exit-btn"
+                  onClick={() => setWritingModeBlockIndex(null)}
+                  title="Exit writing mode (ESC)"
+                  aria-label="Close writing mode"
+                >
+                  ✕ Close
+                </button>
+                <button
+                  className="writing-mode-save-btn"
+                  onClick={handleCreate}
+                  title="Create post"
+                >
+                  🚀 Create
+                </button>
+              </div>
+            </div>
+
+            {/* Body - A4 writing area */}
+            <div className="writing-mode-body">
+              <label className="writing-mode-label">
+                Text Block {writingModeBlockIndex + 1}
+              </label>
+              <div className="writing-mode-sublabel">
+                Focus mode — write comfortably on this A4-style page
+              </div>
+              <textarea
+                autoFocus
+                value={newPost.blocks[writingModeBlockIndex]?.value || ''}
+                onChange={(e) => handleBlockChange(writingModeBlockIndex, e.target.value)}
+                className="writing-mode-textarea"
+                placeholder="Start writing your content here..."
+                aria-label="Writing area"
+              />
+              <div style={{ marginTop: 20 }}>
+                <ImageUpload onImageInsert={(markdown) => {
+                  handleBlockChange(writingModeBlockIndex, (newPost.blocks[writingModeBlockIndex]?.value || '') + '\n\n' + markdown);
+                }} />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="writing-mode-footer">
+              <div className="writing-mode-footer-hint">
+                Press <kbd>ESC</kbd> to close
+              </div>
+              <button
+                className="writing-mode-exit-btn"
+                onClick={() => setWritingModeBlockIndex(null)}
+                title="Return to normal view"
+              >
+                ← Back to editor
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </article>
   );
 }

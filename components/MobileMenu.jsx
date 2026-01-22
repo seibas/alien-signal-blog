@@ -6,11 +6,17 @@ import { usePathname } from 'next/navigation';
 
 export default function MobileMenu({ isAdmin, onLogout, onQuickCapture }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
   
-  // Direct admin check - no state needed
+  // Mount check to prevent hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  
+  // Direct admin check - only after mount
   const checkIsAdmin = () => {
-    if (typeof window === 'undefined') return false;
+    if (!isMounted) return false;
     return sessionStorage.getItem('admin_authenticated') === 'true';
   };
 
