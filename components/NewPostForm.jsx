@@ -687,17 +687,16 @@ export default function NewPostForm({ onCancel }) {
             }
           }}
         >
-          {/* Mobile page marker tab - go back (no save for new posts) */}
-          <button
-            className="writing-mode-page-tab"
-            onClick={() => setWritingModeBlockIndex(null)}
-            title="Go back"
-            aria-label="Go back"
-          >
-            <span className="writing-mode-page-tab-arrow">←</span>
-          </button>
-
           <div className="writing-mode-container">
+            {/* Mobile page marker tab - go back (no save for new posts) */}
+            <button
+              className="writing-mode-page-tab"
+              onClick={() => setWritingModeBlockIndex(null)}
+              title="Go back"
+              aria-label="Go back"
+            >
+              <span className="writing-mode-page-tab-arrow">←</span>
+            </button>
             {/* Header - hidden on mobile */}
             <div className="writing-mode-header">
               <div id="writing-mode-title" className="writing-mode-header-title">

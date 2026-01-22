@@ -675,20 +675,19 @@ export default function EditableBlogPost({ post }) {
               }
             }}
           >
-            {/* Mobile page marker tab - auto-save & go back */}
-            <button
-              className="writing-mode-page-tab"
-              onClick={async () => {
-                await handleSave();
-                setWritingModeBlockIndex(null);
-              }}
-              title="Save and go back"
-              aria-label="Save and go back"
-            >
-              <span className="writing-mode-page-tab-arrow">←</span>
-            </button>
-
             <div className="writing-mode-container">
+              {/* Mobile page marker tab - auto-save & go back */}
+              <button
+                className="writing-mode-page-tab"
+                onClick={async () => {
+                  await handleSave();
+                  setWritingModeBlockIndex(null);
+                }}
+                title="Save and go back"
+                aria-label="Save and go back"
+              >
+                <span className="writing-mode-page-tab-arrow">←</span>
+              </button>
               {/* Header - hidden on mobile */}
               <div className="writing-mode-header">
                 <div id="writing-mode-title" className="writing-mode-header-title">
