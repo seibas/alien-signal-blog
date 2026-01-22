@@ -23,26 +23,6 @@ const skills = [
     ],
     icon: '📐',
   },
-  {
-    id: 'nextjs-starter',
-    name: 'Next.js Blog Starter',
-    version: '1.0.0',
-    description: 'A futuristic Next.js blog template with dark theme, animations, and admin features. Perfect for developers who want a sci-fi aesthetic.',
-    author: 'Sebastiano',
-    license: 'MIT',
-    tags: ['nextjs', 'react', 'blog', 'template'],
-    npmCommand: 'npx create-next-app@latest --example https://github.com/seibas/alien-signal-blog',
-    runCommand: 'npm run dev',
-    features: [
-      'Dark sci-fi theme',
-      'Admin panel for posts',
-      'Markdown support',
-      'SEO optimized',
-      'Mobile responsive',
-      'Reading mode toggle',
-    ],
-    icon: '🚀',
-  },
 ];
 
 function CopyButton({ text, label = 'Copy' }) {
