@@ -10,7 +10,7 @@ import { playAlienSound } from '@/lib/alienSound';
 import { toast } from '@/lib/toast';
 import { logger } from '@/lib/logger';
 import SpatialBlurTitle from './SpatialBlurTitle';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation, usePostTranslation } from '@/hooks/useTranslation';
 import LanguageSwitcher from './LanguageSwitcher';
 
 /**
@@ -90,17 +90,16 @@ export default function EditableBlogPost({ post }) {
   const [editedPost, setEditedPost] = useState(() => initializeEditedPost(post));
   const [allPosts, setAllPosts] = useState([]);
 
-  // Use translation hook
-  const { 
-    displayContent, 
-    displayTitle, 
-    isTranslating, 
-    error: translationError 
-  } = useTranslation(
-    post?.slug,
-    editedPost.blocks,
-    editedPost.title
-  );
+  // Use translation hooks
+  const { t, language } = useTranslation();
+  const {
+    content: translatedBlocks,
+    isTranslating,
+    error: translationError,
+    isTranslated
+  } = usePostTranslation(post?.slug, editedPost.blocks);
+  const displayContent = isTranslated ? translatedBlocks : null;
+  const displayTitle = null;
 
   /**
    * Parses text content and extracts inline markdown images
@@ -657,7 +656,7 @@ export default function EditableBlogPost({ post }) {
           </div>
           <div style={{ height: 10 }} />
           <div className="btnRow">
-            <Link className="btn btnPrimary" href="/blog">Back to Logbook</Link>
+            <Link className="btn btnPrimary" href="/blog">{t('backToLogbook')}</Link>
             <Link className="btn btnGhost" href="/">Home</Link>
           </div>
         </div>
@@ -927,7 +926,7 @@ export default function EditableBlogPost({ post }) {
 
         <div style={{ height: 10 }} />
         <div className="btnRow">
-          <Link className="btn btnPrimary" href="/blog">Back to Logbook</Link>
+          <Link className="btn btnPrimary" href="/blog">{t('backToLogbook')}</Link>
           <Link className="btn btnGhost" href="/">Home</Link>
         </div>
       </div>

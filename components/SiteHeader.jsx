@@ -6,6 +6,8 @@ import MobileMenu from "./MobileMenu";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import dynamic from 'next/dynamic';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useTranslation } from '../hooks/useTranslation';
 
 const QuickCapture = dynamic(() => import('./QuickCapture'), { ssr: false });
 
@@ -13,6 +15,7 @@ export default function SiteHeader() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showQuickCapture, setShowQuickCapture] = useState(false);
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const checkAuth = () => {
@@ -61,11 +64,12 @@ export default function SiteHeader() {
           </Link>
 
           <nav className="nav" aria-label="Primary">
-            <Link href="/">Home</Link>
-            <Link href="/about">About</Link>
-            <Link href="/blog">Blog</Link>
+            <Link href="/">{t('home')}</Link>
+            <Link href="/about">{t('about')}</Link>
+            <Link href="/blog">{t('blog')}</Link>
             <Link href="/skills">Skills</Link>
-            {!isAdmin && <Link href="/admin"> Admin</Link>}
+            {!isAdmin && <Link href="/admin"> {t('admin')}</Link>}
+            <span className="desktop-lang-switcher"><LanguageSwitcher /></span>
           </nav>
 
           <MobileMenu 

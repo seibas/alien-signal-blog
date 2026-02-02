@@ -5,10 +5,12 @@ import dynamic from 'next/dynamic';
 import PostCard from "@/components/PostCard";
 import NewPostForm from "@/components/NewPostForm";
 import { toast } from '@/lib/toast';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const QuickCapture = dynamic(() => import('@/components/QuickCapture'), { ssr: false });
 
 export default function BlogIndexClient({ initialPosts }) {
+  const { t } = useTranslation();
   const [isAdmin, setIsAdmin] = useState(false);
   const [showNewPostForm, setShowNewPostForm] = useState(false);
   const [showQuickCapture, setShowQuickCapture] = useState(false);
@@ -124,7 +126,7 @@ export default function BlogIndexClient({ initialPosts }) {
       <div className="card cardPad">
         <div style={{ marginBottom: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <h1 className="h2" style={{ fontSize: 28, margin: 0 }}>Logbook</h1>
+            <h1 className="h2" style={{ fontSize: 28, margin: 0 }}>{t('logbook')}</h1>
             {isAdmin && (
               <div style={{ display: 'flex', gap: '10px' }}>
                 {deleteMode ? (
@@ -200,7 +202,7 @@ export default function BlogIndexClient({ initialPosts }) {
           )}
 
           <p className="p" style={{ marginTop: deleteMode ? '16px' : '10px', marginBottom: 0 }}>
-            Entries from my coding journey—what I learn, what I build, and what I discover along the way.
+            {t('logbookDesc')}
           </p>
         </div>
 

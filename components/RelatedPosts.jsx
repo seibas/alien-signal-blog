@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import PostCard from './PostCard';
+import { useTranslation } from '../hooks/useTranslation';
 
 /**
  * Related Posts component
  * Shows posts with matching tags, excluding the current post
  */
 export default function RelatedPosts({ currentPost, allPosts }) {
+  const { t } = useTranslation();
   const [relatedPosts, setRelatedPosts] = useState([]);
 
   useEffect(() => {
@@ -58,9 +60,9 @@ export default function RelatedPosts({ currentPost, allPosts }) {
   return (
     <section className="related-posts">
       <div className="related-posts-header">
-        <h2 className="h2">Related Transmissions</h2>
+        <h2 className="h2">{t('relatedTransmissions')}</h2>
         <p className="p" style={{ fontSize: '14px', opacity: 0.7 }}>
-          More posts from the same topic clusters
+          {t('morePostsFromSameTopicClusters')}
         </p>
       </div>
 

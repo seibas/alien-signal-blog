@@ -1,7 +1,6 @@
 import HeroText from "@/components/HeroText";
-import Link from "next/link";
 import { getAllPosts } from "@/content/posts";
-import PostCard from "@/components/PostCard";
+import HomeContent from "@/components/HomeContent";
 
 export default async function Home() {
   const allPosts = await getAllPosts();
@@ -16,29 +15,7 @@ export default async function Home() {
         rotating={["JavaScript", "Python", "React", "Next.js", "AI tools"]}
       />
 
-      <section className="container">
-        <div className="card cardPad">
-          <h2 className="h2">Latest transmissions</h2>
-          <p className="p">
-            New log entries from my learning journey—projects, notes, and small discoveries.
-          </p>
-
-          <div style={{ height: 14 }} />
-
-          <div className="postGrid">
-            {latest.map((p, index) => (
-              <PostCard key={p.slug} post={p} index={index} />
-            ))}
-          </div>
-
-          <div style={{ height: 12 }} />
-
-          <div className="btnRow">
-            <Link className="btn btnPrimary" href="/blog">View all logs</Link>
-            <Link className="btn btnGhost" href="/about">About this mission</Link>
-          </div>
-        </div>
-      </section>
+      <HomeContent latest={latest} />
     </>
   );
 }

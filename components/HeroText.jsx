@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "../hooks/useTranslation";
 
 export default function HeroText({
   rotating = ["JavaScript", "Python", "React", "Next.js", "AI tools"],
 } = {}) {
+  const { t } = useTranslation();
   const words = useMemo(() => rotating.filter(Boolean), [rotating]);
   const [wordIndex, setWordIndex] = useState(0);
 
@@ -48,7 +50,7 @@ export default function HeroText({
         </div>
 
         <p className="heroSub">
-          Decoding the unknown:{" "}
+          {t('decodingUnknown')}:{" "}
           <span className="chip" aria-live="polite">
             <span key={activeWord} className="chipWord">
               {activeWord}
@@ -58,8 +60,8 @@ export default function HeroText({
         </p>
 
         <div className="heroCtas">
-          <a className="btn btnPrimary" href="/blog">Enter Logbook</a>
-          <a className="btn btnGhost" href="/about">About the Explorer</a>
+          <a className="btn btnPrimary" href="/blog">{t('enterLogbook')}</a>
+          <a className="btn btnGhost" href="/about">{t('aboutTheExplorer')}</a>
         </div>
 
         <div className="heroMicro">

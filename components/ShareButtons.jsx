@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from '../hooks/useTranslation';
 
 /**
  * Social sharing buttons component
  * Supports Twitter/X, LinkedIn, and copy link
  */
 export default function ShareButtons({ title, slug }) {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
 
   // Build the full URL (works on client side)
@@ -46,7 +48,7 @@ export default function ShareButtons({ title, slug }) {
 
   return (
     <div className="share-buttons">
-      <span className="share-label">Share:</span>
+      <span className="share-label">{t('share')}</span>
 
       <button
         onClick={shareTwitter}

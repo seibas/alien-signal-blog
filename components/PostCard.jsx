@@ -4,8 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import SpatialBlurTitle from "./SpatialBlurTitle";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "../hooks/useTranslation";
 
 export default function PostCard({ post, index = 0 }) {
+  const { t } = useTranslation();
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const videoRef = useRef(null);
   // Gradient backgrounds for variety
@@ -227,7 +229,7 @@ export default function PostCard({ post, index = 0 }) {
             width: 'fit-content',
             textAlign: 'center'
           }}>
-            Read entry →
+            {t('readEntryArrow')}
           </div>
         </div>
       </article>

@@ -5,6 +5,7 @@ import BackToTop from "@/components/BackToTop";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ReadingModeToggle from "@/components/ReadingModeToggle";
 import ScrollToTop from "@/components/ScrollToTop";
+import { LanguageProvider } from "../hooks/useTranslation";
 
 export const metadata = {
   title: {
@@ -84,14 +85,16 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <ErrorBoundary>
-          <ScrollToTop />
-          <div className="site">
-            <SiteHeader />
-            <main className="main">{children}</main>
-            <SiteFooter />
-            <BackToTop />
-            <ReadingModeToggle />
-          </div>
+          <LanguageProvider>
+            <ScrollToTop />
+            <div className="site">
+              <SiteHeader />
+              <main className="main">{children}</main>
+              <SiteFooter />
+              <BackToTop />
+              <ReadingModeToggle />
+            </div>
+          </LanguageProvider>
         </ErrorBoundary>
       </body>
     </html>

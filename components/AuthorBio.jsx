@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function AuthorBio() {
+  const { t, language } = useTranslation();
   const [authorName, setAuthorName] = useState('Alien Signal');
   const [authorTitle, setAuthorTitle] = useState('Cosmic Explorer & Digital Storyteller');
   const [authorBio, setAuthorBio] = useState('Transmitting signals from the depths of space and code. Exploring the intersection of technology, creativity, and the unknown. 每個故事都是一次旅程 🛸');
@@ -47,9 +49,9 @@ export default function AuthorBio() {
         </div>
         <div className="author-info">
           <h3 className="author-name">{authorName}</h3>
-          <p className="author-title">{authorTitle}</p>
+          <p className="author-title">{language === 'it' ? t('cosmicExplorer') : authorTitle}</p>
           <p className="author-description">
-            {authorBio}
+            {language === 'it' ? t('transmittingSignals') : authorBio}
           </p>
         </div>
       </div>
