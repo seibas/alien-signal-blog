@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { toast } from '@/lib/toast';
@@ -15,7 +15,7 @@ export default function SettingsPage() {
   const fileInputRef = useRef(null);
 
   // Load saved settings from localStorage
-  useState(() => {
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedName = localStorage.getItem('author_name') || 'Alien Signal';
       const savedTitle = localStorage.getItem('author_title') || 'Cosmic Explorer & Digital Storyteller';
