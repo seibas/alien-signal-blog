@@ -13,7 +13,8 @@
       "Bash(curl:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nFix: Mobile touch interaction improvements for admin buttons\n\nFIXES:\n- Remove 300ms tap delay with touch-action: manipulation\n- Remove iOS tap highlight flash with -webkit-tap-highlight-color\n- Prevent text selection on double-tap with user-select: none\n- Move hover effects to @media \\(hover: hover\\) - prevents hover on touch\n- Add immediate :active state feedback \\(50ms transition\\)\n- Enhanced :active states for .btnPrimary and .btnGhost\n- Remove duplicate :active rule in touch device media query\n\nPREVENTS:\n- Layout shifts from hover transforms on touch devices\n- Multiple taps required to trigger button actions\n- Elements jumping/shifting when tapped\n- Delayed response on admin buttons \\(Edit, Delete, New Post\\)\n\nRESULT:\n- Instant tap response on mobile devices\n- Proper visual feedback on button press\n- No layout shifts or jumps on tap\n- Better UX for admin section on Pixel 7 Pro and other mobile devices\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git commit:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npx next build:*)"
     ]
   }
 }
