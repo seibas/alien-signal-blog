@@ -81,8 +81,7 @@ html, body {
   }
 }
 
-/* ===== Import cool coding fonts ===== */
-@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Share+Tech+Mono&family=Space+Mono:wght@400;700&family=Rajdhani:wght@400;500;600;700&family=Press+Start+2P&display=swap');
+/* Fonts loaded via <link> in layout.jsx for non-blocking render */
 
 /* ===== Base reset ===== */
 * { box-sizing: border-box; }
@@ -125,7 +124,6 @@ body::before {
   z-index: -1;
   opacity: 0.4;
   pointer-events: none;
-  will-change: transform;
 }
 
 @keyframes starfield {
@@ -148,7 +146,6 @@ body::before {
   animation: nebula 30s ease-in-out infinite alternate;
   z-index: 0;
   pointer-events: none;
-  will-change: transform, opacity;
 }
 
 @keyframes nebula {
@@ -4730,4 +4727,13 @@ html.reading-mode .site-title {
 
 .skill-meta strong {
   color: var(--text-muted);
+}
+
+/* ===== Reduce motion for accessibility & performance ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
