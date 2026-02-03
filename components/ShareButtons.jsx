@@ -1,20 +1,42 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from '../hooks/useTranslation';
 
 /**
  * Social sharing buttons component
- * Supports Twitter/X, LinkedIn, and copy link
+ * Supports native Web Share API (mobile), Twitter/X, LinkedIn, and copy link
  */
-export default function ShareButtons({ title, slug }) {
+export default function ShareButtons({ title, slug, excerpt = '' }) {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
+  const [canNativeShare, setCanNativeShare] = useState(false);
+
+  // Check if native sharing is available
+  useEffect(() => {
+    setCanNativeShare(typeof navigator !== 'undefined' && !!navigator.share);
+  }, []);
 
   // Build the full URL (works on client side)
   const getUrl = () => {
     if (typeof window === 'undefined') return '';
     return `${window.location.origin}/blog/${slug}`;
+  };
+
+  // Native Web Share API (mobile-first)
+  const nativeShare = async () => {
+    try {
+      await navigator.share({
+        title: title,
+        text: excerpt || title,
+        url: getUrl()
+      });
+    } catch (err) {
+      // User cancelled or error - silently fail
+      if (err.name !== 'AbortError') {
+        console.error('Share failed:', err);
+      }
+    }
   };
 
   const shareTwitter = () => {
@@ -49,6 +71,20 @@ export default function ShareButtons({ title, slug }) {
   return (
     <div className="share-buttons">
       <span className="share-label">{t('share')}</span>
+
+      {/* Native Share Button (mobile) */}
+      {canNativeShare && (
+        <button
+          onClick={nativeShare}
+          className="share-btn share-native"
+          aria-label="Share"
+          title="Share"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
+          </svg>
+        </button>
+      )}
 
       <button
         onClick={shareTwitter}
@@ -136,6 +172,18 @@ export default function ShareButtons({ title, slug }) {
           border-color: #0A66C2;
           color: #0A66C2;
           box-shadow: 0 4px 12px rgba(10, 102, 194, 0.2);
+        }
+
+        .share-native {
+          background: linear-gradient(135deg, rgba(0, 255, 140, 0.1), rgba(255, 140, 0, 0.1));
+          border-color: var(--color-orange-primary);
+          color: var(--color-orange-primary);
+        }
+
+        .share-native:hover {
+          border-color: var(--color-orange-bright);
+          color: var(--color-orange-bright);
+          box-shadow: 0 4px 12px rgba(255, 145, 0, 0.3);
         }
 
         .share-copy:hover {

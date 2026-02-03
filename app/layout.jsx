@@ -5,6 +5,8 @@ import BackToTop from "@/components/BackToTop";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ReadingModeToggle from "@/components/ReadingModeToggle";
 import ScrollToTop from "@/components/ScrollToTop";
+import ReadingProgress from "@/components/ReadingProgress";
+import SkipLink from "@/components/SkipLink";
 import { LanguageProvider } from "../hooks/useTranslation";
 
 export const metadata = {
@@ -95,10 +97,12 @@ export default function RootLayout({ children }) {
       <body>
         <ErrorBoundary>
           <LanguageProvider>
+            <SkipLink />
             <ScrollToTop />
+            <ReadingProgress />
             <div className="site">
               <SiteHeader />
-              <main className="main">{children}</main>
+              <main id="main-content" className="main" tabIndex={-1}>{children}</main>
               <SiteFooter />
               <BackToTop />
               <ReadingModeToggle />
