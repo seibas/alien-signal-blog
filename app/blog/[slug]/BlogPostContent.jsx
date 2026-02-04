@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { useScrollDepth } from '@/hooks/useScrollDepth';
 
 /**
  * Client component wrapper for blog post content
@@ -25,5 +26,11 @@ const EditableBlogPost = dynamic(
 );
 
 export default function BlogPostContent({ post }) {
+  // Track scroll depth for engagement analytics
+  useScrollDepth({
+    page: `/blog/${post.slug}`,
+    enabled: true
+  });
+
   return <EditableBlogPost post={post} />;
 }

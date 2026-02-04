@@ -789,7 +789,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .articleTitle, .heroTitle {
   }
   
   .articleContent {
-    font-size: 15px;
+    font-size: clamp(16px, 3vw, 18px);
     line-height: 1.75;
   }
   

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { SignJWT } from 'jose';
+import { applyAuthRateLimit, rateLimitResponse } from '@/lib/rateLimit';
 
 // Server-side only - never exposed to client
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '0904';
@@ -9,6 +10,12 @@ const JWT_SECRET = new TextEncoder().encode(
 
 export async function POST(request) {
   try {
+    // Apply strict rate limiting (5 attempts per minute)
+    const rateLimitResult = await applyAuthRateLimit(request);
+    if (!rateLimitResult.success) {
+      return rateLimitResponse(rateLimitResult.reset);
+    }
+
     const { password } = await request.json();
 
     if (!password) {

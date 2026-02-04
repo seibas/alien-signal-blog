@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, memo, useMemo } from 'react';
+import { useState, useEffect, memo, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
 import TypingAnimation from './TypingAnimation';
 import AuthorBio from './AuthorBio';
+import NewsletterSignup from './NewsletterSignup';
 import { playAlienSound } from '@/lib/alienSound';
 import { toast } from '@/lib/toast';
 import { logger } from '@/lib/logger';
@@ -43,6 +44,10 @@ const AvatarUploadWidget = dynamic(() => import('./AvatarUploadWidget'), { ssr: 
 const RelatedPosts = dynamic(() => import('./RelatedPosts'), { ssr: false });
 const ShareButtons = dynamic(() => import('./ShareButtons'), { ssr: false });
 
+// Dynamic imports with ssr: false to prevent hydration errors
+const Breadcrumb = dynamic(() => import('./Breadcrumb'), { ssr: false });
+const TableOfContents = dynamic(() => import('./TableOfContents'), { ssr: false });
+
 // Import syntax highlighter theme
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -51,12 +56,36 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
  * Prevents re-rendering of expensive SyntaxHighlighter
  */
 const CodeBlock = memo(function CodeBlock({ code, language }) {
+  const displayLanguage = language || 'javascript';
+
   return (
     <div style={{ margin: '2em 0' }}>
+      {/* Language label for accessibility and UX */}
+      <div style={{
+        display: 'inline-block',
+        padding: '4px 12px',
+        marginBottom: '8px',
+        background: 'rgba(0, 255, 65, 0.12)',
+        border: '1px solid rgba(0, 255, 65, 0.3)',
+        borderRadius: '6px 6px 0 0',
+        fontSize: '12px',
+        fontWeight: 600,
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        color: '#00FF41',
+        fontFamily: "'Share Tech Mono', monospace"
+      }}>
+        {displayLanguage}
+      </div>
       <SyntaxHighlighter
-        language={language || 'javascript'}
+        language={displayLanguage}
         style={vscDarkPlus}
-        customStyle={{ borderRadius: 10, fontSize: 16, padding: 18 }}
+        customStyle={{
+          borderRadius: '0 10px 10px 10px',
+          fontSize: 16,
+          padding: 18,
+          marginTop: 0
+        }}
       >
         {code}
       </SyntaxHighlighter>
@@ -100,6 +129,9 @@ export default function EditableBlogPost({ post }) {
   } = usePostTranslation(post?.slug, editedPost.blocks);
   const displayContent = isTranslated ? translatedBlocks : null;
   const displayTitle = null;
+
+  // Ref for Table of Contents to scan headings
+  const contentRef = useRef(null);
 
   /**
    * Parses text content and extracts inline markdown images
@@ -791,6 +823,9 @@ export default function EditableBlogPost({ post }) {
           </div>
         )}
 
+        {/* Breadcrumb Navigation */}
+        <Breadcrumb customTitle={editedPost.title} />
+
         {isAdmin && (
           <button 
             className="edit-toggle-btn"
@@ -834,7 +869,10 @@ export default function EditableBlogPost({ post }) {
         {/* Social Sharing */}
         <ShareButtons title={displayTitle} slug={post.slug} />
 
-        <div className="articleContent">
+        {/* Table of Contents */}
+        <TableOfContents contentRef={contentRef} />
+
+        <div className="articleContent" ref={contentRef}>
           {blocks.map((block, idx) => {
             if (block.type === 'code') {
               return (
@@ -918,6 +956,15 @@ export default function EditableBlogPost({ post }) {
 
         {/* Share buttons at bottom */}
         <ShareButtons title={displayTitle} slug={post.slug} />
+
+        {/* Newsletter Signup - Conversion optimization */}
+        <section style={{
+          marginTop: '48px',
+          paddingTop: '48px',
+          borderTop: '1px solid rgba(0, 255, 65, 0.2)'
+        }}>
+          <NewsletterSignup variant="default" />
+        </section>
 
         {/* Related Posts Section */}
         {allPosts.length > 0 && (

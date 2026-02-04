@@ -44,6 +44,78 @@ export default function MobileMenu({ isAdmin, onLogout, onQuickCapture }) {
     setIsOpen(false);
   }, [pathname]);
 
+  // Keyboard navigation for menu items
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e) => {
+      // Get all focusable menu items
+      const menuItemsElements = document.querySelectorAll(
+        '.mobile-menu-item, .mobile-menu-reading-btn'
+      );
+      const currentIndex = Array.from(menuItemsElements).findIndex(
+        el => el === document.activeElement
+      );
+
+      switch(e.key) {
+        case 'Escape':
+          e.preventDefault();
+          setIsOpen(false);
+          // Return focus to toggle button
+          document.querySelector('.mobile-menu-toggle')?.focus();
+          break;
+
+        case 'ArrowDown':
+          e.preventDefault();
+          if (menuItemsElements.length > 0) {
+            const nextIndex = (currentIndex + 1) % menuItemsElements.length;
+            menuItemsElements[nextIndex]?.focus();
+          }
+          break;
+
+        case 'ArrowUp':
+          e.preventDefault();
+          if (menuItemsElements.length > 0) {
+            const prevIndex = currentIndex <= 0 ? menuItemsElements.length - 1 : currentIndex - 1;
+            menuItemsElements[prevIndex]?.focus();
+          }
+          break;
+
+        case 'Home':
+          e.preventDefault();
+          menuItemsElements[0]?.focus();
+          break;
+
+        case 'End':
+          e.preventDefault();
+          menuItemsElements[menuItemsElements.length - 1]?.focus();
+          break;
+
+        case 'Tab':
+          // Trap focus within menu
+          const firstItem = menuItemsElements[0];
+          const lastItem = menuItemsElements[menuItemsElements.length - 1];
+
+          if (e.shiftKey && document.activeElement === firstItem) {
+            e.preventDefault();
+            lastItem?.focus();
+          } else if (!e.shiftKey && document.activeElement === lastItem) {
+            e.preventDefault();
+            firstItem?.focus();
+          }
+          break;
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    // Focus first menu item when menu opens
+    const firstMenuItem = document.querySelector('.mobile-menu-item');
+    firstMenuItem?.focus();
+
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
   const menuItems = [
     { href: '/', label: 'Home', icon: '🏠' },
     { href: '/blog', label: 'Blog', icon: '📡' },
