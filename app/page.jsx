@@ -24,7 +24,7 @@ export default async function Home() {
   const allPosts = await getAllPosts();
   const latest = allPosts
     .sort((a, b) => (a.date < b.date ? 1 : -1))
-    .slice(0, 3);
+    .slice(0, 4);
 
   return (
     <>

@@ -221,7 +221,7 @@ export default function PostCard({ post, index = 0 }) {
             {getCleanExcerpt()}
           </p>
           
-          <div className="btn" style={{
+          <div className="btn post-card-read-btn" style={{
             fontSize: '12px',
             padding: '8px 14px',
             marginTop: 'auto',
