@@ -542,7 +542,13 @@ export default function EditableBlogPost({ post }) {
                           <div style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>📸 Images in this text block:</div>
                           {imageMatches.map((match, i) => (
                             <div key={i} style={{ marginBottom: 8, padding: 8, background: '#181c1f', borderRadius: 6 }}>
-                              <img src={match[2]} alt={match[1]} style={{ width: '100%', maxWidth: '300px', display: 'block', borderRadius: 4, marginBottom: 4 }} />
+                              <Image 
+                                src={match[2]} 
+                                alt={match[1] || 'Preview'} 
+                                width={800}
+                                height={600}
+                                style={{ width: '100%', height: 'auto', maxWidth: '300px', display: 'block', borderRadius: 4, marginBottom: 4 }} 
+                              />
                               <div style={{ fontSize: 11, color: '#666' }}>Alt: {match[1] || '(none)'}</div>
                               <button
                                 type="button"
@@ -635,7 +641,13 @@ export default function EditableBlogPost({ post }) {
                   <>
                     <div style={{ marginBottom: 12, position: 'relative', maxWidth: '100%', borderRadius: 8, overflow: 'hidden', background: block.src ? 'transparent' : '#0a0a0a', minHeight: block.src ? 'auto' : '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {block.src ? (
-                        <img src={block.src} alt={block.alt || 'Preview'} style={{ width: '100%', display: 'block' }} />
+                        <Image 
+                          src={block.src} 
+                          alt={block.alt || 'Preview'} 
+                          width={800}
+                          height={600}
+                          style={{ width: '100%', height: 'auto', display: 'block' }} 
+                        />
                       ) : (
                         <div style={{ color: '#555', fontSize: '14px', textAlign: 'center' }}>
                           <div style={{ fontSize: '48px', marginBottom: '8px' }}>📸</div>
